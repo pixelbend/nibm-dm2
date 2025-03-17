@@ -31,13 +31,11 @@
             UpdateProductButton = new MaterialSkin.Controls.MaterialButton();
             ProdcutQuantityLable = new Label();
             ProductDescriptionLable = new Label();
-            ProductPictureBox = new PictureBox();
             ProductNameLable = new Label();
             DeleteProductButton = new MaterialSkin.Controls.MaterialButton();
             materialCard1 = new MaterialSkin.Controls.MaterialCard();
-            CategoryLable = new Label();
             PriceLable = new Label();
-            ((System.ComponentModel.ISupportInitialize)ProductPictureBox).BeginInit();
+            CategoryLable = new Label();
             materialCard1.SuspendLayout();
             SuspendLayout();
             // 
@@ -65,7 +63,7 @@
             // ProdcutQuantityLable
             // 
             ProdcutQuantityLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProdcutQuantityLable.Location = new Point(231, 161);
+            ProdcutQuantityLable.Location = new Point(17, 158);
             ProdcutQuantityLable.Name = "ProdcutQuantityLable";
             ProdcutQuantityLable.Size = new Size(306, 28);
             ProdcutQuantityLable.TabIndex = 10;
@@ -76,27 +74,17 @@
             // 
             ProductDescriptionLable.BackColor = Color.Transparent;
             ProductDescriptionLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductDescriptionLable.Location = new Point(231, 58);
+            ProductDescriptionLable.Location = new Point(17, 55);
             ProductDescriptionLable.Name = "ProductDescriptionLable";
             ProductDescriptionLable.Size = new Size(449, 91);
             ProductDescriptionLable.TabIndex = 9;
             ProductDescriptionLable.Text = "ProductDescriptionLable";
             // 
-            // ProductPictureBox
-            // 
-            ProductPictureBox.Image = Properties.Resources.icons8_placeholder_96;
-            ProductPictureBox.Location = new Point(14, 12);
-            ProductPictureBox.Name = "ProductPictureBox";
-            ProductPictureBox.Size = new Size(200, 180);
-            ProductPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            ProductPictureBox.TabIndex = 8;
-            ProductPictureBox.TabStop = false;
-            // 
             // ProductNameLable
             // 
             ProductNameLable.AutoSize = true;
             ProductNameLable.Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductNameLable.Location = new Point(230, 13);
+            ProductNameLable.Location = new Point(16, 10);
             ProductNameLable.Name = "ProductNameLable";
             ProductNameLable.Size = new Size(252, 38);
             ProductNameLable.TabIndex = 7;
@@ -129,7 +117,6 @@
             materialCard1.Controls.Add(PriceLable);
             materialCard1.Controls.Add(CategoryLable);
             materialCard1.Controls.Add(DeleteProductButton);
-            materialCard1.Controls.Add(ProductPictureBox);
             materialCard1.Controls.Add(ProdcutQuantityLable);
             materialCard1.Controls.Add(UpdateProductButton);
             materialCard1.Controls.Add(ProductDescriptionLable);
@@ -144,25 +131,25 @@
             materialCard1.Size = new Size(1135, 200);
             materialCard1.TabIndex = 13;
             // 
-            // CategoryLable
-            // 
-            CategoryLable.AutoSize = true;
-            CategoryLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CategoryLable.Location = new Point(777, 160);
-            CategoryLable.Name = "CategoryLable";
-            CategoryLable.Size = new Size(119, 23);
-            CategoryLable.TabIndex = 21;
-            CategoryLable.Text = "CategoryLable";
-            // 
             // PriceLable
             // 
             PriceLable.AutoSize = true;
             PriceLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PriceLable.Location = new Point(576, 161);
+            PriceLable.Location = new Point(362, 158);
             PriceLable.Name = "PriceLable";
             PriceLable.Size = new Size(87, 23);
             PriceLable.TabIndex = 22;
             PriceLable.Text = "PriceLable";
+            // 
+            // CategoryLable
+            // 
+            CategoryLable.AutoSize = true;
+            CategoryLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            CategoryLable.Location = new Point(563, 157);
+            CategoryLable.Name = "CategoryLable";
+            CategoryLable.Size = new Size(119, 23);
+            CategoryLable.TabIndex = 21;
+            CategoryLable.Text = "CategoryLable";
             // 
             // SupplierInventoryItem
             // 
@@ -172,7 +159,6 @@
             Controls.Add(materialCard1);
             Name = "SupplierInventoryItem";
             Size = new Size(1135, 200);
-            ((System.ComponentModel.ISupportInitialize)ProductPictureBox).EndInit();
             materialCard1.ResumeLayout(false);
             materialCard1.PerformLayout();
             ResumeLayout(false);
@@ -183,7 +169,6 @@
         private MaterialSkin.Controls.MaterialButton UpdateProductButton;
         private Label ProdcutQuantityLable;
         private Label ProductDescriptionLable;
-        private PictureBox ProductPictureBox;
         private Label ProductNameLable;
         private MaterialSkin.Controls.MaterialButton DeleteProductButton;
         private MaterialSkin.Controls.MaterialCard materialCard1;

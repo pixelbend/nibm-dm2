@@ -36,12 +36,10 @@
             UnitPriceLabel = new Label();
             TotalLabel = new Label();
             CategoryLable = new Label();
-            ProductPictureBox = new PictureBox();
             ProductNameLable = new Label();
             CheckoutButton = new MaterialSkin.Controls.MaterialButton();
             ProductDescriptionLable = new Label();
             materialCard1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)ProductPictureBox).BeginInit();
             SuspendLayout();
             // 
             // materialCard1
@@ -54,7 +52,6 @@
             materialCard1.Controls.Add(UnitPriceLabel);
             materialCard1.Controls.Add(TotalLabel);
             materialCard1.Controls.Add(CategoryLable);
-            materialCard1.Controls.Add(ProductPictureBox);
             materialCard1.Controls.Add(ProductNameLable);
             materialCard1.Controls.Add(CheckoutButton);
             materialCard1.Controls.Add(ProductDescriptionLable);
@@ -72,7 +69,7 @@
             // 
             OrderDateLable.AutoSize = true;
             OrderDateLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            OrderDateLable.Location = new Point(644, 164);
+            OrderDateLable.Location = new Point(420, 164);
             OrderDateLable.Name = "OrderDateLable";
             OrderDateLable.Size = new Size(90, 23);
             OrderDateLable.TabIndex = 26;
@@ -82,7 +79,7 @@
             // 
             OrderStatusLable.AutoSize = true;
             OrderStatusLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            OrderStatusLable.Location = new Point(459, 163);
+            OrderStatusLable.Location = new Point(235, 163);
             OrderStatusLable.Name = "OrderStatusLable";
             OrderStatusLable.Size = new Size(100, 23);
             OrderStatusLable.TabIndex = 25;
@@ -143,28 +140,17 @@
             // 
             CategoryLable.AutoSize = true;
             CategoryLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            CategoryLable.Location = new Point(241, 164);
+            CategoryLable.Location = new Point(17, 164);
             CategoryLable.Name = "CategoryLable";
             CategoryLable.Size = new Size(119, 23);
             CategoryLable.TabIndex = 20;
             CategoryLable.Text = "CategoryLable";
             // 
-            // ProductPictureBox
-            // 
-            ProductPictureBox.BackColor = Color.Transparent;
-            ProductPictureBox.Image = Properties.Resources.icons8_placeholder_96;
-            ProductPictureBox.Location = new Point(17, 10);
-            ProductPictureBox.Name = "ProductPictureBox";
-            ProductPictureBox.Size = new Size(200, 180);
-            ProductPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            ProductPictureBox.TabIndex = 1;
-            ProductPictureBox.TabStop = false;
-            // 
             // ProductNameLable
             // 
             ProductNameLable.AutoSize = true;
             ProductNameLable.Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductNameLable.Location = new Point(241, 14);
+            ProductNameLable.Location = new Point(17, 14);
             ProductNameLable.Name = "ProductNameLable";
             ProductNameLable.Size = new Size(252, 38);
             ProductNameLable.TabIndex = 0;
@@ -195,7 +181,7 @@
             // 
             ProductDescriptionLable.BackColor = Color.Transparent;
             ProductDescriptionLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductDescriptionLable.Location = new Point(241, 62);
+            ProductDescriptionLable.Location = new Point(17, 62);
             ProductDescriptionLable.Name = "ProductDescriptionLable";
             ProductDescriptionLable.Size = new Size(449, 93);
             ProductDescriptionLable.TabIndex = 4;
@@ -212,14 +198,12 @@
             Load += CustomerOrderItem_Load;
             materialCard1.ResumeLayout(false);
             materialCard1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)ProductPictureBox).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private MaterialSkin.Controls.MaterialCard materialCard1;
-        private PictureBox ProductPictureBox;
         private Label ProductNameLable;
         private MaterialSkin.Controls.MaterialButton CheckoutButton;
         private Label ProductDescriptionLable;

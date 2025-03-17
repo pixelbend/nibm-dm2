@@ -54,7 +54,7 @@
             StatusComboBox.FormattingEnabled = true;
             StatusComboBox.IntegralHeight = false;
             StatusComboBox.ItemHeight = 43;
-            StatusComboBox.Items.AddRange(new object[] { "", "Pending", "Confirmed", "Processing", "Fulfilled", "Returned", "Canceled" });
+            StatusComboBox.Items.AddRange(new object[] { "Pending", "Confirmed", "Processing", "Fulfilled", "Returned", "Canceled" });
             StatusComboBox.Location = new Point(1061, 19);
             StatusComboBox.MaxDropDownItems = 4;
             StatusComboBox.MouseState = MaterialSkin.MouseState.OUT;
