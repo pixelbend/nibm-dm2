@@ -134,3 +134,51 @@ CREATE OR REPLACE TRIGGER set_delivery_uuid
 BEGIN
     :NEW.DeliveryID := Generate_UUID();
 END;
+
+-- materialized views
+CREATE MATERIALIZED VIEW TotalSalesPerProduct
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT p.ProductID,
+       p.Name          AS ProductName,
+       p.SupplierID,
+       SUM(o.Quantity) AS TotalQuantitySold,
+       SUM(o.Total)    AS TotalRevenue
+FROM Orders o
+JOIN Products p ON o.ProductID = p.ProductID
+WHERE o.Status = 'Fulfilled'
+GROUP BY p.ProductID, p.Name, p.SupplierID;
+
+CREATE MATERIALIZED VIEW SupplierSalesSummary
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT
+    s.SupplierID,
+    s.Name AS SupplierName,
+    COUNT(DISTINCT o.OrderID) AS TotalOrders,
+    SUM(o.Quantity) AS TotalQuantitySold,
+    SUM(o.Total) AS TotalRevenue
+FROM Orders o
+JOIN Products p ON o.ProductID = p.ProductID
+JOIN Suppliers s ON p.SupplierID = s.SupplierID
+WHERE o.Status = 'Fulfilled'
+GROUP BY s.SupplierID, s.Name;
+
+CREATE MATERIALIZED VIEW SupplierSalesLast30Days
+BUILD IMMEDIATE
+REFRESH COMPLETE ON DEMAND
+AS
+SELECT
+    s.SupplierID,
+    s.Name AS SupplierName,
+    TRUNC(o.OrderDate) AS SalesDate,
+    SUM(o.Total) AS DailyRevenue
+FROM Orders o
+JOIN Products p ON o.ProductID = p.ProductID
+JOIN Suppliers s ON p.SupplierID = s.SupplierID
+WHERE o.OrderDate >= SYSDATE - 30
+AND o.Status = 'Fulfilled'
+GROUP BY s.SupplierID, s.Name, TRUNC(o.OrderDate)
+ORDER BY s.SupplierID, SalesDate;
