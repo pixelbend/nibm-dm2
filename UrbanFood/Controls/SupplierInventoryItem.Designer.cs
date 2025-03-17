@@ -135,7 +135,7 @@
             // 
             PriceLable.AutoSize = true;
             PriceLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            PriceLable.Location = new Point(362, 158);
+            PriceLable.Location = new Point(341, 158);
             PriceLable.Name = "PriceLable";
             PriceLable.Size = new Size(87, 23);
             PriceLable.TabIndex = 22;
