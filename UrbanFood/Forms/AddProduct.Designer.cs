@@ -174,7 +174,7 @@
             ProductCategoryComboBox.FormattingEnabled = true;
             ProductCategoryComboBox.IntegralHeight = false;
             ProductCategoryComboBox.ItemHeight = 43;
-            ProductCategoryComboBox.Items.AddRange(new object[] { "", "vegetables", "fruits", "dairy products", "baked goods", "handmade crafts" });
+            ProductCategoryComboBox.Items.AddRange(new object[] { "vegetables", "fruits", "dairy products", "baked goods", "handmade crafts" });
             ProductCategoryComboBox.Location = new Point(37, 562);
             ProductCategoryComboBox.MaxDropDownItems = 4;
             ProductCategoryComboBox.MouseState = MaterialSkin.MouseState.OUT;
