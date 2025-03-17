@@ -7,7 +7,7 @@ namespace UrbanFood.Database.MongoDB
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [BsonElement("product_id")]
         public required string ProductId { get; set; }
