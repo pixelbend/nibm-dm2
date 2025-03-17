@@ -484,3 +484,42 @@ EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Supplier_Cancel_Order;
+
+CREATE OR REPLACE FUNCTION Supplier_Fulfill_Order(
+    pSupplierId VARCHAR2,
+    pOrderId VARCHAR2
+) RETURN VARCHAR2 IS
+    vOrderStatus   VARCHAR2(20);
+    vOrderID       VARCHAR2(32);
+    vProductID     VARCHAR2(32);
+BEGIN
+    BEGIN
+        SELECT o.OrderID, o.Status, o.ProductID
+        INTO vOrderID, vOrderStatus, vProductID
+        FROM Orders o
+        JOIN Products pr ON o.ProductID = pr.ProductID
+        WHERE o.OrderID = pOrderId
+          AND pr.SupplierID = pSupplierId
+          FOR UPDATE;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Order does not exist or supplier is not authorized to update this order');
+    END;
+
+    IF vOrderStatus = 'Fulfilled' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order is already Fulfilled and cannot be changed.');
+    END IF;
+
+    IF vOrderStatus != 'Pending' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order is not in a valid state (Pending) to be fulfilled.');
+    END IF;
+
+    UPDATE Orders
+    SET Status = 'Fulfilled'
+    WHERE OrderID = pOrderId;
+
+    RETURN vOrderID;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END Supplier_Fulfill_Order;
