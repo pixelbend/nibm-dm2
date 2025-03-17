@@ -438,3 +438,49 @@ EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Customer_Cancel_Order;
+
+CREATE OR REPLACE FUNCTION Supplier_Cancel_Order(
+    pSupplierId VARCHAR2,
+    pOrderId VARCHAR2
+) RETURN VARCHAR2 IS
+    vOrderStatus   VARCHAR2(20);
+    vOrderID       VARCHAR2(32);
+    vProductID     VARCHAR2(32);
+    vQuantity      NUMBER;
+    vAmountPaid    NUMBER;
+BEGIN
+    BEGIN
+        SELECT o.OrderID, o.Status, o.ProductID, o.Quantity, p.AmountPaid
+        INTO vOrderID, vOrderStatus, vProductID, vQuantity, vAmountPaid
+        FROM Orders o
+        JOIN Products pr ON o.ProductID = pr.ProductID
+        JOIN Payments p ON o.OrderID = p.OrderID
+        WHERE o.OrderID = pOrderId
+          AND pr.SupplierID = pSupplierId
+          FOR UPDATE;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Order does not exist or supplier is not authorized to cancel this order');
+    END;
+
+    IF vOrderStatus = 'Fulfilled' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order is already fulfilled and cannot be canceled');
+    END IF;
+
+    UPDATE Orders
+    SET Status = 'Canceled'
+    WHERE OrderID = pOrderId;
+
+    UPDATE Products
+    SET StockQuantity = StockQuantity + vQuantity
+    WHERE ProductID = vProductID;
+
+    UPDATE Payments
+    SET Status = 'Refunded', RefundedData = CURRENT_TIMESTAMP
+    WHERE OrderID = pOrderId;
+
+    RETURN vOrderID;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END Supplier_Cancel_Order;
