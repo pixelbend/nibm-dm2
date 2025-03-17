@@ -1,0 +1,31 @@
+services:
+  oracledb:
+    container_name: oracledb
+    image: gvenzl/oracle-xe:21-full
+    restart: always
+    environment:
+      ORACLE_PASSWORD: oracle
+      ORACLE_DATABASE: UFDB
+      APP_USER: urban_food_db
+      APP_USER_PASSWORD: urban_food_db
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracledb_data:/opt/oracle/oradata
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: UFDB
+      MONGO_INITDB_ROOT_USERNAME: urban_food_db
+      MONGO_INITDB_ROOT_PASSWORD: urban_food_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  oracledb_data:
+  mongodb_data:
