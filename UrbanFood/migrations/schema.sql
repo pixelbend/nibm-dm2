@@ -72,7 +72,7 @@ CREATE TABLE Orders
     Quantity   NUMBER CHECK (Quantity > 0)                                                  NOT NULL,
     Total      NUMBER(10, 2) CHECK ( Total >= 0 )                                           NOT NULL,
     Status     VARCHAR2(20) DEFAULT 'Pending' CHECK (Status IN
-                                                     ('Pending', 'Confirmed', 'Processing',
+                                                     ('Pending', 'Confirmed',
                                                       'Fulfilled', 'Returned', 'Canceled')) NOT NULL,
     OrderDate  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID),
