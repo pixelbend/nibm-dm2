@@ -83,10 +83,11 @@
             // ProductNameLable
             // 
             ProductNameLable.AutoSize = true;
-            ProductNameLable.Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ProductNameLable.FlatStyle = FlatStyle.Flat;
+            ProductNameLable.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ProductNameLable.Location = new Point(16, 10);
             ProductNameLable.Name = "ProductNameLable";
-            ProductNameLable.Size = new Size(252, 38);
+            ProductNameLable.Size = new Size(267, 38);
             ProductNameLable.TabIndex = 7;
             ProductNameLable.Text = "ProductNameLable";
             // 

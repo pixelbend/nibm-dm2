@@ -115,6 +115,7 @@ namespace UrbanFood.Controls
                 if (reader.Read())
                 {
                     ProductNameLable.Text = reader["Name"].ToString();
+                    ProductNameLable.Font = new("Segoe UI", 16, FontStyle.Bold);
                     ProductDescriptionLable.Text = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString();
                     ProdcutQuantityLable.Text = $"Stock Quantity: {reader["StockQuantity"].ToString()}";
                     PriceLable.Text = $"Unit Price Rs: {reader["Price"].ToString()}";

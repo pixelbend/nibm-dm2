@@ -45,10 +45,10 @@
             // ProductNameLable
             // 
             ProductNameLable.AutoSize = true;
-            ProductNameLable.Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ProductNameLable.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ProductNameLable.Location = new Point(17, 15);
             ProductNameLable.Name = "ProductNameLable";
-            ProductNameLable.Size = new Size(252, 38);
+            ProductNameLable.Size = new Size(267, 38);
             ProductNameLable.TabIndex = 0;
             ProductNameLable.Text = "ProductNameLable";
             // 
@@ -66,7 +66,7 @@
             // 
             ProductDescriptionLable.BackColor = Color.Transparent;
             ProductDescriptionLable.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductDescriptionLable.Location = new Point(17, 55);
+            ProductDescriptionLable.Location = new Point(17, 57);
             ProductDescriptionLable.Name = "ProductDescriptionLable";
             ProductDescriptionLable.Size = new Size(449, 93);
             ProductDescriptionLable.TabIndex = 4;
