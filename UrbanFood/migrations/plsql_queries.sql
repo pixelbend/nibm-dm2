@@ -128,17 +128,11 @@ END List_Orders_By_Supplier;
 
 CREATE OR REPLACE FUNCTION Get_Product_By_ID(
     pProductID Products.ProductID%TYPE
-) RETURN Products%ROWTYPE IS
-    vProduct Products%ROWTYPE;
+) RETURN SYS_REFCURSOR IS
+    vCursor      SYS_REFCURSOR;
 BEGIN
-     BEGIN
-        SELECT * INTO vProduct
-        FROM Products
-        WHERE ProductID = pProductID;
-    EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20001, 'No product found with the given ID');
-    END;
+    OPEN vCursor FOR
+        SELECT * FROM Products WHERE ProductID = pProductID;
 
-    RETURN vProduct;
+    RETURN vCursor;
 END Get_Product_By_ID;
