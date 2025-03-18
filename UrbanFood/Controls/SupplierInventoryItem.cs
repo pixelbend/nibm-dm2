@@ -13,6 +13,7 @@ using Oracle.ManagedDataAccess.Client;
 using UrbanFood.Database.OracleDB;
 using UrbanFood.Utils;
 using UrbanFood.LocalState;
+using Oracle.ManagedDataAccess.Types;
 
 namespace UrbanFood.Controls
 {
@@ -97,41 +98,28 @@ namespace UrbanFood.Controls
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
 
-                using OracleCommand cmd = new("SELECT * FROM Products WHERE ProductID = :ProductID", conn)
+                using OracleCommand getProductByIdCmd = new("Get_Product_By_ID", conn);
+                getProductByIdCmd.CommandType = CommandType.StoredProcedure;
+
+                OracleParameter cursor = new OracleParameter("vCursor", OracleDbType.RefCursor)
                 {
-                    CommandType = CommandType.Text,
+                    Direction = ParameterDirection.ReturnValue
                 };
+                getProductByIdCmd.Parameters.Add(cursor);
 
-                cmd.Parameters.Add(":ProductID", OracleDbType.Varchar2, 32).Value = _productID;
 
-                using (OracleDataReader reader = cmd.ExecuteReader())
+                getProductByIdCmd.Parameters.Add("pProductID", OracleDbType.Varchar2).Value = _productID;
+
+
+                using OracleDataReader reader = getProductByIdCmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    if (reader.Read())
-                    {
-                        ProductNameLable.Text = reader["Name"].ToString();
-                        ProductDescriptionLable.Text = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString();
-                        ProdcutQuantityLable.Text = $"Stock Quantity: {reader["StockQuantity"].ToString()}";
-                        PriceLable.Text = $"Unit Price Rs: {reader["Price"].ToString()}";
-                        CategoryLable.Text = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}";
-
-                        ProductNameLable.Invalidate();
-                        ProductNameLable.Update();
-
-                        ProductDescriptionLable.Invalidate();
-                        ProductDescriptionLable.Update();
-
-                        ProdcutQuantityLable.Invalidate();
-                        ProdcutQuantityLable.Update();
-
-                        PriceLable.Invalidate();
-                        PriceLable.Update();
-
-                        CategoryLable.Invalidate();
-                        CategoryLable.Update();
-                    }
+                    ProductNameLable.Text = reader["Name"].ToString();
+                    ProductDescriptionLable.Text = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString();
+                    ProdcutQuantityLable.Text = $"Stock Quantity: {reader["StockQuantity"].ToString()}";
+                    PriceLable.Text = $"Unit Price Rs: {reader["Price"].ToString()}";
+                    CategoryLable.Text = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}";
                 }
-                cmd.ExecuteNonQuery();
-
             }
             catch (OracleException ex)
             {

@@ -1,5 +1,6 @@
 ﻿using MaterialSkin.Controls;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,13 +20,13 @@ namespace UrbanFood.Forms
 {
     public partial class UpdateProduct : MaterialForm
     {
-        private string _productId;
+        private string _productID;
 
         public UpdateProduct(string productId)
         {
             InitializeComponent();
             ThemeManager.ApplyTheme(this);
-            _productId = productId;
+            _productID = productId;
             PopulateProductData();
         }
 
@@ -74,7 +75,7 @@ namespace UrbanFood.Forms
             int stockQuantity = Convert.ToInt32(stockText);
             string supplierId = UserState.Instance.GetUserId();
 
-            string updatedProductId = UpdateProductQuery(_productId, name, description, price, stockQuantity, category);
+            string updatedProductId = UpdateProductQuery(_productID, name, description, price, stockQuantity, category);
 
             if (!string.IsNullOrEmpty(updatedProductId))
             {
@@ -89,39 +90,41 @@ namespace UrbanFood.Forms
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
 
-                using OracleCommand cmd = new("SELECT * FROM Products WHERE ProductID = :ProductID", conn)
+                using OracleCommand getProductByIdCmd = new("Get_Product_By_ID", conn);
+                getProductByIdCmd.CommandType = CommandType.StoredProcedure;
+
+                OracleParameter cursor = new OracleParameter("vCursor", OracleDbType.RefCursor)
                 {
-                    CommandType = CommandType.Text,
+                    Direction = ParameterDirection.ReturnValue
                 };
+                getProductByIdCmd.Parameters.Add(cursor);
 
-                cmd.Parameters.Add(":ProductID", OracleDbType.Varchar2, 32).Value = _productId;
 
-                using (OracleDataReader reader = cmd.ExecuteReader())
+                getProductByIdCmd.Parameters.Add("pProductID", OracleDbType.Varchar2).Value = _productID;
+
+
+                using OracleDataReader reader = getProductByIdCmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    if (reader.Read())
+                    ProductNameTextBox.Text = reader["Name"].ToString();
+                    ProductDescriptionTextBox.Text = reader["Description"].ToString();
+                    ProductStockQuantityTextBox.Text = reader["StockQuantity"].ToString();
+                    ProductPriceTextBox.Text = reader["Price"].ToString();
+                    string category = reader["Category"].ToString().ToLower();
+                    int index = ProductCategoryComboBox.Items.IndexOf(category);
+                    if (index != -1)
                     {
-                        ProductNameTextBox.Text = reader["Name"].ToString();
-                        ProductDescriptionTextBox.Text = reader["Description"].ToString();
-                        ProductStockQuantityTextBox.Text = reader["StockQuantity"].ToString();
-                        ProductPriceTextBox.Text = reader["Price"].ToString();
-                        string category = reader["Category"].ToString().ToLower();
-                        int index = ProductCategoryComboBox.Items.IndexOf(category);
-                        if (index != -1)
-                        {
-                            ProductCategoryComboBox.SelectedIndex = index; // Select existing item
-                        }
-                        else
-                        {
-                            ProductCategoryComboBox.SelectedIndex = 0;
-                        }
+                        ProductCategoryComboBox.SelectedIndex = index;
                     }
                     else
                     {
-                        Close();
+                        ProductCategoryComboBox.SelectedIndex = 0;
                     }
                 }
-                cmd.ExecuteNonQuery();
-
+                else
+                {
+                    Close();
+                }
             }
             catch (OracleException ex)
             {
