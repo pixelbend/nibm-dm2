@@ -58,7 +58,7 @@
             StatusComboBox.FormattingEnabled = true;
             StatusComboBox.IntegralHeight = false;
             StatusComboBox.ItemHeight = 43;
-            StatusComboBox.Items.AddRange(new object[] { "Confirmed", "Processing", "Fulfilled", "Returned", "Canceled" });
+            StatusComboBox.Items.AddRange(new object[] { "Confirmed", "Fulfilled", "Returned", "Canceled" });
             StatusComboBox.Location = new Point(1061, 18);
             StatusComboBox.MaxDropDownItems = 4;
             StatusComboBox.MouseState = MaterialSkin.MouseState.OUT;
@@ -84,7 +84,7 @@
             ProductSearchBox.AnimateReadOnly = false;
             ProductSearchBox.BorderStyle = BorderStyle.None;
             ProductSearchBox.Depth = 0;
-            ProductSearchBox.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
+            ProductSearchBox.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
             ProductSearchBox.LeadingIcon = null;
             ProductSearchBox.Location = new Point(78, 17);
             ProductSearchBox.MaxLength = 50;
