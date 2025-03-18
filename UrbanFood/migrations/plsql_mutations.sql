@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION Signup_Supplier(
     pAddress IN VARCHAR2
 ) RETURN VARCHAR2 IS
     vCount      NUMBER;
-    vSupplierID VARCHAR2(50);
+    vSupplierID Suppliers.SupplierID%TYPE;
 BEGIN
     SELECT COUNT(*)
     INTO vCount
@@ -37,7 +37,7 @@ CREATE OR REPLACE FUNCTION Signup_Customer(
     pAddress IN VARCHAR2
 ) RETURN VARCHAR2 IS
     vCount      NUMBER;
-    vCustomerID VARCHAR2(50);
+    vCustomerID Customers.CustomerID%TYPE;
 BEGIN
     SELECT COUNT(*)
     INTO vCount
@@ -153,7 +153,7 @@ CREATE OR REPLACE FUNCTION Update_Product(
 ) RETURN VARCHAR2 IS
     vCurrentStock  NUMBER;
     vCurrentPrice  NUMBER;
-    vSupplierId    VARCHAR2(32);
+    vSupplierId    Suppliers.SupplierID%TYPE;
     vValidCategory BOOLEAN := FALSE;
 BEGIN
     BEGIN
@@ -293,7 +293,7 @@ CREATE OR REPLACE FUNCTION Order_Product(
     pProductId VARCHAR2,
     pQuantity NUMBER
 ) RETURN VARCHAR2 IS
-    vOrderId        VARCHAR2(32);
+    vOrderId        Orders.OrderID%TYPE;
     vAvailableStock NUMBER;
     vTotalAmount    NUMBER(10, 2);
     vProductPrice   NUMBER(10, 2);
@@ -345,14 +345,14 @@ CREATE OR REPLACE FUNCTION Checkout_Order(
     pTransactionKey VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderStatus   VARCHAR2(20);
-    vOrderID       VARCHAR2(32);
-    vProductID     VARCHAR2(32);
-    vCustomerID    VARCHAR2(32);
+    vOrderID       Orders.OrderID%TYPE;
+    vProductID     Products.ProductID%TYPE;
+    vCustomerID    Customers.CustomerID%TYPE;
     vQuantity      NUMBER;
     vStockQuantity NUMBER;
     vProductPrice  NUMBER(10, 2);
     vTotalAmount   NUMBER(10, 2);
-    vPaymentID     VARCHAR2(32);
+    vPaymentID     Payments.PaymentID%TYPE;
 BEGIN
     BEGIN
         SELECT OrderID, Status, ProductID, Quantity, CustomerID
@@ -360,7 +360,7 @@ BEGIN
         FROM Orders
         WHERE OrderID = pOrderId
           AND CustomerId = pCustomerId
-        FOR UPDATE;
+            FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20001, 'Order does not exist for the specified customer');
@@ -375,7 +375,7 @@ BEGIN
         INTO vStockQuantity, vProductPrice
         FROM Products
         WHERE ProductID = vProductID
-        FOR UPDATE;
+            FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20001, 'Product does not exist');
@@ -392,7 +392,8 @@ BEGIN
     WHERE ProductID = vProductID;
 
     UPDATE Orders
-    SET Status = 'Confirmed', Total = vTotalAmount
+    SET Status = 'Confirmed',
+        Total  = vTotalAmount
     WHERE OrderID = vOrderID;
 
 
@@ -411,7 +412,7 @@ CREATE OR REPLACE FUNCTION Customer_Cancel_Order(
     pOrderId VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderStatus VARCHAR2(20);
-    vOrderID     VARCHAR2(32);
+    vOrderID     Orders.OrderID%TYPE;
 BEGIN
     BEGIN
         SELECT OrderID, Status
@@ -443,21 +444,21 @@ CREATE OR REPLACE FUNCTION Supplier_Cancel_Order(
     pSupplierId VARCHAR2,
     pOrderId VARCHAR2
 ) RETURN VARCHAR2 IS
-    vOrderStatus   VARCHAR2(20);
-    vOrderID       VARCHAR2(32);
-    vProductID     VARCHAR2(32);
-    vQuantity      NUMBER;
-    vAmountPaid    NUMBER;
+    vOrderStatus VARCHAR2(20);
+    vOrderID     Orders.OrderID%TYPE;
+    vProductID   Products.ProductID%TYPE;
+    vQuantity    NUMBER;
+    vAmountPaid  NUMBER;
 BEGIN
     BEGIN
         SELECT o.OrderID, o.Status, o.ProductID, o.Quantity, p.AmountPaid
         INTO vOrderID, vOrderStatus, vProductID, vQuantity, vAmountPaid
         FROM Orders o
-        JOIN Products pr ON o.ProductID = pr.ProductID
-        JOIN Payments p ON o.OrderID = p.OrderID
+                 JOIN Products pr ON o.ProductID = pr.ProductID
+                 JOIN Payments p ON o.OrderID = p.OrderID
         WHERE o.OrderID = pOrderId
           AND pr.SupplierID = pSupplierId
-          FOR UPDATE;
+            FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20001, 'Order does not exist or supplier is not authorized to cancel this order');
@@ -476,7 +477,8 @@ BEGIN
     WHERE ProductID = vProductID;
 
     UPDATE Payments
-    SET Status = 'Refunded', RefundedData = CURRENT_TIMESTAMP
+    SET Status       = 'Refunded',
+        RefundedData = CURRENT_TIMESTAMP
     WHERE OrderID = pOrderId;
 
     RETURN vOrderID;
@@ -489,18 +491,18 @@ CREATE OR REPLACE FUNCTION Supplier_Fulfill_Order(
     pSupplierId VARCHAR2,
     pOrderId VARCHAR2
 ) RETURN VARCHAR2 IS
-    vOrderStatus   VARCHAR2(20);
-    vOrderID       VARCHAR2(32);
-    vProductID     VARCHAR2(32);
+    vOrderStatus VARCHAR2(20);
+    vOrderID     Orders.OrderID%TYPE;
+    vProductID   Products.ProductID%TYPE;
 BEGIN
     BEGIN
         SELECT o.OrderID, o.Status, o.ProductID
         INTO vOrderID, vOrderStatus, vProductID
         FROM Orders o
-        JOIN Products pr ON o.ProductID = pr.ProductID
+                 JOIN Products pr ON o.ProductID = pr.ProductID
         WHERE o.OrderID = pOrderId
           AND pr.SupplierID = pSupplierId
-          FOR UPDATE;
+            FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20001, 'Order does not exist or supplier is not authorized to update this order');
