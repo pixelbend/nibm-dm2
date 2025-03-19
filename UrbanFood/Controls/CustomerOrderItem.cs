@@ -18,11 +18,10 @@ namespace UrbanFood.Controls
 {
     public partial class CustomerOrderItem : UserControl
     {
-        private string _orderID;
-        private string _orderUnits;
+        private string _orderItemID;
+        private string _orderItemQuantity;
         private string _orderTotal;
         private string _orderStatus;
-        private string _orderDate;
         private string _productPrice;
         private string _productName;
         private string _productDescription;
@@ -35,78 +34,48 @@ namespace UrbanFood.Controls
 
         private void CustomerOrderItem_Load(object sender, EventArgs e)
         {
-            if (_orderStatus != "Pending")
-            {
-                CheckoutButton.Enabled = false;
-                CheckoutButton.Visible = false;
 
-                CancelButton.Enabled = false;
-                CancelButton.Visible = false;
-            }
         }
 
-        private void CheckoutButton_Click(object sender, EventArgs e)
+        private void RemoveButton_Click(object sender, EventArgs e)
         {
-            CheckoutOrder checkoutOrder = new(_orderID);
-            checkoutOrder.ConfirmButtonClicked += CheckoutOrder_ConfirmButtonClicked;
-            checkoutOrder.ShowDialog();
-        }
-
-        private void CheckoutOrder_ConfirmButtonClicked(object sender, EventArgs e)
-        {
-            OrderStatusLable.Text = $"Status: Confirmed";
-            CheckoutButton.Enabled = false;
-            CheckoutButton.Visible = false;
-            CancelButton.Enabled = false;
-            CancelButton.Visible = false;
-        }
-
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            var result = MaterialMessageBox.Show("This order will be canceled this cannot be undone", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var result = MaterialMessageBox.Show("This order itme will be removed this cannot be undone", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (result == DialogResult.OK)
             {
-                string qresult = CancelOrderQuery(_orderID);
+                string qresult = RemoveOrderItemQuery(_orderItemID);
                 if (qresult != null)
                 {
-                    OrderStatusLable.Text = $"Status: Canceled";
+                    Dispose();
                 }
             }
         }
 
         [Category("Custom Props")]
-        public string OrderID
+        public string OrderItemID
         {
-            get { return _orderID; }
-            set { _orderID = value; }
+            get { return _orderItemID; }
+            set { _orderItemID = value; }
         }
 
         [Category("Custom Props")]
-        public string OrderUnits
+        public string OrderItemQuantity
         {
-            get { return _orderUnits; }
-            set { _orderUnits = value; NoUnitsLabel.Text = _orderUnits; }
+            get { return _orderItemQuantity; }
+            set { _orderItemQuantity = value; NoUnitsLabel.Text = _orderItemQuantity; }
         }
 
         [Category("Custom Props")]
-        public string OrderTotal
+        public string OrderItemTotal
         {
             get { return _orderTotal; }
             set { _orderTotal = value; TotalLabel.Text = _orderTotal; }
         }
 
         [Category("Custom Props")]
-        public string OrderStatus
+        public string OrderItemStatus
         {
             get { return _orderStatus; }
             set { _orderStatus = value; OrderStatusLable.Text = $"Status: {_orderStatus}"; }
-        }
-
-        [Category("Custom Props")]
-        public string OrderDate
-        {
-            get { return _orderDate; }
-            set { _orderDate = value; OrderDateLable.Text = $"Order Date: {_orderDate}"; }
         }
 
 
@@ -139,15 +108,15 @@ namespace UrbanFood.Controls
             set { _productCategory = value; CategoryLable.Text = _productCategory; }
         }
 
-        public string CancelOrderQuery(string orderId)
+        public string RemoveOrderItemQuery(string orderId)
         {
-            string canceledOrderId = null;
+            string removedOrderItemId = null;
 
             try
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
 
-                using OracleCommand cmd = new("Customer_Cancel_Order", conn)
+                using OracleCommand cmd = new("Customer_Remove_OrderItem", conn)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -164,7 +133,7 @@ namespace UrbanFood.Controls
 
                 cmd.ExecuteNonQuery();
 
-                canceledOrderId = resultParam.Value?.ToString();
+                removedOrderItemId = resultParam.Value?.ToString();
             }
             catch (OracleException ex)
             {
@@ -179,7 +148,7 @@ namespace UrbanFood.Controls
                 OracleDBConnection.Instance.CloseConnection();
             }
 
-            return canceledOrderId;
+            return removedOrderItemId;
         }
     }
 

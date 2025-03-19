@@ -56,17 +56,16 @@ namespace UrbanFood.Controls
                 {
                     while (reader.Read())
                     {
-                        CustomerOrderItem item = new()
+                        SupplierInventoryItem item = new()
                         {
-                            OrderID = reader["OrderID"].ToString(),
-                            OrderUnits = $"No Units: {reader["Quantity"].ToString()}",
-                            ProductPrice = $"Unit Price Rs: {reader["Price"].ToString()}",
-                            OrderTotal = $"Total Rs: {Convert.ToInt32(reader["Quantity"].ToString()) * Convert.ToDecimal(reader["Price"].ToString())}",
-                            OrderStatus = reader["Status"].ToString(),
-                            OrderDate = reader["OrderDate"].ToString(),
-                            ProductName = reader["Name"].ToString(),
-                            ProductDescription = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString(),
-                            ProductCategory = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}"
+                            //OrderItemID = reader["OrderID"].ToString(),
+                            //OrderItemQuantity = $"No Units: {reader["Quantity"].ToString()}",
+                            //ProductPrice = $"Unit Price Rs: {reader["Price"].ToString()}",
+                            //OrderItemTotal = $"Total Rs: {Convert.ToInt32(reader["Quantity"].ToString()) * Convert.ToDecimal(reader["Price"].ToString())}",
+                            //OrderItemStatus = reader["Status"].ToString(),
+                            //ProductName = reader["Name"].ToString(),
+                            //ProductDescription = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString(),
+                            //ProductCategory = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}"
                         };
 
                         SupplierOrderListPanel.Controls.Add(item);

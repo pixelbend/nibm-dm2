@@ -29,26 +29,28 @@
         private void InitializeComponent()
         {
             materialCard1 = new MaterialSkin.Controls.MaterialCard();
+            label1 = new Label();
             TotalLabel = new Label();
             UnitPriceLabel = new Label();
             NoUnitsLabel = new Label();
-            materialComboBox1 = new MaterialSkin.Controls.MaterialComboBox();
             OrderDateLable = new Label();
             OrderStatusLable = new Label();
             CategoryLable = new Label();
             ProductNameLable = new Label();
-            label1 = new Label();
+            FulfillButton = new MaterialSkin.Controls.MaterialButton();
+            CancelButton = new MaterialSkin.Controls.MaterialButton();
             materialCard1.SuspendLayout();
             SuspendLayout();
             // 
             // materialCard1
             // 
             materialCard1.BackColor = Color.FromArgb(255, 255, 255);
+            materialCard1.Controls.Add(CancelButton);
+            materialCard1.Controls.Add(FulfillButton);
             materialCard1.Controls.Add(label1);
             materialCard1.Controls.Add(TotalLabel);
             materialCard1.Controls.Add(UnitPriceLabel);
             materialCard1.Controls.Add(NoUnitsLabel);
-            materialCard1.Controls.Add(materialComboBox1);
             materialCard1.Controls.Add(OrderDateLable);
             materialCard1.Controls.Add(OrderStatusLable);
             materialCard1.Controls.Add(CategoryLable);
@@ -62,6 +64,16 @@
             materialCard1.Padding = new Padding(14);
             materialCard1.Size = new Size(1135, 200);
             materialCard1.TabIndex = 14;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Location = new Point(20, 17);
+            label1.Name = "label1";
+            label1.Size = new Size(116, 38);
+            label1.TabIndex = 32;
+            label1.Text = "OrderID";
             // 
             // TotalLabel
             // 
@@ -92,29 +104,6 @@
             NoUnitsLabel.Size = new Size(77, 23);
             NoUnitsLabel.TabIndex = 29;
             NoUnitsLabel.Text = "No Units";
-            // 
-            // materialComboBox1
-            // 
-            materialComboBox1.AutoResize = false;
-            materialComboBox1.BackColor = Color.FromArgb(255, 255, 255);
-            materialComboBox1.Depth = 0;
-            materialComboBox1.DrawMode = DrawMode.OwnerDrawVariable;
-            materialComboBox1.DropDownHeight = 174;
-            materialComboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-            materialComboBox1.DropDownWidth = 121;
-            materialComboBox1.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            materialComboBox1.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            materialComboBox1.FormattingEnabled = true;
-            materialComboBox1.IntegralHeight = false;
-            materialComboBox1.ItemHeight = 43;
-            materialComboBox1.Items.AddRange(new object[] { "Confirmed", "Processing", "Fulfilled", "Returned", "Canceled" });
-            materialComboBox1.Location = new Point(891, 17);
-            materialComboBox1.MaxDropDownItems = 4;
-            materialComboBox1.MouseState = MaterialSkin.MouseState.OUT;
-            materialComboBox1.Name = "materialComboBox1";
-            materialComboBox1.Size = new Size(218, 49);
-            materialComboBox1.StartIndex = 0;
-            materialComboBox1.TabIndex = 28;
             // 
             // OrderDateLable
             // 
@@ -156,15 +145,43 @@
             ProductNameLable.TabIndex = 1;
             ProductNameLable.Text = "ProductNameLable";
             // 
-            // label1
+            // FulfillButton
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(20, 17);
-            label1.Name = "label1";
-            label1.Size = new Size(116, 38);
-            label1.TabIndex = 32;
-            label1.Text = "OrderID";
+            FulfillButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            FulfillButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            FulfillButton.Depth = 0;
+            FulfillButton.HighEmphasis = true;
+            FulfillButton.Icon = null;
+            FulfillButton.Location = new Point(1044, 13);
+            FulfillButton.Margin = new Padding(4, 6, 4, 6);
+            FulfillButton.MouseState = MaterialSkin.MouseState.HOVER;
+            FulfillButton.Name = "FulfillButton";
+            FulfillButton.NoAccentTextColor = Color.Empty;
+            FulfillButton.Size = new Size(76, 36);
+            FulfillButton.TabIndex = 33;
+            FulfillButton.Text = "Fulfill";
+            FulfillButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            FulfillButton.UseAccentColor = false;
+            FulfillButton.UseVisualStyleBackColor = true;
+            // 
+            // CancelButton
+            // 
+            CancelButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            CancelButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            CancelButton.Depth = 0;
+            CancelButton.HighEmphasis = true;
+            CancelButton.Icon = null;
+            CancelButton.Location = new Point(1044, 55);
+            CancelButton.Margin = new Padding(4, 6, 4, 6);
+            CancelButton.MouseState = MaterialSkin.MouseState.HOVER;
+            CancelButton.Name = "CancelButton";
+            CancelButton.NoAccentTextColor = Color.Empty;
+            CancelButton.Size = new Size(77, 36);
+            CancelButton.TabIndex = 34;
+            CancelButton.Text = "Cancel";
+            CancelButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            CancelButton.UseAccentColor = false;
+            CancelButton.UseVisualStyleBackColor = true;
             // 
             // SupplierOrderItem
             // 
@@ -185,10 +202,11 @@
         private Label CategoryLable;
         private Label OrderStatusLable;
         private Label OrderDateLable;
-        private MaterialSkin.Controls.MaterialComboBox materialComboBox1;
         private Label NoUnitsLabel;
         private Label UnitPriceLabel;
         private Label TotalLabel;
         private Label label1;
+        private MaterialSkin.Controls.MaterialButton FulfillButton;
+        private MaterialSkin.Controls.MaterialButton CancelButton;
     }
 }

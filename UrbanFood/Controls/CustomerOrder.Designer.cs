@@ -29,46 +29,68 @@
         private void InitializeComponent()
         {
             CustomerOrderListPanel = new FlowLayoutPanel();
-            StatusComboBox = new MaterialSkin.Controls.MaterialComboBox();
+            CheckoutButton = new MaterialSkin.Controls.MaterialButton();
+            CancelButton = new MaterialSkin.Controls.MaterialButton();
             SuspendLayout();
             // 
             // CustomerOrderListPanel
             // 
-            CustomerOrderListPanel.Location = new Point(20, 79);
+            CustomerOrderListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            CustomerOrderListPanel.Location = new Point(16, 16);
             CustomerOrderListPanel.Name = "CustomerOrderListPanel";
-            CustomerOrderListPanel.Size = new Size(1225, 511);
+            CustomerOrderListPanel.Size = new Size(975, 580);
             CustomerOrderListPanel.TabIndex = 0;
             // 
-            // StatusComboBox
+            // CheckoutButton
             // 
-            StatusComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            StatusComboBox.AutoResize = true;
-            StatusComboBox.BackColor = Color.FromArgb(255, 255, 255);
-            StatusComboBox.Depth = 0;
-            StatusComboBox.DrawMode = DrawMode.OwnerDrawVariable;
-            StatusComboBox.DropDownHeight = 174;
-            StatusComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-            StatusComboBox.DropDownWidth = 184;
-            StatusComboBox.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            StatusComboBox.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            StatusComboBox.FormattingEnabled = true;
-            StatusComboBox.IntegralHeight = false;
-            StatusComboBox.ItemHeight = 43;
-            StatusComboBox.Items.AddRange(new object[] { "Pending", "Confirmed", "Processing", "Fulfilled", "Returned", "Canceled" });
-            StatusComboBox.Location = new Point(1061, 19);
-            StatusComboBox.MaxDropDownItems = 4;
-            StatusComboBox.MouseState = MaterialSkin.MouseState.OUT;
-            StatusComboBox.Name = "StatusComboBox";
-            StatusComboBox.Size = new Size(184, 49);
-            StatusComboBox.StartIndex = 0;
-            StatusComboBox.TabIndex = 17;
-            StatusComboBox.SelectedIndexChanged += StatusComboBox_SelectedIndexChanged;
+            CheckoutButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            CheckoutButton.AutoSize = false;
+            CheckoutButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            CheckoutButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            CheckoutButton.Depth = 0;
+            CheckoutButton.HighEmphasis = true;
+            CheckoutButton.Icon = null;
+            CheckoutButton.Location = new Point(1130, 560);
+            CheckoutButton.Margin = new Padding(4, 6, 4, 6);
+            CheckoutButton.MouseState = MaterialSkin.MouseState.HOVER;
+            CheckoutButton.Name = "CheckoutButton";
+            CheckoutButton.NoAccentTextColor = Color.Empty;
+            CheckoutButton.Size = new Size(123, 36);
+            CheckoutButton.TabIndex = 18;
+            CheckoutButton.Text = "Check Out";
+            CheckoutButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            CheckoutButton.UseAccentColor = false;
+            CheckoutButton.UseVisualStyleBackColor = true;
+            CheckoutButton.Click += CheckoutButton_Click;
+            // 
+            // CancelButton
+            // 
+            CancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            CancelButton.AutoSize = false;
+            CancelButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            CancelButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            CancelButton.Depth = 0;
+            CancelButton.HighEmphasis = true;
+            CancelButton.Icon = null;
+            CancelButton.Location = new Point(999, 560);
+            CancelButton.Margin = new Padding(4, 6, 4, 6);
+            CancelButton.MouseState = MaterialSkin.MouseState.HOVER;
+            CancelButton.Name = "CancelButton";
+            CancelButton.NoAccentTextColor = Color.Empty;
+            CancelButton.Size = new Size(123, 36);
+            CancelButton.TabIndex = 19;
+            CancelButton.Text = "Cancel";
+            CancelButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            CancelButton.UseAccentColor = false;
+            CancelButton.UseVisualStyleBackColor = true;
+            CancelButton.Click += CancelButton_Click;
             // 
             // CustomerOrder
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(StatusComboBox);
+            Controls.Add(CancelButton);
+            Controls.Add(CheckoutButton);
             Controls.Add(CustomerOrderListPanel);
             Name = "CustomerOrder";
             Size = new Size(1266, 610);
@@ -78,6 +100,7 @@
         #endregion
 
         private FlowLayoutPanel CustomerOrderListPanel;
-        private MaterialSkin.Controls.MaterialComboBox StatusComboBox;
+        private MaterialSkin.Controls.MaterialButton CheckoutButton;
+        private MaterialSkin.Controls.MaterialButton CancelButton;
     }
 }

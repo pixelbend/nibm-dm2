@@ -18,24 +18,35 @@ namespace UrbanFood.Controls
 {
     public partial class CustomerOrder : UserControl
     {
+        private string orderID;
+        private string orderStatus;
+        private string orderDate;
+        private string orderTotal;
+
         public CustomerOrder()
         {
             InitializeComponent();
-            PopulateCustomerOrderList();
+            GetPendingOrderByCustomerQuery();
+            ListOrderItemsByOrderQuery();
         }
-
-        private void StatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        
+        private void CheckoutButton_Click(object sender, EventArgs e)
         {
-            PopulateCustomerOrderList();
+
         }
 
-        private void PopulateCustomerOrderList()
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GetPendingOrderByCustomerQuery()
         {
             try
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
 
-                using OracleCommand orderListCmd = new("List_Orders_By_Customer", conn);
+                using OracleCommand orderListCmd = new("Get_Pending_Orders_By_Customer", conn);
                 orderListCmd.CommandType = CommandType.StoredProcedure;
 
                 OracleParameter cursor = new OracleParameter("vCursor", OracleDbType.RefCursor)
@@ -46,14 +57,53 @@ namespace UrbanFood.Controls
 
                 orderListCmd.Parameters.Add("pCustomerID", OracleDbType.Varchar2).Value = UserState.Instance.GetUserId();
 
-                if (StatusComboBox.SelectedItem == null || StatusComboBox.SelectedItem.ToString() == "")
+                using OracleDataReader reader = orderListCmd.ExecuteReader();
+
+                CustomerOrderListPanel.Controls.Clear();
+
+                if (reader.HasRows)
                 {
-                    orderListCmd.Parameters.Add("pStatus", OracleDbType.Varchar2).Value = DBNull.Value;
+                    while (reader.Read())
+                    {
+                        orderID = reader["OrderID"].ToString();
+                        orderStatus = reader["Status"].ToString();
+                        orderDate = reader["OrderDate"].ToString();
+                        orderTotal = reader["Total"].ToString();
+                    }
                 }
-                else
+            }
+            catch (OracleException ex)
+            {
+                MaterialMessageBox.Show(ErrorHandler.GetOracleErrorMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MaterialMessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                OracleDBConnection.Instance.CloseConnection();
+            }
+        }
+
+
+        private void ListOrderItemsByOrderQuery()
+        {
+            try
+            {
+                OracleConnection conn = OracleDBConnection.Instance.GetConnection();
+
+                using OracleCommand orderListCmd = new("List_OrderItems_By_Order", conn);
+                orderListCmd.CommandType = CommandType.StoredProcedure;
+
+                OracleParameter cursor = new OracleParameter("vCursor", OracleDbType.RefCursor)
                 {
-                    orderListCmd.Parameters.Add("pStatus", OracleDbType.Varchar2).Value = StatusComboBox.Text;
-                }
+                    Direction = ParameterDirection.ReturnValue
+                };
+                orderListCmd.Parameters.Add(cursor);
+
+                orderListCmd.Parameters.Add("pOrderID", OracleDbType.Varchar2).Value = orderID;
+                orderListCmd.Parameters.Add("pStatus", OracleDbType.Varchar2).Value = DBNull.Value;
 
                 using OracleDataReader reader = orderListCmd.ExecuteReader();
 
@@ -65,12 +115,11 @@ namespace UrbanFood.Controls
                     {
                         CustomerOrderItem item = new()
                         {
-                            OrderID = reader["OrderID"].ToString(),
-                            OrderUnits = $"No Units: {reader["Quantity"].ToString()}",
+                            OrderItemID = reader["OrderItemID"].ToString(),
+                            OrderItemQuantity = $"No Units: {reader["Quantity"].ToString()}",
                             ProductPrice = $"Unit Price Rs: {reader["Price"].ToString()}",
-                            OrderTotal = $"Total Rs: {Convert.ToInt32(reader["Quantity"].ToString()) * Convert.ToDecimal(reader["Price"].ToString())}",
-                            OrderStatus = reader["Status"].ToString(),
-                            OrderDate = reader["OrderDate"].ToString(),
+                            OrderItemTotal = $"Total Rs: {Convert.ToInt32(reader["Quantity"].ToString()) * Convert.ToDecimal(reader["Price"].ToString())}",
+                            OrderItemStatus = reader["Status"].ToString(),
                             ProductName = reader["Name"].ToString(),
                             ProductDescription = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString(),
                             ProductCategory = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}"
@@ -92,7 +141,6 @@ namespace UrbanFood.Controls
             {
                 OracleDBConnection.Instance.CloseConnection();
             }
-
         }
     }
 }
