@@ -15,10 +15,10 @@ Most the operations are written in PLSQL as one shot operation based PLSQL store
 ```
 UrbanFood/
 |-- migrations/
-|   |-- schema.sql             # Database schema
-|   |-- seed.sql               # Database sample data set
-|   |-- plsql_mutations.sql    # PLSQL functions for modifying data
-|   |-- plsql_queries.sql      # PLSQL queries for retrieving data
+|   |-- 0001_schema.sql             # Database schema
+|   |-- 0002_seed.sql               # Database sample data set
+|   |-- 0003_plsql_queries.sql      # PLSQL queries for retrieving data
+|   |-- 0004_plsql_mutations.sql    # PLSQL functions for modifying data
 ```
 
 ## Setting Up and Running the Project with Docker
