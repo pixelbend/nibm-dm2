@@ -299,10 +299,9 @@ CREATE OR REPLACE FUNCTION Order_Product(
     vAvailableStock NUMBER;
     vTotalAmount    NUMBER(10, 2);
     vProductPrice   NUMBER(10, 2);
-    vSupplierId     Suppliers.SupplierID%TYPE;
 BEGIN
-    SELECT StockQuantity, Price, SupplierID
-    INTO vAvailableStock, vProductPrice, vSupplierId
+    SELECT StockQuantity, Price
+    INTO vAvailableStock, vProductPrice
     FROM Products
     WHERE ProductID = pProductId;
 
@@ -350,8 +349,8 @@ BEGIN
         WHERE OrderItemID = vOrderItemId;
     ELSE
         vOrderItemId := Generate_UUID();
-        INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, SupplierID, Quantity, Subtotal, Status)
-        VALUES (vOrderItemId, vOrderId, pProductId, vSupplierId, pQuantity, vTotalAmount, 'Pending');
+        INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, Subtotal, Status)
+        VALUES (vOrderItemId, vOrderId, pProductId, pQuantity, vTotalAmount, 'Pending');
     END IF;
 
     RETURN vOrderItemId;
