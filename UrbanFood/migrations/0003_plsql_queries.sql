@@ -4,18 +4,30 @@ CREATE OR REPLACE FUNCTION List_Inventory_Products(
     pName VARCHAR2 DEFAULT NULL,
     pStockAvailable NUMBER DEFAULT NULL
 ) RETURN SYS_REFCURSOR IS
-    vCursor SYS_REFCURSOR;
+    vCursor      SYS_REFCURSOR;
+    vSQL         VARCHAR2(1000);
+    vWhereClause VARCHAR2(1000) := ' WHERE SupplierID = :supplierID AND Discontinued = 0 ';
 BEGIN
-    OPEN vCursor FOR
-        SELECT *
-        FROM Products
-        WHERE SupplierID = pSupplierID
-          AND (pCategory IS NULL OR LOWER(Category) = LOWER(pCategory))
-          AND (pName IS NULL OR LOWER(Name) LIKE '%' || LOWER(pName) || '%')
-          AND (pStockAvailable IS NULL OR (pStockAvailable = 1 AND StockQuantity > 0) OR
-               (pStockAvailable = 0 AND StockQuantity = 0))
-          AND Discontinued = 0
-        ORDER BY AddedAt DESC;
+    IF pCategory IS NOT NULL AND TRIM(pCategory) != '' THEN
+        vWhereClause := vWhereClause || ' AND LOWER(Category) = LOWER(:category) ';
+    END IF;
+
+    IF pName IS NOT NULL AND TRIM(pName) != '' THEN
+        vWhereClause := vWhereClause || ' AND LOWER(Name) LIKE LOWER(:name) ';
+    END IF;
+
+    IF pStockAvailable IS NOT NULL THEN
+        IF pStockAvailable = 1 THEN
+            vWhereClause := vWhereClause || ' AND StockQuantity > 0 ';
+        ELSIF pStockAvailable = 0 THEN
+            vWhereClause := vWhereClause || ' AND StockQuantity = 0 ';
+        END IF;
+    END IF;
+
+    vSQL := 'SELECT * FROM Products ' || vWhereClause || ' ORDER BY AddedAt DESC';
+
+    OPEN vCursor FOR vSQL
+        USING pSupplierID, pCategory, '%' || pName || '%', pStockAvailable;
 
     RETURN vCursor;
 END List_Inventory_Products;
@@ -25,16 +37,30 @@ CREATE OR REPLACE FUNCTION List_Products(
     pName VARCHAR2 DEFAULT NULL,
     pStockAvailable NUMBER DEFAULT NULL
 ) RETURN SYS_REFCURSOR IS
-    vCursor SYS_REFCURSOR;
+    vCursor      SYS_REFCURSOR;
+    vSQL         VARCHAR2(1000);
+    vWhereClause VARCHAR2(1000) := ' WHERE Discontinued = 0 ';
 BEGIN
-    OPEN vCursor FOR
-        SELECT *
-        FROM Products
-        WHERE (pCategory IS NULL OR LOWER(Category) = LOWER(pCategory))
-          AND (pName IS NULL OR LOWER(Name) LIKE '%' || LOWER(pName) || '%')
-          AND (pStockAvailable IS NULL OR (pStockAvailable = 1 AND StockQuantity > 0))
-          AND Discontinued = 0
-        ORDER BY AddedAt DESC;
+    IF pCategory IS NOT NULL AND TRIM(pCategory) != '' THEN
+        vWhereClause := vWhereClause || ' AND LOWER(Category) = LOWER(:category) ';
+    END IF;
+
+    IF pName IS NOT NULL AND TRIM(pName) != '' THEN
+        vWhereClause := vWhereClause || ' AND LOWER(Name) LIKE LOWER(:name) ';
+    END IF;
+
+    IF pStockAvailable IS NOT NULL THEN
+        IF pStockAvailable = 1 THEN
+            vWhereClause := vWhereClause || ' AND StockQuantity > 0 ';
+        ELSIF pStockAvailable = 0 THEN
+            vWhereClause := vWhereClause || ' AND StockQuantity = 0 ';
+        END IF;
+    END IF;
+
+    vSQL := 'SELECT * FROM Products ' || vWhereClause || ' ORDER BY AddedAt DESC';
+
+    OPEN vCursor FOR vSQL
+        USING pCategory, '%' || pName || '%', pStockAvailable;
 
     RETURN vCursor;
 END List_Products;
@@ -129,7 +155,7 @@ END List_Orders_By_Supplier;
 CREATE OR REPLACE FUNCTION Get_Product_By_ID(
     pProductID Products.ProductID%TYPE
 ) RETURN SYS_REFCURSOR IS
-    vCursor      SYS_REFCURSOR;
+    vCursor SYS_REFCURSOR;
 BEGIN
     OPEN vCursor FOR
         SELECT * FROM Products WHERE ProductID = pProductID;
