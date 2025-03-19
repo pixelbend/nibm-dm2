@@ -448,11 +448,10 @@ CREATE OR REPLACE FUNCTION Supplier_Cancel_Order(
     vOrderID     Orders.OrderID%TYPE;
     vProductID   Products.ProductID%TYPE;
     vQuantity    NUMBER;
-    vAmountPaid  NUMBER;
 BEGIN
     BEGIN
-        SELECT o.OrderID, o.Status, o.ProductID, o.Quantity, p.AmountPaid
-        INTO vOrderID, vOrderStatus, vProductID, vQuantity, vAmountPaid
+        SELECT o.OrderID, o.Status, o.ProductID, o.Quantity
+        INTO vOrderID, vOrderStatus, vProductID, vQuantity
         FROM Orders o
                  JOIN Products pr ON o.ProductID = pr.ProductID
                  JOIN Payments p ON o.OrderID = p.OrderID
