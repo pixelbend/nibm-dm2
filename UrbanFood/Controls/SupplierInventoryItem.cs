@@ -162,14 +162,14 @@ namespace UrbanFood.Controls
                     CommandType = CommandType.StoredProcedure
                 };
 
-                OracleParameter resultParam = new OracleParameter("result", OracleDbType.Varchar2, 32)
+                OracleParameter resultParam = new OracleParameter("vProductID", OracleDbType.Varchar2, 32)
                 {
                     Direction = ParameterDirection.ReturnValue
                 };
                 cmd.Parameters.Add(resultParam);
 
-                cmd.Parameters.Add("pProductId", OracleDbType.Varchar2).Value = productId;
-                cmd.Parameters.Add("pSupplierId", OracleDbType.Varchar2).Value = supplierId;
+                cmd.Parameters.Add("pProductID", OracleDbType.Varchar2).Value = productId;
+                cmd.Parameters.Add("pSupplierID", OracleDbType.Varchar2).Value = supplierId;
 
                 cmd.ExecuteNonQuery();
 
