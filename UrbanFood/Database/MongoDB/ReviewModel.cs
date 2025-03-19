@@ -9,16 +9,16 @@ namespace UrbanFood.Database.MongoDB
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        [BsonElement("product_id")]
-        public required string ProductId { get; set; }
+        [BsonElement("ProductID")]
+        public required string ProductID { get; set; }
 
-        [BsonElement("customer_id")]
-        public required string CustomerId { get; set; }
+        [BsonElement("CustomerID")]
+        public required string CustomerID { get; set; }
 
-        [BsonElement("content")]
+        [BsonElement("Content")]
         public required string Content { get; set; }
 
-        [BsonElement("created_at")]
+        [BsonElement("CreatedAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
