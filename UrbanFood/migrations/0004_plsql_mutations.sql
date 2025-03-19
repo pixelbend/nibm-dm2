@@ -259,15 +259,16 @@ BEGIN
 
     SELECT COUNT(*)
     INTO vPendingOrders
-    FROM Orders
-    WHERE ProductID = pProductId
-      AND Status IN ('Pending', 'Processing', 'Confirmed');
+    FROM OrderItems oi
+             JOIN Orders o ON oi.OrderID = o.OrderID
+    WHERE oi.ProductID = pProductId
+      AND oi.Status IN ('Pending', 'Processing', 'Confirmed');
 
     SELECT COUNT(*)
     INTO vUndelivered
     FROM Deliveries d
-             JOIN Orders o ON d.OrderID = o.OrderID
-    WHERE o.ProductID = pProductId
+             JOIN OrderItems oi ON d.OrderItemID = oi.OrderItemID
+    WHERE oi.ProductID = pProductId
       AND d.Status != 'Delivered';
 
     IF vPendingOrders > 0 THEN
@@ -294,12 +295,14 @@ CREATE OR REPLACE FUNCTION Order_Product(
     pQuantity NUMBER
 ) RETURN VARCHAR2 IS
     vOrderId        Orders.OrderID%TYPE;
+    vOrderItemId    OrderItems.OrderItemID%TYPE;
     vAvailableStock NUMBER;
     vTotalAmount    NUMBER(10, 2);
     vProductPrice   NUMBER(10, 2);
+    vSupplierId     Suppliers.SupplierID%TYPE;
 BEGIN
-    SELECT StockQuantity, Price
-    INTO vAvailableStock, vProductPrice
+    SELECT StockQuantity, Price, SupplierID
+    INTO vAvailableStock, vProductPrice, vSupplierId
     FROM Products
     WHERE ProductID = pProductId;
 
@@ -312,7 +315,6 @@ BEGIN
         INTO vOrderId
         FROM Orders
         WHERE CustomerID = pCustomerId
-          AND ProductID = pProductId
           AND Status = 'Pending'
             FOR UPDATE;
     EXCEPTION
@@ -320,24 +322,161 @@ BEGIN
             vOrderId := NULL;
     END;
 
-    vTotalAmount := pQuantity * vProductPrice;
-
-    IF vOrderId IS NOT NULL THEN
-        UPDATE Orders
-        SET Quantity = pQuantity,
-            Total    = vTotalAmount
-        WHERE OrderID = vOrderId;
-    ELSE
+    IF vOrderId IS NULL THEN
         vOrderId := Generate_UUID();
-        INSERT INTO Orders (OrderID, CustomerID, ProductID, Quantity, Total, Status)
-        VALUES (vOrderId, pCustomerId, pProductId, pQuantity, vTotalAmount, 'Pending');
+        INSERT INTO Orders (OrderID, CustomerID, Status)
+        VALUES (vOrderId, pCustomerId, 'Pending');
     END IF;
 
-    RETURN vOrderId;
+    vTotalAmount := pQuantity * vProductPrice;
+
+    BEGIN
+        SELECT OrderItemID
+        INTO vOrderItemId
+        FROM OrderItems
+        WHERE OrderID = vOrderId
+          AND ProductID = pProductId
+          AND Status = 'Pending'
+            FOR UPDATE;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            vOrderItemId := NULL;
+    END;
+
+    IF vOrderItemId IS NOT NULL THEN
+        UPDATE OrderItems
+        SET Quantity = pQuantity,
+            Subtotal = vTotalAmount
+        WHERE OrderItemID = vOrderItemId;
+    ELSE
+        vOrderItemId := Generate_UUID();
+        INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, SupplierID, Quantity, Subtotal, Status)
+        VALUES (vOrderItemId, vOrderId, pProductId, vSupplierId, pQuantity, vTotalAmount, 'Pending');
+    END IF;
+
+    RETURN vOrderItemId;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Order_Product;
+
+CREATE OR REPLACE FUNCTION Customer_Remove_OrderItem(
+    pCustomerId   VARCHAR2,
+    pOrderItemId  VARCHAR2
+) RETURN VARCHAR2 IS
+    vOrderStatus      VARCHAR2(20);
+    vOrderID          Orders.OrderID%TYPE;
+    vProductID        Products.ProductID%TYPE;
+    vQuantity         NUMBER;
+BEGIN
+    BEGIN
+        SELECT oi.OrderID, oi.Status, oi.ProductID, oi.Quantity
+        INTO vOrderID, vOrderStatus, vProductID, vQuantity
+        FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+        WHERE oi.OrderItemID = pOrderItemId
+          AND o.CustomerID = pCustomerId
+            FOR UPDATE;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Order item does not exist or customer is not authorized to remove this item');
+    END;
+
+    IF vOrderStatus = 'Fulfilled' OR vOrderStatus = 'Canceled' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item cannot be removed as the order is already confirmed, fulfilled, or canceled.');
+    END IF;
+
+    DELETE FROM OrderItems
+    WHERE OrderItemID = pOrderItemId;
+
+    UPDATE Products
+    SET StockQuantity = StockQuantity + vQuantity
+    WHERE ProductID = vProductID;
+
+    DECLARE
+        vRemainingItems NUMBER;
+    BEGIN
+        SELECT COUNT(*)
+        INTO vRemainingItems
+        FROM OrderItems
+        WHERE OrderID = vOrderID
+          AND Status != 'Fulfilled';
+
+        IF vRemainingItems = 0 THEN
+            UPDATE Orders
+            SET Status = 'Canceled'
+            WHERE OrderID = vOrderID;
+        END IF;
+    END;
+
+    RETURN vOrderID;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END Customer_Remove_OrderItem;
+
+CREATE OR REPLACE FUNCTION Customer_Update_OrderItem_Quantity(
+    pCustomerId   VARCHAR2,
+    pOrderItemId  VARCHAR2,
+    pNewQuantity  NUMBER
+) RETURN VARCHAR2 IS
+    vOrderStatus      VARCHAR2(20);
+    vOrderID          Orders.OrderID%TYPE;
+    vProductID        Products.ProductID%TYPE;
+    vOldQuantity      NUMBER;
+    vAvailableStock   NUMBER;
+    vProductPrice     NUMBER(10, 2);
+    vTotalAmount      NUMBER(10, 2);
+BEGIN
+    BEGIN
+        SELECT oi.OrderID, oi.Status, oi.ProductID, oi.Quantity
+        INTO vOrderID, vOrderStatus, vProductID, vOldQuantity
+        FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+        WHERE oi.OrderItemID = pOrderItemId
+          AND o.CustomerID = pCustomerId
+            FOR UPDATE;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Order item does not exist or customer is not authorized to update this item');
+    END;
+
+    IF vOrderStatus = 'Fulfilled' OR vOrderStatus = 'Canceled' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item cannot be updated because the order is already confirmed, fulfilled, or canceled.');
+    END IF;
+
+    IF pNewQuantity <= 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Quantity must be greater than 0.');
+    END IF;
+
+    BEGIN
+        SELECT StockQuantity, Price
+        INTO vAvailableStock, vProductPrice
+        FROM Products
+        WHERE ProductID = vProductID
+            FOR UPDATE;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20003, 'Product does not exist.');
+    END;
+
+    IF pNewQuantity > vAvailableStock THEN
+        RAISE_APPLICATION_ERROR(-20004, 'Not enough stock available for the requested quantity.');
+    END IF;
+
+    vTotalAmount := pNewQuantity * vProductPrice;
+
+    UPDATE OrderItems
+    SET Quantity = pNewQuantity,
+        Subtotal = vTotalAmount
+    WHERE OrderItemID = pOrderItemId;
+
+
+    RETURN pOrderItemId;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END Customer_Update_OrderItem_Quantity;
 
 CREATE OR REPLACE FUNCTION Checkout_Order(
     pCustomerId VARCHAR2,
@@ -346,17 +485,15 @@ CREATE OR REPLACE FUNCTION Checkout_Order(
 ) RETURN VARCHAR2 IS
     vOrderStatus   VARCHAR2(20);
     vOrderID       Orders.OrderID%TYPE;
-    vProductID     Products.ProductID%TYPE;
     vCustomerID    Customers.CustomerID%TYPE;
-    vQuantity      NUMBER;
     vStockQuantity NUMBER;
     vProductPrice  NUMBER(10, 2);
-    vTotalAmount   NUMBER(10, 2);
+    vTotalAmount   NUMBER(10, 2) := 0;
     vPaymentID     Payments.PaymentID%TYPE;
 BEGIN
     BEGIN
-        SELECT OrderID, Status, ProductID, Quantity, CustomerID
-        INTO vOrderID, vOrderStatus, vProductID, vQuantity, vCustomerID
+        SELECT OrderID, Status, CustomerID
+        INTO vOrderID, vOrderStatus, vCustomerID
         FROM Orders
         WHERE OrderID = pOrderId
           AND CustomerId = pCustomerId
@@ -370,36 +507,47 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20001, 'Order cannot be confirmed. Current status: ' || vOrderStatus);
     END IF;
 
-    BEGIN
-        SELECT StockQuantity, Price
-        INTO vStockQuantity, vProductPrice
-        FROM Products
-        WHERE ProductID = vProductID
-            FOR UPDATE;
-    EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Product does not exist');
-    END;
+    FOR orderItem IN (
+        SELECT OrderItemID, ProductID, Quantity
+        FROM OrderItems
+        WHERE OrderID = vOrderID
+          AND Status = 'Pending'
+        )
+        LOOP
+            BEGIN
+                SELECT StockQuantity, Price
+                INTO vStockQuantity, vProductPrice
+                FROM Products
+                WHERE ProductID = orderItem.ProductID
+                    FOR UPDATE;
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    RAISE_APPLICATION_ERROR(-20001, 'Product does not exist');
+            END;
 
-    IF vStockQuantity < vQuantity THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Not enough stock available');
-    END IF;
+            IF vStockQuantity < orderItem.Quantity THEN
+                RAISE_APPLICATION_ERROR(-20001, 'Not enough stock available for product ' || orderItem.ProductID);
+            END IF;
 
-    vTotalAmount := vQuantity * vProductPrice;
+            vTotalAmount := orderItem.Quantity * vProductPrice;
 
-    UPDATE Products
-    SET StockQuantity = StockQuantity - vQuantity
-    WHERE ProductID = vProductID;
+            UPDATE Products
+            SET StockQuantity = StockQuantity - orderItem.Quantity
+            WHERE ProductID = orderItem.ProductID;
+
+            UPDATE OrderItems
+            SET Status   = 'Confirmed',
+                Subtotal = vTotalAmount
+            WHERE OrderItemID = orderItem.OrderItemID;
+
+            vPaymentID := Generate_UUID();
+            INSERT INTO Payments (PaymentID, OrderItemID, CustomerID, AmountPaid, TransactionKey, Status)
+            VALUES (vPaymentID, orderItem.OrderItemID, vCustomerID, vTotalAmount, pTransactionKey, 'Accepted');
+        END LOOP;
 
     UPDATE Orders
-    SET Status = 'Confirmed',
-        Total  = vTotalAmount
+    SET Status = 'Confirmed'
     WHERE OrderID = vOrderID;
-
-
-    vPaymentID := Generate_UUID();
-    INSERT INTO Payments (PaymentID, OrderID, CustomerID, AmountPaid, TransactionKey, Status)
-    VALUES (vPaymentID, vOrderID, vCustomerID, vTotalAmount, pTransactionKey, 'Accepted');
 
     RETURN vOrderID;
 EXCEPTION
@@ -434,42 +582,54 @@ BEGIN
     SET Status = 'Canceled'
     WHERE OrderID = pOrderId;
 
+    UPDATE OrderItems
+    SET Status = 'Canceled'
+    WHERE OrderID = pOrderId;
+
+    UPDATE Payments
+    SET Status = 'Refunded'
+    WHERE OrderItemID IN (SELECT OrderItemID FROM OrderItems WHERE OrderID = pOrderId);
+
     RETURN vOrderID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Customer_Cancel_Order;
 
-CREATE OR REPLACE FUNCTION Supplier_Cancel_Order(
+CREATE OR REPLACE FUNCTION Supplier_Cancel_OrderItem(
     pSupplierId VARCHAR2,
-    pOrderId VARCHAR2
+    pOrderItemId VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderStatus VARCHAR2(20);
     vOrderID     Orders.OrderID%TYPE;
     vProductID   Products.ProductID%TYPE;
     vQuantity    NUMBER;
+    vPaymentID   Payments.PaymentID%TYPE;
 BEGIN
     BEGIN
-        SELECT o.OrderID, o.Status, o.ProductID, o.Quantity
-        INTO vOrderID, vOrderStatus, vProductID, vQuantity
-        FROM Orders o
-                 JOIN Products pr ON o.ProductID = pr.ProductID
-                 JOIN Payments p ON o.OrderID = p.OrderID
-        WHERE o.OrderID = pOrderId
+        SELECT oi.OrderID, oi.Status, oi.ProductID, oi.Quantity, p.PaymentID
+        INTO vOrderID, vOrderStatus, vProductID, vQuantity, vPaymentID
+        FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+                 JOIN Products pr ON oi.ProductID = pr.ProductID
+                 JOIN Payments p ON oi.OrderItemID = p.OrderItemID
+        WHERE oi.OrderItemID = pOrderItemId
           AND pr.SupplierID = pSupplierId
+          AND oi.Status != 'Canceled'
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Order does not exist or supplier is not authorized to cancel this order');
+            RAISE_APPLICATION_ERROR(-20001,
+                                    'Order item does not exist or supplier is not authorized to cancel this order item');
     END;
 
     IF vOrderStatus = 'Fulfilled' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order is already fulfilled and cannot be canceled');
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is already fulfilled and cannot be canceled');
     END IF;
 
-    UPDATE Orders
+    UPDATE OrderItems
     SET Status = 'Canceled'
-    WHERE OrderID = pOrderId;
+    WHERE OrderItemID = pOrderItemId;
 
     UPDATE Products
     SET StockQuantity = StockQuantity + vQuantity
@@ -477,50 +637,84 @@ BEGIN
 
     UPDATE Payments
     SET Status       = 'Refunded',
-        RefundedData = CURRENT_TIMESTAMP
-    WHERE OrderID = pOrderId;
+        RefundedDate = CURRENT_TIMESTAMP
+    WHERE PaymentID = vPaymentID;
+
+    DECLARE
+        vRemainingItems NUMBER;
+    BEGIN
+        SELECT COUNT(*)
+        INTO vRemainingItems
+        FROM OrderItems
+        WHERE OrderID = vOrderID
+          AND Status != 'Canceled';
+
+        IF vRemainingItems = 0 THEN
+            UPDATE Orders
+            SET Status = 'Canceled'
+            WHERE OrderID = vOrderID;
+        END IF;
+    END;
 
     RETURN vOrderID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
-END Supplier_Cancel_Order;
+END Supplier_Cancel_OrderItem;
 
-CREATE OR REPLACE FUNCTION Supplier_Fulfill_Order(
+CREATE OR REPLACE FUNCTION Supplier_Fulfill_OrderItem(
     pSupplierId VARCHAR2,
-    pOrderId VARCHAR2
+    pOrderItemId VARCHAR2
 ) RETURN VARCHAR2 IS
-    vOrderStatus VARCHAR2(20);
-    vOrderID     Orders.OrderID%TYPE;
-    vProductID   Products.ProductID%TYPE;
+    vOrderID         Orders.OrderID%TYPE;
+    vProductID       Products.ProductID%TYPE;
+    vOrderItemStatus VARCHAR2(20);
 BEGIN
     BEGIN
-        SELECT o.OrderID, o.Status, o.ProductID
-        INTO vOrderID, vOrderStatus, vProductID
-        FROM Orders o
-                 JOIN Products pr ON o.ProductID = pr.ProductID
-        WHERE o.OrderID = pOrderId
+        SELECT oi.OrderID, oi.Status, oi.ProductID
+        INTO vOrderID, vOrderItemStatus, vProductID
+        FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+                 JOIN Products pr ON oi.ProductID = pr.ProductID
+        WHERE oi.OrderItemID = pOrderItemId
           AND pr.SupplierID = pSupplierId
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Order does not exist or supplier is not authorized to update this order');
+            RAISE_APPLICATION_ERROR(-20001,
+                                    'Order item does not exist or supplier is not authorized to fulfill this item');
     END;
 
-    IF vOrderStatus = 'Fulfilled' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order is already Fulfilled and cannot be changed.');
+    IF vOrderItemStatus = 'Fulfilled' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is already fulfilled and cannot be changed.');
     END IF;
 
-    IF vOrderStatus != 'Pending' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order is not in a valid state (Pending) to be fulfilled.');
+    IF vOrderItemStatus != 'Pending' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Pending) to be fulfilled.');
     END IF;
 
-    UPDATE Orders
+    UPDATE OrderItems
     SET Status = 'Fulfilled'
-    WHERE OrderID = pOrderId;
+    WHERE OrderItemID = pOrderItemId;
+
+    DECLARE
+        vRemainingItems NUMBER;
+    BEGIN
+        SELECT COUNT(*)
+        INTO vRemainingItems
+        FROM OrderItems
+        WHERE OrderID = vOrderID
+          AND Status != 'Fulfilled';
+
+        IF vRemainingItems = 0 THEN
+            UPDATE Orders
+            SET Status = 'Fulfilled'
+            WHERE OrderID = vOrderID;
+        END IF;
+    END;
 
     RETURN vOrderID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
-END Supplier_Fulfill_Order;
+END Supplier_Fulfill_OrderItem;

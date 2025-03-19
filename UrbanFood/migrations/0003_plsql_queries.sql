@@ -1,3 +1,14 @@
+CREATE OR REPLACE FUNCTION Get_Product_By_ID(
+    pProductID Products.ProductID%TYPE
+) RETURN SYS_REFCURSOR IS
+    vCursor SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+        SELECT * FROM Products WHERE ProductID = pProductID;
+
+    RETURN vCursor;
+END Get_Product_By_ID;
+
 CREATE OR REPLACE FUNCTION List_Inventory_Products(
     pSupplierID VARCHAR2,
     pCategory VARCHAR2 DEFAULT NULL,
@@ -39,7 +50,29 @@ BEGIN
     RETURN vCursor;
 END List_Products;
 
-CREATE OR REPLACE FUNCTION List_Orders_By_Customer(
+CREATE OR REPLACE FUNCTION Get_Pending_Orders_By_Customer(
+    pCustomerID VARCHAR2
+) RETURN SYS_REFCURSOR IS
+    vCursor      SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+        SELECT o.OrderID       AS OrderID,
+               o.Status        AS Status,
+               o.OrderDate     AS OrderDate,
+               SUM(oi.Subtotal) AS OrderTotal
+        FROM Orders o
+        JOIN OrderItems oi ON o.OrderID = oi.OrderID
+        WHERE o.CustomerID = pCustomerID
+          AND o.Status = 'Pending'
+        GROUP BY o.OrderID, o.Status, o.OrderDate;
+
+    RETURN vCursor;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END Get_Pending_Orders_By_Customer;
+
+CREATE OR REPLACE FUNCTION List_OrderItems_By_Customer(
     pCustomerID VARCHAR2,
     pStatus VARCHAR2 DEFAULT NULL
 ) RETURN SYS_REFCURSOR IS
@@ -58,29 +91,31 @@ BEGIN
     END IF;
 
     OPEN vCursor FOR
-        SELECT o.OrderID       AS OrderID,
-               o.ProductID     AS ProductID,
+        SELECT oi.OrderItemID  AS OrderItemID,
+               oi.OrderID      AS OrderID,
+               oi.ProductID    AS ProductID,
                p.Name          AS Name,
                p.Description   AS Description,
                p.Category      AS Category,
                p.Price         AS Price,
                p.StockQuantity AS StockQuantity,
-               o.Quantity      AS Quantity,
-               o.Total         AS Total,
-               o.Status        AS Status,
+               oi.Quantity     AS Quantity,
+               oi.Subtotal     AS Total,
+               oi.Status       AS Status,
                o.OrderDate     AS OrderDate
-        FROM Orders o
-                 JOIN Products p ON o.ProductID = p.ProductID
+        FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+                 JOIN Products p ON oi.ProductID = p.ProductID
         WHERE o.CustomerID = pCustomerID
-          AND (pStatus IS NULL OR o.Status = pStatus);
+          AND (pStatus IS NULL OR oi.Status = pStatus);
 
     RETURN vCursor;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
-END List_Orders_By_Customer;
+END List_OrderItems_By_Customer;
 
-CREATE OR REPLACE FUNCTION List_Orders_By_Supplier(
+CREATE OR REPLACE FUNCTION List_OrderItems_By_Supplier(
     pSupplierID VARCHAR2,
     pStatus VARCHAR2 DEFAULT NULL,
     pProductName VARCHAR2 DEFAULT NULL
@@ -95,44 +130,33 @@ BEGIN
 
         IF NOT vValidStatus THEN
             RAISE_APPLICATION_ERROR(-20001,
-                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Fulfilled');
+                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Fulfilled, Returned');
         END IF;
     END IF;
 
-    IF NOT vValidStatus THEN
-        RAISE_APPLICATION_ERROR(-20001,
-                                'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Returned, Fulfilled');
-    END IF;
-
     OPEN vCursor FOR
-        SELECT o.OrderID       AS OrderID,
+        SELECT oi.OrderItemID  AS OrderItemID,
+               oi.OrderID      AS OrderID,
                o.CustomerID    AS CustomerID,
-               o.ProductID     AS ProductID,
+               oi.ProductID    AS ProductID,
                p.Name          AS Name,
                p.Description   AS Description,
                p.Category      AS Category,
                p.Price         AS Price,
                p.StockQuantity AS StockQuantity,
-               o.Quantity      AS Quantity,
-               o.Total         AS Total,
-               o.Status        AS OrderStatus,
+               oi.Quantity     AS Quantity,
+               oi.Subtotal     AS Total,
+               oi.Status       AS OrderStatus,
                o.OrderDate     AS OrderDate
-        FROM Orders o
-                 JOIN Products p ON o.ProductID = p.ProductID
+        FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+                 JOIN Products p ON oi.ProductID = p.ProductID
         WHERE p.SupplierID = pSupplierID
-          AND (pStatus IS NULL OR o.Status = pStatus)
+          AND (pStatus IS NULL OR oi.Status = pStatus)
           AND (pProductName IS NULL OR p.Name = pProductName);
 
     RETURN vCursor;
-END List_Orders_By_Supplier;
-
-CREATE OR REPLACE FUNCTION Get_Product_By_ID(
-    pProductID Products.ProductID%TYPE
-) RETURN SYS_REFCURSOR IS
-    vCursor      SYS_REFCURSOR;
-BEGIN
-    OPEN vCursor FOR
-        SELECT * FROM Products WHERE ProductID = pProductID;
-
-    RETURN vCursor;
-END Get_Product_By_ID;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END List_OrderItems_By_Supplier;
