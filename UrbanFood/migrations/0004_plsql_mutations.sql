@@ -98,14 +98,14 @@ EXCEPTION
 END Login_Customer;
 
 CREATE OR REPLACE FUNCTION Create_Product(
-    pSupplierId VARCHAR2,
+    pSupplierID VARCHAR2,
     pName VARCHAR2,
     pDescription VARCHAR2 DEFAULT NULL,
     pPrice NUMBER,
     pStockQuantity NUMBER,
     pCategory VARCHAR2 DEFAULT NULL
 ) RETURN VARCHAR2 IS
-    vProductId     Products.ProductID%TYPE;
+    vProductID     Products.ProductID%TYPE;
     vValidCategory BOOLEAN := FALSE;
     vProductCount  NUMBER;
 BEGIN
@@ -125,7 +125,7 @@ BEGIN
     SELECT COUNT(*)
     INTO vProductCount
     FROM Products
-    WHERE SupplierID = pSupplierId
+    WHERE SupplierID = pSupplierID
       AND LOWER(Name) = LOWER(pName);
 
     IF vProductCount > 0 THEN
@@ -133,18 +133,18 @@ BEGIN
     END IF;
 
     INSERT INTO Products (ProductID, SupplierID, Name, Description, Price, StockQuantity, Category)
-    VALUES (Generate_UUID(), pSupplierId, pName, pDescription, pPrice, pStockQuantity, LOWER(pCategory))
-    RETURNING ProductID INTO vProductId;
+    VALUES (Generate_UUID(), pSupplierID, pName, pDescription, pPrice, pStockQuantity, LOWER(pCategory))
+    RETURNING ProductID INTO vProductID;
 
-    RETURN vProductId;
+    RETURN vProductID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Create_Product;
 
 CREATE OR REPLACE FUNCTION Update_Product(
-    pSupplierId VARCHAR2,
-    pProductId VARCHAR2,
+    pSupplierID VARCHAR2,
+    pProductID VARCHAR2,
     pName VARCHAR2 DEFAULT NULL,
     pDescription VARCHAR2 DEFAULT NULL,
     pPrice NUMBER DEFAULT NULL,
@@ -153,15 +153,15 @@ CREATE OR REPLACE FUNCTION Update_Product(
 ) RETURN VARCHAR2 IS
     vCurrentStock  NUMBER;
     vCurrentPrice  NUMBER;
-    vSupplierId    Suppliers.SupplierID%TYPE;
+    vSupplierID    Suppliers.SupplierID%TYPE;
     vValidCategory BOOLEAN := FALSE;
 BEGIN
     BEGIN
         SELECT SupplierID, StockQuantity, Price
-        INTO vSupplierId, vCurrentStock, vCurrentPrice
+        INTO vSupplierID, vCurrentStock, vCurrentPrice
         FROM Products
-        WHERE ProductID = pProductId
-          AND SupplierId = pSupplierId
+        WHERE ProductID = pProductID
+          AND SupplierId = pSupplierID
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -175,9 +175,9 @@ BEGIN
             SELECT COUNT(*)
             INTO vNameExists
             FROM Products
-            WHERE SupplierID = pSupplierId
+            WHERE SupplierID = pSupplierID
               AND Name = pName
-              AND ProductID != pProductId;
+              AND ProductID != pProductID;
             IF vNameExists > 0 THEN
                 RAISE_APPLICATION_ERROR(-20001, 'A product with this name already exists for the supplier.');
             END IF;
@@ -185,20 +185,20 @@ BEGIN
 
         UPDATE Products
         SET Name = pName
-        WHERE ProductID = pProductId;
+        WHERE ProductID = pProductID;
     END IF;
 
     IF pDescription IS NOT NULL THEN
         UPDATE Products
         SET Description = pDescription
-        WHERE ProductID = pProductId;
+        WHERE ProductID = pProductID;
     END IF;
 
     IF pPrice IS NOT NULL THEN
         IF pPrice > 0 THEN
             UPDATE Products
             SET Price = pPrice
-            WHERE ProductID = pProductId;
+            WHERE ProductID = pProductID;
         ELSE
             RAISE_APPLICATION_ERROR(-20001, 'Price must be greater than 0.');
         END IF;
@@ -208,7 +208,7 @@ BEGIN
         IF pStockQuantity >= 0 THEN
             UPDATE Products
             SET StockQuantity = pStockQuantity
-            WHERE ProductID = pProductId;
+            WHERE ProductID = pProductID;
         ELSE
             RAISE_APPLICATION_ERROR(-20001, 'Stock quantity cannot be negative.');
         END IF;
@@ -228,18 +228,18 @@ BEGIN
 
         UPDATE Products
         SET Category = LOWER(pCategory)
-        WHERE ProductID = pProductId;
+        WHERE ProductID = pProductID;
     END IF;
 
-    RETURN pProductId;
+    RETURN pProductID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Update_Product;
 
 CREATE OR REPLACE FUNCTION Delete_Product(
-    pProductId VARCHAR2,
-    pSupplierId VARCHAR2
+    pProductID VARCHAR2,
+    pSupplierID VARCHAR2
 ) RETURN VARCHAR2 AS
     vProductName   VARCHAR2(255);
     vPendingOrders NUMBER;
@@ -249,8 +249,8 @@ BEGIN
         SELECT Name
         INTO vProductName
         FROM Products
-        WHERE ProductID = pProductId
-          AND SupplierID = pSupplierId
+        WHERE ProductID = pProductID
+          AND SupplierID = pSupplierID
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -261,14 +261,14 @@ BEGIN
     INTO vPendingOrders
     FROM OrderItems oi
              JOIN Orders o ON oi.OrderID = o.OrderID
-    WHERE oi.ProductID = pProductId
+    WHERE oi.ProductID = pProductID
       AND oi.Status IN ('Pending', 'Processing', 'Confirmed');
 
     SELECT COUNT(*)
     INTO vUndelivered
     FROM Deliveries d
              JOIN OrderItems oi ON d.OrderItemID = oi.OrderItemID
-    WHERE oi.ProductID = pProductId
+    WHERE oi.ProductID = pProductID
       AND d.Status != 'Delivered';
 
     IF vPendingOrders > 0 THEN
@@ -282,20 +282,20 @@ BEGIN
     UPDATE Products
     SET Name         = Name || '_ARCHIVED_' || TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
         Discontinued = 1
-    WHERE ProductID = pProductId;
+    WHERE ProductID = pProductID;
 
     COMMIT;
 
-    RETURN pProductId;
+    RETURN pProductID;
 END Delete_Product;
 
 CREATE OR REPLACE FUNCTION Order_Product(
-    pCustomerId VARCHAR2,
-    pProductId VARCHAR2,
+    pCustomerID VARCHAR2,
+    pProductID VARCHAR2,
     pQuantity NUMBER
 ) RETURN VARCHAR2 IS
-    vOrderId        Orders.OrderID%TYPE;
-    vOrderItemId    OrderItems.OrderItemID%TYPE;
+    vOrderID        Orders.OrderID%TYPE;
+    vOrderItemID    OrderItems.OrderItemID%TYPE;
     vAvailableStock NUMBER;
     vTotalAmount    NUMBER(10, 2);
     vProductPrice   NUMBER(10, 2);
@@ -303,7 +303,7 @@ BEGIN
     SELECT StockQuantity, Price
     INTO vAvailableStock, vProductPrice
     FROM Products
-    WHERE ProductID = pProductId;
+    WHERE ProductID = pProductID;
 
     IF pQuantity > vAvailableStock THEN
         RAISE_APPLICATION_ERROR(-20001, 'Requested quantity exceeds available stock.');
@@ -311,57 +311,57 @@ BEGIN
 
     BEGIN
         SELECT OrderID
-        INTO vOrderId
+        INTO vOrderID
         FROM Orders
-        WHERE CustomerID = pCustomerId
+        WHERE CustomerID = pCustomerID
           AND Status = 'Pending'
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            vOrderId := NULL;
+            vOrderID := NULL;
     END;
 
-    IF vOrderId IS NULL THEN
-        vOrderId := Generate_UUID();
+    IF vOrderID IS NULL THEN
+        vOrderID := Generate_UUID();
         INSERT INTO Orders (OrderID, CustomerID, Status)
-        VALUES (vOrderId, pCustomerId, 'Pending');
+        VALUES (vOrderID, pCustomerID, 'Pending');
     END IF;
 
     vTotalAmount := pQuantity * vProductPrice;
 
     BEGIN
         SELECT OrderItemID
-        INTO vOrderItemId
+        INTO vOrderItemID
         FROM OrderItems
-        WHERE OrderID = vOrderId
-          AND ProductID = pProductId
+        WHERE OrderID = vOrderID
+          AND ProductID = pProductID
           AND Status = 'Pending'
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            vOrderItemId := NULL;
+            vOrderItemID := NULL;
     END;
 
-    IF vOrderItemId IS NOT NULL THEN
+    IF vOrderItemID IS NOT NULL THEN
         UPDATE OrderItems
         SET Quantity = pQuantity,
             Subtotal = vTotalAmount
-        WHERE OrderItemID = vOrderItemId;
+        WHERE OrderItemID = vOrderItemID;
     ELSE
-        vOrderItemId := Generate_UUID();
+        vOrderItemID := Generate_UUID();
         INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, Subtotal, Status)
-        VALUES (vOrderItemId, vOrderId, pProductId, pQuantity, vTotalAmount, 'Pending');
+        VALUES (vOrderItemID, vOrderID, pProductID, pQuantity, vTotalAmount, 'Pending');
     END IF;
 
-    RETURN vOrderItemId;
+    RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Order_Product;
 
 CREATE OR REPLACE FUNCTION Customer_Remove_OrderItem(
-    pCustomerId   VARCHAR2,
-    pOrderItemId  VARCHAR2
+    pCustomerID   VARCHAR2,
+    pOrderItemID  VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderStatus      VARCHAR2(20);
     vOrderID          Orders.OrderID%TYPE;
@@ -373,8 +373,8 @@ BEGIN
         INTO vOrderID, vOrderStatus, vProductID, vQuantity
         FROM OrderItems oi
                  JOIN Orders o ON oi.OrderID = o.OrderID
-        WHERE oi.OrderItemID = pOrderItemId
-          AND o.CustomerID = pCustomerId
+        WHERE oi.OrderItemID = pOrderItemID
+          AND o.CustomerID = pCustomerID
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -386,7 +386,7 @@ BEGIN
     END IF;
 
     DELETE FROM OrderItems
-    WHERE OrderItemID = pOrderItemId;
+    WHERE OrderItemID = pOrderItemID;
 
     UPDATE Products
     SET StockQuantity = StockQuantity + vQuantity
@@ -415,8 +415,8 @@ EXCEPTION
 END Customer_Remove_OrderItem;
 
 CREATE OR REPLACE FUNCTION Customer_Update_OrderItem_Quantity(
-    pCustomerId   VARCHAR2,
-    pOrderItemId  VARCHAR2,
+    pCustomerID   VARCHAR2,
+    pOrderItemID  VARCHAR2,
     pNewQuantity  NUMBER
 ) RETURN VARCHAR2 IS
     vOrderStatus      VARCHAR2(20);
@@ -432,8 +432,8 @@ BEGIN
         INTO vOrderID, vOrderStatus, vProductID, vOldQuantity
         FROM OrderItems oi
                  JOIN Orders o ON oi.OrderID = o.OrderID
-        WHERE oi.OrderItemID = pOrderItemId
-          AND o.CustomerID = pCustomerId
+        WHERE oi.OrderItemID = pOrderItemID
+          AND o.CustomerID = pCustomerID
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -468,18 +468,18 @@ BEGIN
     UPDATE OrderItems
     SET Quantity = pNewQuantity,
         Subtotal = vTotalAmount
-    WHERE OrderItemID = pOrderItemId;
+    WHERE OrderItemID = pOrderItemID;
 
 
-    RETURN pOrderItemId;
+    RETURN pOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Customer_Update_OrderItem_Quantity;
 
 CREATE OR REPLACE FUNCTION Checkout_Order(
-    pCustomerId VARCHAR2,
-    pOrderId VARCHAR2,
+    pCustomerID VARCHAR2,
+    pOrderID VARCHAR2,
     pTransactionKey VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderStatus   VARCHAR2(20);
@@ -494,8 +494,8 @@ BEGIN
         SELECT OrderID, Status, CustomerID
         INTO vOrderID, vOrderStatus, vCustomerID
         FROM Orders
-        WHERE OrderID = pOrderId
-          AND CustomerId = pCustomerId
+        WHERE OrderID = pOrderID
+          AND CustomerId = pCustomerID
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -555,8 +555,8 @@ EXCEPTION
 END Checkout_Order;
 
 CREATE OR REPLACE FUNCTION Customer_Cancel_Order(
-    pCustomerId VARCHAR2,
-    pOrderId VARCHAR2
+    pCustomerID VARCHAR2,
+    pOrderID VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderStatus VARCHAR2(20);
     vOrderID     Orders.OrderID%TYPE;
@@ -565,8 +565,8 @@ BEGIN
         SELECT OrderID, Status
         INTO vOrderID, vOrderStatus
         FROM Orders
-        WHERE CustomerID = pCustomerId
-          AND OrderID = pOrderId
+        WHERE CustomerID = pCustomerID
+          AND OrderID = pOrderID
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -579,15 +579,15 @@ BEGIN
 
     UPDATE Orders
     SET Status = 'Canceled'
-    WHERE OrderID = pOrderId;
+    WHERE OrderID = pOrderID;
 
     UPDATE OrderItems
     SET Status = 'Canceled'
-    WHERE OrderID = pOrderId;
+    WHERE OrderID = pOrderID;
 
     UPDATE Payments
     SET Status = 'Refunded'
-    WHERE OrderItemID IN (SELECT OrderItemID FROM OrderItems WHERE OrderID = pOrderId);
+    WHERE OrderItemID IN (SELECT OrderItemID FROM OrderItems WHERE OrderID = pOrderID);
 
     RETURN vOrderID;
 EXCEPTION
@@ -596,8 +596,8 @@ EXCEPTION
 END Customer_Cancel_Order;
 
 CREATE OR REPLACE FUNCTION Supplier_Cancel_OrderItem(
-    pSupplierId VARCHAR2,
-    pOrderItemId VARCHAR2
+    pSupplierID VARCHAR2,
+    pOrderItemID VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderStatus VARCHAR2(20);
     vOrderID     Orders.OrderID%TYPE;
@@ -612,8 +612,8 @@ BEGIN
                  JOIN Orders o ON oi.OrderID = o.OrderID
                  JOIN Products pr ON oi.ProductID = pr.ProductID
                  JOIN Payments p ON oi.OrderItemID = p.OrderItemID
-        WHERE oi.OrderItemID = pOrderItemId
-          AND pr.SupplierID = pSupplierId
+        WHERE oi.OrderItemID = pOrderItemID
+          AND pr.SupplierID = pSupplierID
           AND oi.Status != 'Canceled'
             FOR UPDATE;
     EXCEPTION
@@ -628,7 +628,7 @@ BEGIN
 
     UPDATE OrderItems
     SET Status = 'Canceled'
-    WHERE OrderItemID = pOrderItemId;
+    WHERE OrderItemID = pOrderItemID;
 
     UPDATE Products
     SET StockQuantity = StockQuantity + vQuantity
@@ -662,8 +662,8 @@ EXCEPTION
 END Supplier_Cancel_OrderItem;
 
 CREATE OR REPLACE FUNCTION Supplier_Fulfill_OrderItem(
-    pSupplierId VARCHAR2,
-    pOrderItemId VARCHAR2
+    pSupplierID VARCHAR2,
+    pOrderItemID VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderID         Orders.OrderID%TYPE;
     vProductID       Products.ProductID%TYPE;
@@ -675,8 +675,8 @@ BEGIN
         FROM OrderItems oi
                  JOIN Orders o ON oi.OrderID = o.OrderID
                  JOIN Products pr ON oi.ProductID = pr.ProductID
-        WHERE oi.OrderItemID = pOrderItemId
-          AND pr.SupplierID = pSupplierId
+        WHERE oi.OrderItemID = pOrderItemID
+          AND pr.SupplierID = pSupplierID
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -694,7 +694,7 @@ BEGIN
 
     UPDATE OrderItems
     SET Status = 'Fulfilled'
-    WHERE OrderItemID = pOrderItemId;
+    WHERE OrderItemID = pOrderItemID;
 
     DECLARE
         vRemainingItems NUMBER;

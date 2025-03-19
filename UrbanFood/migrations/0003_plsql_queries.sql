@@ -72,8 +72,8 @@ EXCEPTION
         RAISE;
 END Get_Pending_Orders_By_Customer;
 
-CREATE OR REPLACE FUNCTION List_OrderItems_By_Customer(
-    pCustomerID VARCHAR2,
+CREATE OR REPLACE FUNCTION List_OrderItems_By_Order(
+    pOrderID VARCHAR2,
     pStatus VARCHAR2 DEFAULT NULL
 ) RETURN SYS_REFCURSOR IS
     vCursor      SYS_REFCURSOR;
@@ -106,14 +106,14 @@ BEGIN
         FROM OrderItems oi
                  JOIN Orders o ON oi.OrderID = o.OrderID
                  JOIN Products p ON oi.ProductID = p.ProductID
-        WHERE o.CustomerID = pCustomerID
+        WHERE o.OrderID = pOrderID
           AND (pStatus IS NULL OR oi.Status = pStatus);
 
     RETURN vCursor;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
-END List_OrderItems_By_Customer;
+END List_OrderItems_By_Order;
 
 CREATE OR REPLACE FUNCTION List_OrderItems_By_Supplier(
     pSupplierID VARCHAR2,

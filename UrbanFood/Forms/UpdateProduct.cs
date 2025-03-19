@@ -170,7 +170,7 @@ namespace UrbanFood.Forms
             return true;
         }
 
-        public string UpdateProductQuery(string productId, string name, string description, decimal? price, int? stockQuantity, string category)
+        public string UpdateProductQuery(string productID, string name, string description, decimal? price, int? stockQuantity, string category)
         {
             string updatedProductId = null;
 
@@ -183,14 +183,14 @@ namespace UrbanFood.Forms
                     CommandType = CommandType.StoredProcedure
                 };
 
-                OracleParameter productIdParam = new OracleParameter("vProductId", OracleDbType.Varchar2, 32)
+                OracleParameter productIdParam = new OracleParameter("vProductID", OracleDbType.Varchar2, 32)
                 {
                     Direction = ParameterDirection.ReturnValue
                 };
                 cmd.Parameters.Add(productIdParam);
 
-                cmd.Parameters.Add("pSupplierId", OracleDbType.Varchar2).Value = UserState.Instance.GetUserId();
-                cmd.Parameters.Add("pProductId", OracleDbType.Varchar2).Value = productId;
+                cmd.Parameters.Add("pSupplierID", OracleDbType.Varchar2).Value = UserState.Instance.GetUserId();
+                cmd.Parameters.Add("pProductID", OracleDbType.Varchar2).Value = productID;
                 cmd.Parameters.Add("pName", OracleDbType.Varchar2).Value = string.IsNullOrEmpty(name) ? DBNull.Value : name;
                 cmd.Parameters.Add("pDescription", OracleDbType.Varchar2).Value = string.IsNullOrEmpty(description) ? DBNull.Value : description;
                 cmd.Parameters.Add("pPrice", OracleDbType.Decimal).Value = price.HasValue ? (object)price.Value : DBNull.Value;

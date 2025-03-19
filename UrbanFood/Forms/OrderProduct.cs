@@ -72,23 +72,27 @@ namespace UrbanFood.Forms
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
 
-                using OracleCommand cmd = new("SELECT * FROM Products WHERE ProductID = :ProductID", conn)
+                using OracleCommand getProductByIdCmd = new("Get_Product_By_ID", conn);
+                getProductByIdCmd.CommandType = CommandType.StoredProcedure;
+
+                OracleParameter cursor = new OracleParameter("vCursor", OracleDbType.RefCursor)
                 {
-                    CommandType = CommandType.Text,
+                    Direction = ParameterDirection.ReturnValue
                 };
+                getProductByIdCmd.Parameters.Add(cursor);
 
-                cmd.Parameters.Add(":ProductID", OracleDbType.Varchar2, 32).Value = _productID;
 
-                using (OracleDataReader reader = cmd.ExecuteReader())
+                getProductByIdCmd.Parameters.Add("pProductID", OracleDbType.Varchar2).Value = _productID;
+
+
+                using OracleDataReader reader = getProductByIdCmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    if (reader.Read())
-                    {
-                        _productName = reader["Name"].ToString();
-                        _maxQuantity = Convert.ToInt32(reader["StockQuantity"].ToString());
-                        _price = Convert.ToDecimal(reader["Price"].ToString());
-                    }
+                    _productName = reader["Name"].ToString();
+                    _maxQuantity = Convert.ToInt32(reader["StockQuantity"].ToString());
+                    _price = Convert.ToDecimal(reader["Price"].ToString());
+
                 }
-                cmd.ExecuteNonQuery();
 
             }
             catch (OracleException ex)
@@ -127,7 +131,7 @@ namespace UrbanFood.Forms
                 cmd.Parameters.Add("pCustomerId", OracleDbType.Varchar2).Value = UserState.Instance.GetUserId();
                 cmd.Parameters.Add("pProductId", OracleDbType.Varchar2).Value = productId;
                 cmd.Parameters.Add("pQuantity", OracleDbType.Int32).Value = quantity;
-                
+
                 cmd.ExecuteNonQuery();
 
                 createdOrderID = orderIdParam.Value?.ToString();

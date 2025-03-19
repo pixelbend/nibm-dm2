@@ -39,9 +39,9 @@ namespace UrbanFood.Forms
 
             decimal price = Convert.ToDecimal(priceText);
             int stockQuantity = Convert.ToInt32(stockText);
-            string supplierId = UserState.Instance.GetUserId();
+            string supplierID = UserState.Instance.GetUserId();
 
-            string newProductId = CreateProductQuery(supplierId, name, description, price, stockQuantity, category);
+            string newProductId = CreateProductQuery(supplierID, name, description, price, stockQuantity, category);
 
             if (!string.IsNullOrEmpty(newProductId))
             {

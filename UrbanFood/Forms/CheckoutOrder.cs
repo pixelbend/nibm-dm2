@@ -90,15 +90,15 @@ namespace UrbanFood.Forms
                     CommandType = CommandType.StoredProcedure
                 };
 
-                OracleParameter resultParam = new OracleParameter("result", OracleDbType.Varchar2, 32)
+                OracleParameter resultParam = new OracleParameter("vOrderID", OracleDbType.Varchar2, 32)
                 {
                     Direction = ParameterDirection.ReturnValue
                 };
                 cmd.Parameters.Add(resultParam);
 
-                cmd.Parameters.Add("pCustomerId", OracleDbType.Varchar2).Value = UserState.Instance.GetUserId();
+                cmd.Parameters.Add("pCustomerID", OracleDbType.Varchar2).Value = UserState.Instance.GetUserId();
 
-                cmd.Parameters.Add("pOrderId", OracleDbType.Varchar2).Value = orderId;
+                cmd.Parameters.Add("pOrderID", OracleDbType.Varchar2).Value = orderId;
 
                 cmd.Parameters.Add("pTransactionKey", OracleDbType.Varchar2, 255).Value = transactionKey;
 
