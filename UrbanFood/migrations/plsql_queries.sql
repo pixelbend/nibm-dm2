@@ -47,13 +47,13 @@ CREATE OR REPLACE FUNCTION List_Orders_By_Customer(
     vValidStatus BOOLEAN := FALSE;
 BEGIN
     IF pStatus IS NOT NULL THEN
-        IF pStatus IN ('Pending', 'Confirmed', 'Processing', 'Fulfilled', 'Returned', 'Canceled') THEN
+        IF pStatus IN ('Pending', 'Confirmed', 'Fulfilled', 'Returned', 'Canceled') THEN
             vValidStatus := TRUE;
         END IF;
 
         IF NOT vValidStatus THEN
             RAISE_APPLICATION_ERROR(-20001,
-                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Processing, Fulfilled');
+                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Fulfilled, Returned');
         END IF;
     END IF;
 
@@ -89,19 +89,19 @@ CREATE OR REPLACE FUNCTION List_Orders_By_Supplier(
     vValidStatus BOOLEAN := FALSE;
 BEGIN
     IF pStatus IS NOT NULL THEN
-        IF pStatus IN ('Pending', 'Confirmed', 'Processing', 'Fulfilled', 'Returned', 'Canceled') THEN
+        IF pStatus IN ('Pending', 'Confirmed', 'Fulfilled', 'Returned', 'Canceled') THEN
             vValidStatus := TRUE;
         END IF;
 
         IF NOT vValidStatus THEN
             RAISE_APPLICATION_ERROR(-20001,
-                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Processing, Fulfilled');
+                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Fulfilled');
         END IF;
     END IF;
 
     IF NOT vValidStatus THEN
         RAISE_APPLICATION_ERROR(-20001,
-                                'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Processing, Fulfilled');
+                                'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Returned, Fulfilled');
     END IF;
 
     OPEN vCursor FOR
