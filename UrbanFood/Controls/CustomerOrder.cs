@@ -13,6 +13,7 @@ using UrbanFood.LocalState;
 using System.Diagnostics;
 using MaterialSkin.Controls;
 using UrbanFood.Utils;
+using UrbanFood.Forms;
 
 namespace UrbanFood.Controls
 {
@@ -32,7 +33,9 @@ namespace UrbanFood.Controls
 
         private void CheckoutButton_Click(object sender, EventArgs e)
         {
-
+            CheckoutOrder checkoutOrder = new(orderID);
+            checkoutOrder.ConfirmButtonClicked += Reset_Order;
+            checkoutOrder.ShowDialog();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -40,9 +43,16 @@ namespace UrbanFood.Controls
 
         }
 
+        private void Reset_Order(object sender, EventArgs e)
+        {
+            GetPendingOrderByCustomerQuery();
+            CustomerOrderListPanel.Controls.Clear();
+        }
+
         private void Referesh_Order(object sender, EventArgs e)
         {
             GetPendingOrderByCustomerQuery();
+            ListOrderItemsByOrderQuery();
         }
 
         private void GetPendingOrderByCustomerQuery()
