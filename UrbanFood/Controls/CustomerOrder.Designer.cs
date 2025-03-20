@@ -31,11 +31,15 @@
             CustomerOrderListPanel = new FlowLayoutPanel();
             CheckoutButton = new MaterialSkin.Controls.MaterialButton();
             CancelButton = new MaterialSkin.Controls.MaterialButton();
+            OrderDateLabel = new Label();
+            OrderTotalLabel = new Label();
+            OrderStatusLabel = new Label();
             SuspendLayout();
             // 
             // CustomerOrderListPanel
             // 
             CustomerOrderListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            CustomerOrderListPanel.AutoSize = true;
             CustomerOrderListPanel.Location = new Point(16, 16);
             CustomerOrderListPanel.Name = "CustomerOrderListPanel";
             CustomerOrderListPanel.Size = new Size(975, 580);
@@ -85,16 +89,56 @@
             CancelButton.UseVisualStyleBackColor = true;
             CancelButton.Click += CancelButton_Click;
             // 
+            // OrderDateLabel
+            // 
+            OrderDateLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OrderDateLabel.AutoSize = true;
+            OrderDateLabel.Font = new Font("Segoe UI", 12F);
+            OrderDateLabel.Location = new Point(999, 18);
+            OrderDateLabel.Name = "OrderDateLabel";
+            OrderDateLabel.Size = new Size(109, 28);
+            OrderDateLabel.TabIndex = 20;
+            OrderDateLabel.Text = "Order Date";
+            OrderDateLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // OrderTotalLabel
+            // 
+            OrderTotalLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OrderTotalLabel.AutoSize = true;
+            OrderTotalLabel.Font = new Font("Segoe UI", 12F);
+            OrderTotalLabel.Location = new Point(999, 81);
+            OrderTotalLabel.Name = "OrderTotalLabel";
+            OrderTotalLabel.Size = new Size(110, 28);
+            OrderTotalLabel.TabIndex = 21;
+            OrderTotalLabel.Text = "Order Total";
+            OrderTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // OrderStatusLabel
+            // 
+            OrderStatusLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OrderStatusLabel.AutoSize = true;
+            OrderStatusLabel.Font = new Font("Segoe UI", 12F);
+            OrderStatusLabel.Location = new Point(999, 142);
+            OrderStatusLabel.Name = "OrderStatusLabel";
+            OrderStatusLabel.Size = new Size(121, 28);
+            OrderStatusLabel.TabIndex = 22;
+            OrderStatusLabel.Text = "Order Status";
+            OrderStatusLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // CustomerOrder
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(OrderStatusLabel);
+            Controls.Add(OrderTotalLabel);
+            Controls.Add(OrderDateLabel);
             Controls.Add(CancelButton);
             Controls.Add(CheckoutButton);
             Controls.Add(CustomerOrderListPanel);
             Name = "CustomerOrder";
             Size = new Size(1266, 610);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -102,5 +146,8 @@
         private FlowLayoutPanel CustomerOrderListPanel;
         private MaterialSkin.Controls.MaterialButton CheckoutButton;
         private MaterialSkin.Controls.MaterialButton CancelButton;
+        private Label OrderDateLabel;
+        private Label OrderTotalLabel;
+        private Label OrderStatusLabel;
     }
 }

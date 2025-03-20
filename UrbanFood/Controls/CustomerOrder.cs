@@ -29,7 +29,7 @@ namespace UrbanFood.Controls
             GetPendingOrderByCustomerQuery();
             ListOrderItemsByOrderQuery();
         }
-        
+
         private void CheckoutButton_Click(object sender, EventArgs e)
         {
 
@@ -38,6 +38,11 @@ namespace UrbanFood.Controls
         private void CancelButton_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Referesh_Order(object sender, EventArgs e)
+        {
+            GetPendingOrderByCustomerQuery();
         }
 
         private void GetPendingOrderByCustomerQuery()
@@ -69,7 +74,19 @@ namespace UrbanFood.Controls
                         orderStatus = reader["Status"].ToString();
                         orderDate = reader["OrderDate"].ToString();
                         orderTotal = reader["OrderTotal"].ToString();
+
+                        OrderDateLabel.Text = $"Date: {orderDate.Split(' ')[0]}";
+                        OrderTotalLabel.Text = $"Total: Rs {orderTotal}";
+                        OrderStatusLabel.Text = $"Status: {orderStatus}";
                     }
+                } else
+                {
+                    OrderDateLabel.Text = "Date: N/A";
+                    OrderDateLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
+                    OrderTotalLabel.Text = "Total: Rs 0";
+                    OrderTotalLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
+                    OrderStatusLabel.Text = "Status: No Pending Orders";
+                    OrderStatusLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
                 }
             }
             catch (OracleException ex)
@@ -124,6 +141,11 @@ namespace UrbanFood.Controls
                             ProductDescription = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString(),
                             ProductCategory = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}"
                         };
+
+                        item.Dock = DockStyle.Top;
+
+                        item.OrderItemUpdated += Referesh_Order;
+                        item.OrderItemRemoved += Referesh_Order;
 
                         CustomerOrderListPanel.Controls.Add(item);
                     }

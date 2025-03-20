@@ -18,6 +18,9 @@ namespace UrbanFood.Controls
 {
     public partial class CustomerOrderItem : UserControl
     {
+        public event EventHandler OrderItemUpdated;
+        public event EventHandler OrderItemRemoved;
+
         private string _orderItemID;
         private string _orderItemQuantity;
         private string _orderTotal;
@@ -37,6 +40,11 @@ namespace UrbanFood.Controls
 
         }
 
+        private void UpdateButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void RemoveButton_Click(object sender, EventArgs e)
         {
             var result = MaterialMessageBox.Show("This order itme will be removed this cannot be undone", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
@@ -45,6 +53,7 @@ namespace UrbanFood.Controls
                 string qresult = RemoveOrderItemQuery(_orderItemID);
                 if (qresult != null)
                 {
+                    OrderItemRemoved?.Invoke(this, e);
                     Dispose();
                 }
             }

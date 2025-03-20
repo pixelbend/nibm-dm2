@@ -60,18 +60,19 @@
             materialCard1.MouseState = MaterialSkin.MouseState.HOVER;
             materialCard1.Name = "materialCard1";
             materialCard1.Padding = new Padding(14);
-            materialCard1.Size = new Size(870, 200);
+            materialCard1.Size = new Size(920, 200);
             materialCard1.TabIndex = 15;
             // 
             // UpdateButton
             // 
+            UpdateButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             UpdateButton.AutoSize = false;
             UpdateButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             UpdateButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             UpdateButton.Depth = 0;
             UpdateButton.HighEmphasis = true;
             UpdateButton.Icon = null;
-            UpdateButton.Location = new Point(729, 14);
+            UpdateButton.Location = new Point(781, 16);
             UpdateButton.Margin = new Padding(4, 6, 4, 6);
             UpdateButton.MouseState = MaterialSkin.MouseState.HOVER;
             UpdateButton.Name = "UpdateButton";
@@ -82,16 +83,18 @@
             UpdateButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             UpdateButton.UseAccentColor = false;
             UpdateButton.UseVisualStyleBackColor = true;
+            UpdateButton.Click += UpdateButton_Click;
             // 
             // RemoveButton
             // 
+            RemoveButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             RemoveButton.AutoSize = false;
             RemoveButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             RemoveButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             RemoveButton.Depth = 0;
             RemoveButton.HighEmphasis = true;
             RemoveButton.Icon = null;
-            RemoveButton.Location = new Point(729, 56);
+            RemoveButton.Location = new Point(781, 58);
             RemoveButton.Margin = new Padding(4, 6, 4, 6);
             RemoveButton.MouseState = MaterialSkin.MouseState.HOVER;
             RemoveButton.Name = "RemoveButton";
@@ -116,9 +119,10 @@
             // 
             // NoUnitsLabel
             // 
+            NoUnitsLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             NoUnitsLabel.AutoSize = true;
             NoUnitsLabel.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            NoUnitsLabel.Location = new Point(694, 106);
+            NoUnitsLabel.Location = new Point(746, 108);
             NoUnitsLabel.Name = "NoUnitsLabel";
             NoUnitsLabel.Size = new Size(77, 23);
             NoUnitsLabel.TabIndex = 23;
@@ -126,9 +130,10 @@
             // 
             // UnitPriceLabel
             // 
+            UnitPriceLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             UnitPriceLabel.AutoSize = true;
             UnitPriceLabel.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            UnitPriceLabel.Location = new Point(694, 136);
+            UnitPriceLabel.Location = new Point(746, 138);
             UnitPriceLabel.Name = "UnitPriceLabel";
             UnitPriceLabel.Size = new Size(84, 23);
             UnitPriceLabel.TabIndex = 22;
@@ -136,9 +141,10 @@
             // 
             // TotalLabel
             // 
+            TotalLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             TotalLabel.AutoSize = true;
             TotalLabel.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            TotalLabel.Location = new Point(694, 167);
+            TotalLabel.Location = new Point(746, 169);
             TotalLabel.Name = "TotalLabel";
             TotalLabel.Size = new Size(46, 23);
             TotalLabel.TabIndex = 21;
@@ -181,7 +187,7 @@
             BackColor = Color.Transparent;
             Controls.Add(materialCard1);
             Name = "CustomerOrderItem";
-            Size = new Size(870, 200);
+            Size = new Size(920, 200);
             Load += CustomerOrderItem_Load;
             materialCard1.ResumeLayout(false);
             materialCard1.PerformLayout();

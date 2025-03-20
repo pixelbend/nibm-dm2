@@ -135,7 +135,7 @@
             ConfirmPurchaseButton.UseVisualStyleBackColor = true;
             ConfirmPurchaseButton.Click += ConfirmPurchaseButton_Click;
             // 
-            // BuyProduct
+            // OrderProduct
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -147,10 +147,10 @@
             Controls.Add(QuantityUpDown);
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "BuyProduct";
+            Name = "OrderProduct";
             Sizable = false;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Buy Product";
+            Text = "Order Product";
             Load += BuyProduct_Load;
             ((System.ComponentModel.ISupportInitialize)QuantityUpDown).EndInit();
             ResumeLayout(false);
