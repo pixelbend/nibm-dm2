@@ -243,7 +243,6 @@ CREATE OR REPLACE FUNCTION Delete_Product(
 ) RETURN VARCHAR2 AS
     vProductName   VARCHAR2(255);
     vPendingOrders NUMBER;
-    vUndelivered   NUMBER;
 BEGIN
     BEGIN
         SELECT Name
@@ -262,27 +261,18 @@ BEGIN
     FROM OrderItems oi
              JOIN Orders o ON oi.OrderID = o.OrderID
     WHERE oi.ProductID = pProductID
-      AND oi.Status IN ('Pending', 'Processing', 'Confirmed');
-
-    SELECT COUNT(*)
-    INTO vUndelivered
-    FROM Deliveries d
-             JOIN OrderItems oi ON d.OrderItemID = oi.OrderItemID
-    WHERE oi.ProductID = pProductID
-      AND d.Status != 'Delivered';
+      AND o.Status IN ('Pending', 'Confirmed', 'Partially Fulfilled')
+      AND oi.Status IN ('Pending', 'Confirmed');
 
     IF vPendingOrders > 0 THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Cannot delete: There are unfulfilled orders.');
-    END IF;
-
-    IF vUndelivered > 0 THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Cannot delete: Some deliveries are not completed.');
+        RAISE_APPLICATION_ERROR(-20002, 'Cannot delete: There are active unfulfilled orders.');
     END IF;
 
     UPDATE Products
     SET Name         = Name || '_ARCHIVED_' || TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS'),
         Discontinued = 1
-    WHERE ProductID = pProductID;
+    WHERE ProductID = pProductID
+      AND SupplierID = pSupplierID;
 
     COMMIT;
 
@@ -387,20 +377,26 @@ BEGIN
                                 'Order item cannot be removed as the order is already confirmed, fulfilled, or canceled.');
     END IF;
 
-    DELETE
-    FROM OrderItems
+    UPDATE OrderItems
+    SET Status = 'Canceled'
     WHERE OrderItemID = pOrderItemID;
 
     DECLARE
-        vRemainingItems NUMBER;
+        vTotalItems    NUMBER;
+        vCanceledItems NUMBER;
     BEGIN
         SELECT COUNT(*)
-        INTO vRemainingItems
+        INTO vTotalItems
+        FROM OrderItems
+        WHERE OrderID = vOrderID;
+
+        SELECT COUNT(*)
+        INTO vCanceledItems
         FROM OrderItems
         WHERE OrderID = vOrderID
-          AND Status != 'Fulfilled';
+          AND Status = 'Canceled';
 
-        IF vRemainingItems = 0 THEN
+        IF vTotalItems = vCanceledItems AND vTotalItems > 0 THEN
             UPDATE Orders
             SET Status = 'Canceled'
             WHERE OrderID = vOrderID;
@@ -423,6 +419,7 @@ CREATE OR REPLACE FUNCTION Checkout_Order(
     vCustomerID    Customers.CustomerID%TYPE;
     vStockQuantity NUMBER;
     vProductPrice  NUMBER(10, 2);
+    vProductName   Products.Name%TYPE;
     vTotalAmount   NUMBER(10, 2) := 0;
 BEGIN
     BEGIN
@@ -449,8 +446,8 @@ BEGIN
         )
         LOOP
             BEGIN
-                SELECT StockQuantity, Price
-                INTO vStockQuantity, vProductPrice
+                SELECT StockQuantity, Price, Name
+                INTO vStockQuantity, vProductPrice, vProductName
                 FROM Products
                 WHERE ProductID = orderItem.ProductID
                     FOR UPDATE;
@@ -460,7 +457,8 @@ BEGIN
             END;
 
             IF vStockQuantity < orderItem.Quantity THEN
-                RAISE_APPLICATION_ERROR(-20001, 'Not enough stock available for product ' || orderItem.ProductID);
+                RAISE_APPLICATION_ERROR(-20001, 'Not enough stock available for product ' || vProductName
+                    || ' please remove the product and checkout again');
             END IF;
 
             vTotalAmount := orderItem.Quantity * vProductPrice;
@@ -574,15 +572,21 @@ BEGIN
     WHERE PaymentID = vPaymentID;
 
     DECLARE
-        vRemainingItems NUMBER;
+        vTotalItems    NUMBER;
+        vCanceledItems NUMBER;
     BEGIN
         SELECT COUNT(*)
-        INTO vRemainingItems
+        INTO vTotalItems
+        FROM OrderItems
+        WHERE OrderID = vOrderID;
+
+        SELECT COUNT(*)
+        INTO vCanceledItems
         FROM OrderItems
         WHERE OrderID = vOrderID
-          AND Status != 'Canceled';
+          AND Status = 'Canceled';
 
-        IF vRemainingItems = 0 THEN
+        IF vTotalItems = vCanceledItems AND vTotalItems > 0 THEN
             UPDATE Orders
             SET Status = 'Canceled'
             WHERE OrderID = vOrderID;
@@ -631,17 +635,21 @@ BEGIN
     WHERE OrderItemID = pOrderItemID;
 
     DECLARE
-        vRemainingItems NUMBER;
+        vTotalItems     NUMBER;
+        vFulfilledItems NUMBER;
     BEGIN
-        SELECT COUNT(*)
-        INTO vRemainingItems
+        SELECT COUNT(*), SUM(CASE WHEN Status = 'Fulfilled' THEN 1 ELSE 0 END)
+        INTO vTotalItems, vFulfilledItems
         FROM OrderItems
-        WHERE OrderID = vOrderID
-          AND Status != 'Fulfilled';
+        WHERE OrderID = vOrderID;
 
-        IF vRemainingItems = 0 THEN
+        IF vFulfilledItems = vTotalItems THEN
             UPDATE Orders
             SET Status = 'Fulfilled'
+            WHERE OrderID = vOrderID;
+        ELSIF vFulfilledItems > 0 THEN
+            UPDATE Orders
+            SET Status = 'Partially Fulfilled'
             WHERE OrderID = vOrderID;
         END IF;
     END;
