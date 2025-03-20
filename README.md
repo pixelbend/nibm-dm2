@@ -7,7 +7,7 @@ The implementation
 of the system use oracle and mongodb.
 
 - Oracle is used as the primary database where all the primary data is store. 
-Most the operations are written in PLSQL as one shot operation based PLSQL stored procedures
+All the operations are written in PLSQL as one shot operation based PLSQL stored procedures to mitigate
 - MongoDB is used to store product reviews.
 
 ## Database Implementation
