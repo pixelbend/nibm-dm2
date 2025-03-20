@@ -40,7 +40,16 @@ namespace UrbanFood.Controls
 
         private void CancelButton_Click(object sender, EventArgs e)
         {
-
+            var result = MaterialMessageBox.Show("This order will be canceled this cannot be undone", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (result == DialogResult.OK)
+            {
+                string qresult = CancelOrderQuery(orderID);
+                if (qresult != null)
+                {
+                    ResetLables();
+                    CustomerOrderListPanel.Controls.Clear();
+                }
+            }
         }
 
         private void Reset_Order(object sender, EventArgs e)
@@ -53,6 +62,16 @@ namespace UrbanFood.Controls
         {
             GetPendingOrderByCustomerQuery();
             ListOrderItemsByOrderQuery();
+        }
+
+        public void ResetLables()
+        {
+            OrderDateLabel.Text = "Date: N/A";
+            OrderDateLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
+            OrderTotalLabel.Text = "Total: Rs 0";
+            OrderTotalLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
+            OrderStatusLabel.Text = "Status: No Pending Orders";
+            OrderStatusLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
         }
 
         private void GetPendingOrderByCustomerQuery()
@@ -89,14 +108,10 @@ namespace UrbanFood.Controls
                         OrderTotalLabel.Text = $"Total: Rs {orderTotal}";
                         OrderStatusLabel.Text = $"Status: {orderStatus}";
                     }
-                } else
+                }
+                else
                 {
-                    OrderDateLabel.Text = "Date: N/A";
-                    OrderDateLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
-                    OrderTotalLabel.Text = "Total: Rs 0";
-                    OrderTotalLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
-                    OrderStatusLabel.Text = "Status: No Pending Orders";
-                    OrderStatusLabel.Font = new("Segoe UI", 12, FontStyle.Regular);
+                    ResetLables();
                 }
             }
             catch (OracleException ex)
@@ -173,6 +188,46 @@ namespace UrbanFood.Controls
             {
                 OracleDBConnection.Instance.CloseConnection();
             }
+        }
+
+        private string CancelOrderQuery(string orderId)
+        {
+            string canceledOrderId = null;
+
+            try
+            {
+                OracleConnection conn = OracleDBConnection.Instance.GetConnection();
+
+                using OracleCommand customerCancleOrderCmd = new("Customer_Cancel_Order", conn);
+                customerCancleOrderCmd.CommandType = CommandType.StoredProcedure;
+
+                OracleParameter resultParam = new OracleParameter("vOrderID", OracleDbType.Varchar2, 32)
+                {
+                    Direction = ParameterDirection.ReturnValue
+                };
+
+                customerCancleOrderCmd.Parameters.Add(resultParam);
+
+                customerCancleOrderCmd.Parameters.Add("pCustomerID", OracleDbType.Varchar2).Value = UserState.Instance.GetUserId();
+                customerCancleOrderCmd.Parameters.Add("pOrderID", OracleDbType.Varchar2).Value = orderId;
+                customerCancleOrderCmd.ExecuteNonQuery();
+
+                canceledOrderId = resultParam.Value?.ToString();
+            }
+            catch (OracleException ex)
+            {
+                MaterialMessageBox.Show(ErrorHandler.GetOracleErrorMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MaterialMessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                OracleDBConnection.Instance.CloseConnection();
+            }
+
+            return canceledOrderId;
         }
     }
 }
