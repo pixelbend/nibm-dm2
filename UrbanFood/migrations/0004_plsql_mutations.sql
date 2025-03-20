@@ -322,9 +322,9 @@ BEGIN
     END;
 
     IF vOrderID IS NULL THEN
-        vOrderID := Generate_UUID();
         INSERT INTO Orders (OrderID, CustomerID, Status)
-        VALUES (vOrderID, pCustomerID, 'Pending');
+        VALUES (Generate_UUID(), pCustomerID, 'Pending')
+        RETURNING OrderID INTO vOrderID;
     END IF;
 
     vTotalAmount := pQuantity * vProductPrice;
@@ -348,9 +348,9 @@ BEGIN
             Subtotal = vTotalAmount
         WHERE OrderItemID = vOrderItemID;
     ELSE
-        vOrderItemID := Generate_UUID();
         INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, Subtotal, Status)
-        VALUES (vOrderItemID, vOrderID, pProductID, pQuantity, vTotalAmount, 'Pending');
+        VALUES (Generate_UUID(), vOrderID, pProductID, pQuantity, vTotalAmount, 'Pending')
+        RETURNING OrderItemID INTO vOrderItemID;
     END IF;
 
     RETURN vOrderItemID;
@@ -488,7 +488,6 @@ CREATE OR REPLACE FUNCTION Checkout_Order(
     vStockQuantity NUMBER;
     vProductPrice  NUMBER(10, 2);
     vTotalAmount   NUMBER(10, 2) := 0;
-    vPaymentID     Payments.PaymentID%TYPE;
 BEGIN
     BEGIN
         SELECT OrderID, Status, CustomerID
@@ -539,9 +538,8 @@ BEGIN
                 Subtotal = vTotalAmount
             WHERE OrderItemID = orderItem.OrderItemID;
 
-            vPaymentID := Generate_UUID();
             INSERT INTO Payments (PaymentID, OrderItemID, CustomerID, AmountPaid, TransactionKey, Status)
-            VALUES (vPaymentID, orderItem.OrderItemID, vCustomerID, vTotalAmount, pTransactionKey, 'Accepted');
+            VALUES (Generate_UUID(), orderItem.OrderItemID, vCustomerID, vTotalAmount, pTransactionKey, 'Accepted');
         END LOOP;
 
     UPDATE Orders
