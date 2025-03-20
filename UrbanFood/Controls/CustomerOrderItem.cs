@@ -18,7 +18,6 @@ namespace UrbanFood.Controls
 {
     public partial class CustomerOrderItem : UserControl
     {
-        public event EventHandler OrderItemUpdated;
         public event EventHandler OrderItemRemoved;
 
         private string _orderItemID;
@@ -36,11 +35,6 @@ namespace UrbanFood.Controls
         }
 
         private void CustomerOrderItem_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void UpdateButton_Click(object sender, EventArgs e)
         {
 
         }

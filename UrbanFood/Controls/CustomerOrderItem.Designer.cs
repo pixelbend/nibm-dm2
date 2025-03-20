@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             materialCard1 = new MaterialSkin.Controls.MaterialCard();
-            UpdateButton = new MaterialSkin.Controls.MaterialButton();
             RemoveButton = new MaterialSkin.Controls.MaterialButton();
             OrderStatusLable = new Label();
             NoUnitsLabel = new Label();
@@ -44,7 +43,6 @@
             // materialCard1
             // 
             materialCard1.BackColor = Color.FromArgb(255, 255, 255);
-            materialCard1.Controls.Add(UpdateButton);
             materialCard1.Controls.Add(RemoveButton);
             materialCard1.Controls.Add(OrderStatusLable);
             materialCard1.Controls.Add(NoUnitsLabel);
@@ -63,28 +61,6 @@
             materialCard1.Size = new Size(920, 200);
             materialCard1.TabIndex = 15;
             // 
-            // UpdateButton
-            // 
-            UpdateButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            UpdateButton.AutoSize = false;
-            UpdateButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            UpdateButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            UpdateButton.Depth = 0;
-            UpdateButton.HighEmphasis = true;
-            UpdateButton.Icon = null;
-            UpdateButton.Location = new Point(781, 16);
-            UpdateButton.Margin = new Padding(4, 6, 4, 6);
-            UpdateButton.MouseState = MaterialSkin.MouseState.HOVER;
-            UpdateButton.Name = "UpdateButton";
-            UpdateButton.NoAccentTextColor = Color.Empty;
-            UpdateButton.Size = new Size(123, 36);
-            UpdateButton.TabIndex = 28;
-            UpdateButton.Text = "Update";
-            UpdateButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            UpdateButton.UseAccentColor = false;
-            UpdateButton.UseVisualStyleBackColor = true;
-            UpdateButton.Click += UpdateButton_Click;
-            // 
             // RemoveButton
             // 
             RemoveButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -94,7 +70,7 @@
             RemoveButton.Depth = 0;
             RemoveButton.HighEmphasis = true;
             RemoveButton.Icon = null;
-            RemoveButton.Location = new Point(781, 58);
+            RemoveButton.Location = new Point(781, 22);
             RemoveButton.Margin = new Padding(4, 6, 4, 6);
             RemoveButton.MouseState = MaterialSkin.MouseState.HOVER;
             RemoveButton.Name = "RemoveButton";
@@ -205,6 +181,5 @@
         private Label NoUnitsLabel;
         private Label OrderStatusLable;
         private MaterialSkin.Controls.MaterialButton RemoveButton;
-        private MaterialSkin.Controls.MaterialButton UpdateButton;
     }
 }

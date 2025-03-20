@@ -169,7 +169,6 @@ namespace UrbanFood.Controls
 
                         item.Dock = DockStyle.Top;
 
-                        item.OrderItemUpdated += Referesh_Order;
                         item.OrderItemRemoved += Referesh_Order;
 
                         CustomerOrderListPanel.Controls.Add(item);
