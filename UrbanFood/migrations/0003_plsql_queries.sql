@@ -53,15 +53,15 @@ END List_Products;
 CREATE OR REPLACE FUNCTION Get_Pending_Orders_By_Customer(
     pCustomerID VARCHAR2
 ) RETURN SYS_REFCURSOR IS
-    vCursor      SYS_REFCURSOR;
+    vCursor SYS_REFCURSOR;
 BEGIN
     OPEN vCursor FOR
-        SELECT o.OrderID       AS OrderID,
-               o.Status        AS Status,
-               o.OrderDate     AS OrderDate,
+        SELECT o.OrderID        AS OrderID,
+               o.Status         AS Status,
+               o.OrderDate      AS OrderDate,
                SUM(oi.Subtotal) AS OrderTotal
         FROM Orders o
-        JOIN OrderItems oi ON o.OrderID = oi.OrderID
+                 JOIN OrderItems oi ON o.OrderID = oi.OrderID
         WHERE o.CustomerID = pCustomerID
           AND o.Status = 'Pending'
         GROUP BY o.OrderID, o.Status, o.OrderDate;
@@ -76,20 +76,8 @@ CREATE OR REPLACE FUNCTION List_OrderItems_By_Order(
     pOrderID VARCHAR2,
     pStatus VARCHAR2 DEFAULT NULL
 ) RETURN SYS_REFCURSOR IS
-    vCursor      SYS_REFCURSOR;
-    vValidStatus BOOLEAN := FALSE;
+    vCursor SYS_REFCURSOR;
 BEGIN
-    IF pStatus IS NOT NULL THEN
-        IF pStatus IN ('Pending', 'Confirmed', 'Fulfilled', 'Returned', 'Canceled') THEN
-            vValidStatus := TRUE;
-        END IF;
-
-        IF NOT vValidStatus THEN
-            RAISE_APPLICATION_ERROR(-20001,
-                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Fulfilled, Returned');
-        END IF;
-    END IF;
-
     OPEN vCursor FOR
         SELECT oi.OrderItemID  AS OrderItemID,
                oi.OrderID      AS OrderID,
@@ -120,20 +108,8 @@ CREATE OR REPLACE FUNCTION List_OrderItems_By_Supplier(
     pStatus VARCHAR2 DEFAULT NULL,
     pProductName VARCHAR2 DEFAULT NULL
 ) RETURN SYS_REFCURSOR IS
-    vCursor      SYS_REFCURSOR;
-    vValidStatus BOOLEAN := FALSE;
+    vCursor SYS_REFCURSOR;
 BEGIN
-    IF pStatus IS NOT NULL THEN
-        IF pStatus IN ('Pending', 'Confirmed', 'Fulfilled', 'Returned', 'Canceled') THEN
-            vValidStatus := TRUE;
-        END IF;
-
-        IF NOT vValidStatus THEN
-            RAISE_APPLICATION_ERROR(-20001,
-                                    'Invalid status. Allowed values are: Pending, Confirmed, Canceled, Fulfilled, Returned');
-        END IF;
-    END IF;
-
     OPEN vCursor FOR
         SELECT oi.OrderItemID  AS OrderItemID,
                oi.OrderID      AS OrderID,
