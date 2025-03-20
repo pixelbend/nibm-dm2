@@ -68,7 +68,7 @@ namespace UrbanFood.Controls
                         orderID = reader["OrderID"].ToString();
                         orderStatus = reader["Status"].ToString();
                         orderDate = reader["OrderDate"].ToString();
-                        orderTotal = reader["Total"].ToString();
+                        orderTotal = reader["OrderTotal"].ToString();
                     }
                 }
             }
