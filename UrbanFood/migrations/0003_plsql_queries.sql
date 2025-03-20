@@ -136,3 +136,23 @@ EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END List_OrderItems_By_Supplier;
+
+CREATE OR REPLACE FUNCTION List_Order_History_By_Customer(
+    pCustomerID VARCHAR2
+) RETURN SYS_REFCURSOR IS
+    vCursor SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+        SELECT o.OrderID,
+               o.OrderDate,
+               o.Status,
+               COALESCE(SUM(CASE WHEN oi.Status != 'Canceled' THEN oi.Subtotal ELSE 0 END), 0) AS TotalAmount
+        FROM Orders o
+                 LEFT JOIN OrderItems oi ON o.OrderID = oi.OrderID
+        WHERE o.CustomerID = pCustomerID
+          AND o.Status != 'Pending'
+        GROUP BY o.OrderID, o.OrderDate, o.Status
+        ORDER BY o.OrderDate DESC;
+
+    RETURN vCursor;
+END List_Order_History_By_Customer;
