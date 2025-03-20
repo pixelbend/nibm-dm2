@@ -67,12 +67,12 @@ END;
 CREATE TABLE Orders
 (
     OrderID    VARCHAR2(32) PRIMARY KEY,
-    CustomerID VARCHAR2(32) NOT NULL,
+    CustomerID VARCHAR2(32)          NOT NULL,
     OrderDate  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     Status     VARCHAR2(20) DEFAULT 'Pending' CHECK (Status
         IN ('Pending', 'Confirmed',
-            'Fulfilled', 'Shipped', 'Delivered', 'Returned',
-            'Canceled'))    NOT NULL,
+            'Partially Fulfilled', 'Fulfilled', 'Partially Delivered', 'Delivered',
+            'Canceled', 'Returned')) NOT NULL,
     FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID)
 );
 
@@ -87,14 +87,13 @@ END;
 CREATE TABLE OrderItems
 (
     OrderItemID VARCHAR2(32) PRIMARY KEY,
-    OrderID     VARCHAR2(32)                        NOT NULL,
-    ProductID   VARCHAR2(32)                        NOT NULL,
-    Quantity    NUMBER CHECK (Quantity > 0)         NOT NULL,
-    Subtotal    NUMBER(10, 2) CHECK (Subtotal >= 0) NOT NULL,
+    OrderID     VARCHAR2(32)                                   NOT NULL,
+    ProductID   VARCHAR2(32)                                   NOT NULL,
+    Quantity    NUMBER CHECK (Quantity > 0)                    NOT NULL,
+    Subtotal    NUMBER(10, 2) CHECK (Subtotal >= 0)            NOT NULL,
     Status      VARCHAR2(20) DEFAULT 'Pending' CHECK (Status
         IN ('Pending', 'Confirmed',
-            'Fulfilled', 'Shipped', 'Delivered', 'Returned',
-            'Canceled'))                            NOT NULL,
+            'Fulfilled', 'Delivered', 'Canceled', 'Returned')) NOT NULL,
     FOREIGN KEY (OrderID) REFERENCES Orders (OrderID),
     FOREIGN KEY (ProductID) REFERENCES Products (ProductID)
 );
