@@ -360,13 +360,13 @@ EXCEPTION
 END Order_Product;
 
 CREATE OR REPLACE FUNCTION Customer_Remove_OrderItem(
-    pCustomerID   VARCHAR2,
-    pOrderItemID  VARCHAR2
+    pCustomerID VARCHAR2,
+    pOrderItemID VARCHAR2
 ) RETURN VARCHAR2 IS
-    vOrderStatus      VARCHAR2(20);
-    vOrderID          Orders.OrderID%TYPE;
-    vProductID        Products.ProductID%TYPE;
-    vQuantity         NUMBER;
+    vOrderStatus VARCHAR2(20);
+    vOrderID     Orders.OrderID%TYPE;
+    vProductID   Products.ProductID%TYPE;
+    vQuantity    NUMBER;
 BEGIN
     BEGIN
         SELECT oi.OrderID, oi.Status, oi.ProductID, oi.Quantity
@@ -378,14 +378,17 @@ BEGIN
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Order item does not exist or customer is not authorized to remove this item');
+            RAISE_APPLICATION_ERROR(-20001,
+                                    'Order item does not exist or customer is not authorized to remove this item');
     END;
 
     IF vOrderStatus = 'Fulfilled' OR vOrderStatus = 'Canceled' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order item cannot be removed as the order is already confirmed, fulfilled, or canceled.');
+        RAISE_APPLICATION_ERROR(-20001,
+                                'Order item cannot be removed as the order is already confirmed, fulfilled, or canceled.');
     END IF;
 
-    DELETE FROM OrderItems
+    DELETE
+    FROM OrderItems
     WHERE OrderItemID = pOrderItemID;
 
     DECLARE
@@ -411,17 +414,17 @@ EXCEPTION
 END Customer_Remove_OrderItem;
 
 CREATE OR REPLACE FUNCTION Customer_Update_OrderItem_Quantity(
-    pCustomerID   VARCHAR2,
-    pOrderItemID  VARCHAR2,
-    pNewQuantity  NUMBER
+    pCustomerID VARCHAR2,
+    pOrderItemID VARCHAR2,
+    pNewQuantity NUMBER
 ) RETURN VARCHAR2 IS
-    vOrderStatus      VARCHAR2(20);
-    vOrderID          Orders.OrderID%TYPE;
-    vProductID        Products.ProductID%TYPE;
-    vOldQuantity      NUMBER;
-    vAvailableStock   NUMBER;
-    vProductPrice     NUMBER(10, 2);
-    vTotalAmount      NUMBER(10, 2);
+    vOrderStatus    VARCHAR2(20);
+    vOrderID        Orders.OrderID%TYPE;
+    vProductID      Products.ProductID%TYPE;
+    vOldQuantity    NUMBER;
+    vAvailableStock NUMBER;
+    vProductPrice   NUMBER(10, 2);
+    vTotalAmount    NUMBER(10, 2);
 BEGIN
     BEGIN
         SELECT oi.OrderID, oi.Status, oi.ProductID, oi.Quantity
@@ -433,11 +436,13 @@ BEGIN
             FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20001, 'Order item does not exist or customer is not authorized to update this item');
+            RAISE_APPLICATION_ERROR(-20001,
+                                    'Order item does not exist or customer is not authorized to update this item');
     END;
 
     IF vOrderStatus = 'Fulfilled' OR vOrderStatus = 'Canceled' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order item cannot be updated because the order is already confirmed, fulfilled, or canceled.');
+        RAISE_APPLICATION_ERROR(-20001,
+                                'Order item cannot be updated because the order is already confirmed, fulfilled, or canceled.');
     END IF;
 
     IF pNewQuantity <= 0 THEN
