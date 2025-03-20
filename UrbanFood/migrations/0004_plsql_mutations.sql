@@ -388,10 +388,6 @@ BEGIN
     DELETE FROM OrderItems
     WHERE OrderItemID = pOrderItemID;
 
-    UPDATE Products
-    SET StockQuantity = StockQuantity + vQuantity
-    WHERE ProductID = vProductID;
-
     DECLARE
         vRemainingItems NUMBER;
     BEGIN
