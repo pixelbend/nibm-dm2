@@ -71,7 +71,7 @@ CREATE TABLE Orders
     OrderDate  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     Status     VARCHAR2(20) DEFAULT 'Pending' CHECK (Status
         IN ('Pending', 'Confirmed',
-            'Fulfilled', 'Returned',
+            'Fulfilled', 'Shipped', 'Delivered', 'Returned',
             'Canceled'))    NOT NULL,
     FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID)
 );
@@ -93,7 +93,7 @@ CREATE TABLE OrderItems
     Subtotal    NUMBER(10, 2) CHECK (Subtotal >= 0) NOT NULL,
     Status      VARCHAR2(20) DEFAULT 'Pending' CHECK (Status
         IN ('Pending', 'Confirmed',
-            'Fulfilled', 'Returned',
+            'Fulfilled', 'Shipped', 'Delivered', 'Returned',
             'Canceled'))                            NOT NULL,
     FOREIGN KEY (OrderID) REFERENCES Orders (OrderID),
     FOREIGN KEY (ProductID) REFERENCES Products (ProductID)
@@ -110,12 +110,12 @@ END;
 CREATE TABLE Payments
 (
     PaymentID      VARCHAR2(32) PRIMARY KEY,
-    OrderItemID    VARCHAR2(32) UNIQUE                                                                  NOT NULL,
-    CustomerID     VARCHAR2(32)                                                                         NOT NULL,
-    AmountPaid     NUMBER(10, 2) CHECK (AmountPaid >= 0)                                                NOT NULL,
+    OrderItemID    VARCHAR2(32) UNIQUE                                                        NOT NULL,
+    CustomerID     VARCHAR2(32)                                                               NOT NULL,
+    AmountPaid     NUMBER(10, 2) CHECK (AmountPaid >= 0)                                      NOT NULL,
     PaymentDate    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    TransactionKey VARCHAR2(255)                                                                        NOT NULL,
-    Status         VARCHAR2(20) DEFAULT 'Accepted' CHECK (Status IN ('Accepted', 'Failed', 'Refunded')) NOT NULL,
+    TransactionKey VARCHAR2(255)                                                              NOT NULL,
+    Status         VARCHAR2(20) DEFAULT 'Accepted' CHECK (Status IN ('Accepted', 'Refunded')) NOT NULL,
     RefundedDate   TIMESTAMP,
     FOREIGN KEY (OrderItemID) REFERENCES OrderItems (OrderItemID),
     FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID)
@@ -132,12 +132,11 @@ END;
 CREATE TABLE Deliveries
 (
     DeliveryID   VARCHAR2(32) PRIMARY KEY,
-    OrderItemID  VARCHAR2(32) UNIQUE                                                                                          NOT NULL,
-    SupplierID   VARCHAR2(32)                                                                                                 NOT NULL,
-    CustomerID   VARCHAR2(32)                                                                                                 NOT NULL,
+    OrderItemID  VARCHAR2(32) UNIQUE NOT NULL,
+    SupplierID   VARCHAR2(32)        NOT NULL,
+    CustomerID   VARCHAR2(32)        NOT NULL,
     DeliveryDate TIMESTAMP,
-    Address      VARCHAR2(500)                                                                                                NOT NULL,
-    Status       VARCHAR2(20) DEFAULT 'Pending' CHECK (Status IN ('Pending', 'Shipped', 'Delivered', 'Returned', 'Canceled')) NOT NULL,
+    Address      VARCHAR2(500)       NOT NULL,
     FOREIGN KEY (OrderItemID) REFERENCES OrderItems (OrderItemID),
     FOREIGN KEY (SupplierID) REFERENCES Suppliers (SupplierID),
     FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID)
