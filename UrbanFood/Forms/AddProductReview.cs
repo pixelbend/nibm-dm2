@@ -37,13 +37,17 @@ namespace UrbanFood.Forms
             {
                 ProductID = _productID,
                 CustomerID = UserState.Instance.GetUserId(),
-                Content = ReviewTextBox.Text
+                Content = ReviewTextBox.Text.Trim()
             };
 
             string result = CreateProductReview(reviewModel);
             if (!string.IsNullOrWhiteSpace(result))
             {
                 Close();
+            }
+            else
+            {
+                MaterialMessageBox.Show("An error occurred while saving the review.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
