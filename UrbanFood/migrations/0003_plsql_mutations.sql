@@ -663,3 +663,65 @@ EXCEPTION
     WHEN OTHERS THEN
         RAISE;
 END Supplier_Fulfill_OrderItem;
+
+CREATE OR REPLACE FUNCTION Supplier_Deliver_OrderItem(
+    pSupplierID VARCHAR2,
+    pOrderItemID VARCHAR2
+) RETURN VARCHAR2 IS
+    vOrderID         Orders.OrderID%TYPE;
+    vOrderItemID     OrderItems.OrderItemID%TYPE;
+    vProductID       Products.ProductID%TYPE;
+    vOrderItemStatus VARCHAR2(20);
+BEGIN
+    BEGIN
+        SELECT oi.OrderItemID, oi.OrderID, oi.Status, oi.ProductID
+        INTO vOrderItemID, vOrderID, vOrderItemStatus, vProductID
+        FROM OrderItems oi
+                 JOIN Orders o ON oi.OrderID = o.OrderID
+                 JOIN Products pr ON oi.ProductID = pr.ProductID
+        WHERE oi.OrderItemID = pOrderItemID
+          AND pr.SupplierID = pSupplierID
+            FOR UPDATE;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20001,
+                                    'Order item does not exist or supplier is not authorized to fulfill this item');
+    END;
+
+    IF vOrderItemStatus = 'Delivered' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is already Delivered and cannot be changed.');
+    END IF;
+
+    IF vOrderItemStatus != 'Fulfilled' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Fulfilled) to be Delivered.');
+    END IF;
+
+    UPDATE OrderItems
+    SET Status = 'Delivered'
+    WHERE OrderItemID = vOrderItemID;
+
+    DECLARE
+        vTotalItems     NUMBER;
+        vDeliveredItems NUMBER;
+    BEGIN
+        SELECT COUNT(*), SUM(CASE WHEN Status = 'Delivered' THEN 1 ELSE 0 END)
+        INTO vTotalItems, vDeliveredItems
+        FROM OrderItems
+        WHERE OrderID = vOrderID;
+
+        IF vDeliveredItems = vTotalItems THEN
+            UPDATE Orders
+            SET Status = 'Fulfilled'
+            WHERE OrderID = vOrderID;
+        ELSIF vDeliveredItems > 0 THEN
+            UPDATE Orders
+            SET Status = 'Partially Fulfilled'
+            WHERE OrderID = vOrderID;
+        END IF;
+    END;
+
+    RETURN vOrderID;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END Supplier_Deliver_OrderItem;
