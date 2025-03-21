@@ -39,6 +39,7 @@
             // CustomerOrderListPanel
             // 
             CustomerOrderListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            CustomerOrderListPanel.AutoScroll = true;
             CustomerOrderListPanel.AutoSize = true;
             CustomerOrderListPanel.Location = new Point(16, 16);
             CustomerOrderListPanel.Name = "CustomerOrderListPanel";

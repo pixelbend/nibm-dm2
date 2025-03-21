@@ -35,6 +35,7 @@
             // SupplierOrderListPanel
             // 
             SupplierOrderListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            SupplierOrderListPanel.AutoScroll = true;
             SupplierOrderListPanel.Location = new Point(20, 86);
             SupplierOrderListPanel.Name = "SupplierOrderListPanel";
             SupplierOrderListPanel.Size = new Size(1225, 502);

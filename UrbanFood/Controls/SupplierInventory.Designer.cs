@@ -124,7 +124,7 @@
             InventoryListPanel.BackColor = Color.Transparent;
             InventoryListPanel.Location = new Point(19, 86);
             InventoryListPanel.Name = "InventoryListPanel";
-            InventoryListPanel.Size = new Size(1225, 470);
+            InventoryListPanel.Size = new Size(1225, 467);
             InventoryListPanel.TabIndex = 22;
             // 
             // AddProductButton

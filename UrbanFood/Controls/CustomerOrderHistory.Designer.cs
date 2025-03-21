@@ -34,6 +34,7 @@
             // CustomerOrderHistoyListPanel
             // 
             CustomerOrderHistoyListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            CustomerOrderHistoyListPanel.AutoScroll = true;
             CustomerOrderHistoyListPanel.AutoSize = true;
             CustomerOrderHistoyListPanel.Location = new Point(14, 15);
             CustomerOrderHistoyListPanel.Name = "CustomerOrderHistoyListPanel";

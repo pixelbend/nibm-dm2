@@ -25,7 +25,7 @@ namespace UrbanFood.Controls
         private string _productPrice;
         private string _productName;
         private string _productCategory;
-
+        
         public SupplierOrderItem()
         {
             InitializeComponent();

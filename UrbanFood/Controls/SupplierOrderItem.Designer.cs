@@ -74,7 +74,7 @@
             DeliverButton.Depth = 0;
             DeliverButton.HighEmphasis = true;
             DeliverButton.Icon = null;
-            DeliverButton.Location = new Point(958, 13);
+            DeliverButton.Location = new Point(1045, 13);
             DeliverButton.Margin = new Padding(4, 6, 4, 6);
             DeliverButton.MouseState = MaterialSkin.MouseState.HOVER;
             DeliverButton.Name = "DeliverButton";
@@ -130,10 +130,10 @@
             // OrderIDLabel
             // 
             OrderIDLabel.AutoSize = true;
-            OrderIDLabel.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            OrderIDLabel.Location = new Point(20, 14);
+            OrderIDLabel.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            OrderIDLabel.Location = new Point(17, 86);
             OrderIDLabel.Name = "OrderIDLabel";
-            OrderIDLabel.Size = new Size(95, 31);
+            OrderIDLabel.Size = new Size(82, 28);
             OrderIDLabel.TabIndex = 32;
             OrderIDLabel.Text = "OrderID";
             // 
@@ -200,10 +200,10 @@
             // ProductNameLable
             // 
             ProductNameLable.AutoSize = true;
-            ProductNameLable.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ProductNameLable.Location = new Point(20, 81);
+            ProductNameLable.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ProductNameLable.Location = new Point(17, 14);
             ProductNameLable.Name = "ProductNameLable";
-            ProductNameLable.Size = new Size(210, 31);
+            ProductNameLable.Size = new Size(219, 31);
             ProductNameLable.TabIndex = 1;
             ProductNameLable.Text = "ProductNameLable";
             // 

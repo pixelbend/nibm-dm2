@@ -57,6 +57,7 @@
             // 
             // ReviewListPanel
             // 
+            ReviewListPanel.AutoScroll = true;
             ReviewListPanel.Location = new Point(23, 138);
             ReviewListPanel.Name = "ReviewListPanel";
             ReviewListPanel.Size = new Size(755, 452);
