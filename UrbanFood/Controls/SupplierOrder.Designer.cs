@@ -30,17 +30,14 @@
         {
             SupplierOrderListPanel = new FlowLayoutPanel();
             StatusComboBox = new MaterialSkin.Controls.MaterialComboBox();
-            pictureBox1 = new PictureBox();
-            ProductSearchBox = new MaterialSkin.Controls.MaterialTextBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // SupplierOrderListPanel
             // 
             SupplierOrderListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            SupplierOrderListPanel.Location = new Point(20, 73);
+            SupplierOrderListPanel.Location = new Point(20, 86);
             SupplierOrderListPanel.Name = "SupplierOrderListPanel";
-            SupplierOrderListPanel.Size = new Size(1225, 515);
+            SupplierOrderListPanel.Size = new Size(1225, 502);
             SupplierOrderListPanel.TabIndex = 1;
             // 
             // StatusComboBox
@@ -58,7 +55,7 @@
             StatusComboBox.FormattingEnabled = true;
             StatusComboBox.IntegralHeight = false;
             StatusComboBox.ItemHeight = 43;
-            StatusComboBox.Items.AddRange(new object[] { "Confirmed", "Fulfilled", "Returned", "Canceled" });
+            StatusComboBox.Items.AddRange(new object[] { "Confirmed", "Fulfilled", "Delivered", "Canceled" });
             StatusComboBox.Location = new Point(1061, 18);
             StatusComboBox.MaxDropDownItems = 4;
             StatusComboBox.MouseState = MaterialSkin.MouseState.OUT;
@@ -66,47 +63,17 @@
             StatusComboBox.Size = new Size(184, 49);
             StatusComboBox.StartIndex = 0;
             StatusComboBox.TabIndex = 18;
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = Properties.Resources.icons8_search_60;
-            pictureBox1.Location = new Point(22, 17);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(50, 49);
-            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
-            pictureBox1.TabIndex = 20;
-            pictureBox1.TabStop = false;
-            // 
-            // ProductSearchBox
-            // 
-            ProductSearchBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            ProductSearchBox.AnimateReadOnly = false;
-            ProductSearchBox.BorderStyle = BorderStyle.None;
-            ProductSearchBox.Depth = 0;
-            ProductSearchBox.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            ProductSearchBox.LeadingIcon = null;
-            ProductSearchBox.Location = new Point(78, 17);
-            ProductSearchBox.MaxLength = 50;
-            ProductSearchBox.MouseState = MaterialSkin.MouseState.OUT;
-            ProductSearchBox.Multiline = false;
-            ProductSearchBox.Name = "ProductSearchBox";
-            ProductSearchBox.Size = new Size(977, 50);
-            ProductSearchBox.TabIndex = 19;
-            ProductSearchBox.Text = "";
-            ProductSearchBox.TrailingIcon = null;
+            StatusComboBox.SelectedIndexChanged += StatusComboBox_SelectedIndexChanged;
             // 
             // SupplierOrder
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(pictureBox1);
-            Controls.Add(ProductSearchBox);
             Controls.Add(StatusComboBox);
             Controls.Add(SupplierOrderListPanel);
             Name = "SupplierOrder";
             Size = new Size(1266, 610);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            Load += SupplierOrder_Load;
             ResumeLayout(false);
         }
 
@@ -114,7 +81,5 @@
 
         private FlowLayoutPanel SupplierOrderListPanel;
         private MaterialSkin.Controls.MaterialComboBox StatusComboBox;
-        private PictureBox pictureBox1;
-        private MaterialSkin.Controls.MaterialTextBox ProductSearchBox;
     }
 }

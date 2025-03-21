@@ -22,13 +22,23 @@ namespace UrbanFood.Controls
             InitializeComponent();
         }
 
-        private void PopulateCustomerOrderList()
+        private void SupplierOrder_Load(object sender, EventArgs e)
+        {
+            PopulateSupplierOrderList();
+        }
+
+        private void StatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateSupplierOrderList();
+        }
+
+        private void PopulateSupplierOrderList()
         {
             try
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
 
-                using OracleCommand orderListCmd = new("List_Orders_By_Supplier", conn);
+                using OracleCommand orderListCmd = new("List_OrderItems_By_Supplier", conn);
                 orderListCmd.CommandType = CommandType.StoredProcedure;
 
                 OracleParameter cursor = new OracleParameter("vCursor", OracleDbType.RefCursor)
@@ -48,6 +58,8 @@ namespace UrbanFood.Controls
                     orderListCmd.Parameters.Add("pStatus", OracleDbType.Varchar2).Value = StatusComboBox.Text;
                 }
 
+                orderListCmd.Parameters.Add("pProductName", OracleDbType.Varchar2).Value = DBNull.Value;
+
                 using OracleDataReader reader = orderListCmd.ExecuteReader();
 
                 SupplierOrderListPanel.Controls.Clear();
@@ -56,16 +68,17 @@ namespace UrbanFood.Controls
                 {
                     while (reader.Read())
                     {
-                        SupplierInventoryItem item = new()
+                        SupplierOrderItem item = new()
                         {
-                            //OrderItemID = reader["OrderID"].ToString(),
-                            //OrderItemQuantity = $"No Units: {reader["Quantity"].ToString()}",
-                            //ProductPrice = $"Unit Price Rs: {reader["Price"].ToString()}",
-                            //OrderItemTotal = $"Total Rs: {Convert.ToInt32(reader["Quantity"].ToString()) * Convert.ToDecimal(reader["Price"].ToString())}",
-                            //OrderItemStatus = reader["Status"].ToString(),
-                            //ProductName = reader["Name"].ToString(),
-                            //ProductDescription = reader["Description"] == DBNull.Value ? "No Description" : reader["Description"].ToString(),
-                            //ProductCategory = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}"
+
+                            OrderItemID = reader["OrderItemID"].ToString(),
+                            OrderItemUnits = $"No Units: {reader["Quantity"].ToString()}",
+                            ProductPrice = $"Unit Price Rs: {reader["Price"].ToString()}",
+                            OrderItemTotal = $"Total Rs: {Convert.ToInt32(reader["Quantity"].ToString()) * Convert.ToDecimal(reader["Price"].ToString())}",
+                            OrderItemStatus = reader["OrderStatus"].ToString(),
+                            OrderItemDate = reader["OrderDate"].ToString(),
+                            ProductName = reader["Name"].ToString(),
+                            ProductCategory = reader["Category"] == DBNull.Value ? "Category: N/A" : $"Category: {reader["Category"].ToString()}"
                         };
 
                         SupplierOrderListPanel.Controls.Add(item);
@@ -84,7 +97,6 @@ namespace UrbanFood.Controls
             {
                 OracleDBConnection.Instance.CloseConnection();
             }
-
         }
     }
 }
