@@ -14,6 +14,8 @@ using UrbanFood.Database.OracleDB;
 using UrbanFood.Utils;
 using UrbanFood.LocalState;
 using Oracle.ManagedDataAccess.Types;
+using UrbanFood.Database.MongoDB;
+using MongoDB.Driver;
 
 namespace UrbanFood.Controls
 {
@@ -144,6 +146,7 @@ namespace UrbanFood.Controls
                 string qresult = DeleteProductQuery(_productID, UserState.Instance.GetUserId());
                 if (qresult != null)
                 {
+                    DeleteProductReviews(_productID);
                     Dispose();
                 }
             }
@@ -189,6 +192,13 @@ namespace UrbanFood.Controls
             }
 
             return deletedProductId;
+        }
+
+        private void DeleteProductReviews(string productID)
+        {
+            var collection = ReviewCollection.Instance.GetCollection();
+            var filter = Builders<ReviewModel>.Filter.Eq(r => r.ProductID, productID);
+            collection.DeleteMany(filter);
         }
 
     }
