@@ -531,15 +531,16 @@ CREATE OR REPLACE FUNCTION Supplier_Cancel_OrderItem(
     pSupplierID VARCHAR2,
     pOrderItemID VARCHAR2
 ) RETURN VARCHAR2 IS
-    vOrderStatus VARCHAR2(20);
+    vOrderItemStatus VARCHAR2(20);
     vOrderID     Orders.OrderID%TYPE;
+    vOrderItemID OrderItems.OrderItemID%TYPE;
     vProductID   Products.ProductID%TYPE;
     vQuantity    NUMBER;
     vPaymentID   Payments.PaymentID%TYPE;
 BEGIN
     BEGIN
-        SELECT oi.OrderID, oi.Status, oi.ProductID, oi.Quantity, p.PaymentID
-        INTO vOrderID, vOrderStatus, vProductID, vQuantity, vPaymentID
+        SELECT oi.OrderItemID, oi.OrderID, oi.Status, oi.ProductID, oi.Quantity, p.PaymentID
+        INTO vOrderItemID, vOrderID, vOrderItemStatus, vProductID, vQuantity, vPaymentID
         FROM OrderItems oi
                  JOIN Orders o ON oi.OrderID = o.OrderID
                  JOIN Products pr ON oi.ProductID = pr.ProductID
@@ -554,13 +555,15 @@ BEGIN
                                     'Order item does not exist or supplier is not authorized to cancel this order item');
     END;
 
-    IF vOrderStatus = 'Fulfilled' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order item is already fulfilled and cannot be canceled');
+    IF vOrderItemStatus = 'Fulfilled' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is already Fulfilled and cannot be canceled');
+    ELSIF vOrderItemStatus = 'Delivered' THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is already Delivered and cannot be canceled');
     END IF;
 
     UPDATE OrderItems
     SET Status = 'Canceled'
-    WHERE OrderItemID = pOrderItemID;
+    WHERE OrderItemID = vOrderItemID;
 
     UPDATE Products
     SET StockQuantity = StockQuantity + vQuantity
@@ -593,7 +596,7 @@ BEGIN
         END IF;
     END;
 
-    RETURN vOrderID;
+    RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
@@ -604,12 +607,13 @@ CREATE OR REPLACE FUNCTION Supplier_Fulfill_OrderItem(
     pOrderItemID VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderID         Orders.OrderID%TYPE;
+    vOrderItemID     OrderItems.OrderItemID%TYPE;
     vProductID       Products.ProductID%TYPE;
     vOrderItemStatus VARCHAR2(20);
 BEGIN
     BEGIN
-        SELECT oi.OrderID, oi.Status, oi.ProductID
-        INTO vOrderID, vOrderItemStatus, vProductID
+        SELECT oi.OrderItemID, oi.OrderID, oi.Status, oi.ProductID
+        INTO vOrderItemID, vOrderID, vOrderItemStatus, vProductID
         FROM OrderItems oi
                  JOIN Orders o ON oi.OrderID = o.OrderID
                  JOIN Products pr ON oi.ProductID = pr.ProductID
@@ -623,16 +627,16 @@ BEGIN
     END;
 
     IF vOrderItemStatus = 'Fulfilled' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order item is already fulfilled and cannot be changed.');
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is already Fulfilled and cannot be changed.');
     END IF;
 
     IF vOrderItemStatus != 'Pending' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Pending) to be fulfilled.');
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Pending) to be Fulfilled.');
     END IF;
 
     UPDATE OrderItems
     SET Status = 'Fulfilled'
-    WHERE OrderItemID = pOrderItemID;
+    WHERE OrderItemID = vOrderItemID;
 
     DECLARE
         vTotalItems     NUMBER;
