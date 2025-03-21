@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UrbanFood.Forms;
 using UrbanFood.LocalState;
 
 namespace UrbanFood.Controls
@@ -77,7 +78,8 @@ namespace UrbanFood.Controls
 
         private void EditButton_Click(object sender, EventArgs e)
         {
-
+            UpdateProductReview updateProductReview = new (_reviewID);
+            updateProductReview.ShowDialog();
         }
 
         private void SetEditButtonState(string customerID)
