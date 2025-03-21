@@ -33,7 +33,7 @@
             MainTabBar = new MaterialSkin.Controls.MaterialTabControl();
             MarketPage = new TabPage();
             OrderPage = new TabPage();
-            ProfilePage = new TabPage();
+            OrderHistoryPage = new TabPage();
             TabBarImageList = new ImageList(components);
             MainTabBar.SuspendLayout();
             SuspendLayout();
@@ -42,7 +42,7 @@
             // 
             MainTabBar.Controls.Add(MarketPage);
             MainTabBar.Controls.Add(OrderPage);
-            MainTabBar.Controls.Add(ProfilePage);
+            MainTabBar.Controls.Add(OrderHistoryPage);
             MainTabBar.Depth = 0;
             MainTabBar.Dock = DockStyle.Fill;
             MainTabBar.ImageList = TabBarImageList;
@@ -77,25 +77,25 @@
             OrderPage.Text = "Order";
             OrderPage.UseVisualStyleBackColor = true;
             // 
-            // ProfilePage
+            // OrderHistoryPage
             // 
-            ProfilePage.ImageKey = "icons8-profile-32.png";
-            ProfilePage.Location = new Point(4, 39);
-            ProfilePage.Name = "ProfilePage";
-            ProfilePage.Padding = new Padding(3);
-            ProfilePage.Size = new Size(1266, 610);
-            ProfilePage.TabIndex = 2;
-            ProfilePage.Text = "Profile";
-            ProfilePage.UseVisualStyleBackColor = true;
+            OrderHistoryPage.ImageKey = "icons8-order-history-32.png";
+            OrderHistoryPage.Location = new Point(4, 39);
+            OrderHistoryPage.Name = "OrderHistoryPage";
+            OrderHistoryPage.Padding = new Padding(3);
+            OrderHistoryPage.Size = new Size(1266, 610);
+            OrderHistoryPage.TabIndex = 2;
+            OrderHistoryPage.Text = "Order History";
+            OrderHistoryPage.UseVisualStyleBackColor = true;
             // 
             // TabBarImageList
             // 
             TabBarImageList.ColorDepth = ColorDepth.Depth32Bit;
             TabBarImageList.ImageStream = (ImageListStreamer)resources.GetObject("TabBarImageList.ImageStream");
             TabBarImageList.TransparentColor = Color.Transparent;
-            TabBarImageList.Images.SetKeyName(0, "icons8-profile-32.png");
-            TabBarImageList.Images.SetKeyName(1, "icons8-order-32.png");
-            TabBarImageList.Images.SetKeyName(2, "icons8-market-32.png");
+            TabBarImageList.Images.SetKeyName(0, "icons8-order-32.png");
+            TabBarImageList.Images.SetKeyName(1, "icons8-market-32.png");
+            TabBarImageList.Images.SetKeyName(2, "icons8-order-history-32.png");
             // 
             // Customer
             // 
@@ -118,7 +118,7 @@
         private MaterialSkin.Controls.MaterialTabControl MainTabBar;
         private TabPage MarketPage;
         private TabPage OrderPage;
-        private TabPage ProfilePage;
+        private TabPage OrderHistoryPage;
         private ImageList TabBarImageList;
     }
 }

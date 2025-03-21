@@ -30,43 +30,23 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Supplier));
-            MainTabBar = new MaterialSkin.Controls.MaterialTabControl();
-            InventoryPage = new TabPage();
-            OrderPage = new TabPage();
-            DeliveryPage = new TabPage();
-            ProfilePage = new TabPage();
             TabBarImageList = new ImageList(components);
+            OrderPage = new TabPage();
+            InventoryPage = new TabPage();
+            MainTabBar = new MaterialSkin.Controls.MaterialTabControl();
             MainTabBar.SuspendLayout();
             SuspendLayout();
             // 
-            // MainTabBar
+            // TabBarImageList
             // 
-            MainTabBar.Controls.Add(InventoryPage);
-            MainTabBar.Controls.Add(OrderPage);
-            MainTabBar.Controls.Add(DeliveryPage);
-            MainTabBar.Controls.Add(ProfilePage);
-            MainTabBar.Depth = 0;
-            MainTabBar.Dock = DockStyle.Fill;
-            MainTabBar.ImageList = TabBarImageList;
-            MainTabBar.Location = new Point(3, 64);
-            MainTabBar.MouseState = MaterialSkin.MouseState.HOVER;
-            MainTabBar.Multiline = true;
-            MainTabBar.Name = "MainTabBar";
-            MainTabBar.SelectedIndex = 0;
-            MainTabBar.Size = new Size(1274, 653);
-            MainTabBar.TabIndex = 6;
-            MainTabBar.SelectedIndexChanged += MainTabBar_SelectedIndexChanged;
-            // 
-            // InventoryPage
-            // 
-            InventoryPage.BackColor = Color.Transparent;
-            InventoryPage.ImageKey = "icons8-inventory-32.png";
-            InventoryPage.Location = new Point(4, 39);
-            InventoryPage.Name = "InventoryPage";
-            InventoryPage.Padding = new Padding(3);
-            InventoryPage.Size = new Size(1266, 610);
-            InventoryPage.TabIndex = 1;
-            InventoryPage.Text = "Inventory";
+            TabBarImageList.ColorDepth = ColorDepth.Depth32Bit;
+            TabBarImageList.ImageStream = (ImageListStreamer)resources.GetObject("TabBarImageList.ImageStream");
+            TabBarImageList.TransparentColor = Color.Transparent;
+            TabBarImageList.Images.SetKeyName(0, "icons8-profile-32.png");
+            TabBarImageList.Images.SetKeyName(1, "icons8-delivery-32.png");
+            TabBarImageList.Images.SetKeyName(2, "icons8-inventory-32.png");
+            TabBarImageList.Images.SetKeyName(3, "icons8-sales-32.png");
+            TabBarImageList.Images.SetKeyName(4, "icons8-order-32.png");
             // 
             // OrderPage
             // 
@@ -79,38 +59,32 @@
             OrderPage.Text = "Order";
             OrderPage.UseVisualStyleBackColor = true;
             // 
-            // DeliveryPage
+            // InventoryPage
             // 
-            DeliveryPage.ImageKey = "icons8-delivery-32.png";
-            DeliveryPage.Location = new Point(4, 39);
-            DeliveryPage.Name = "DeliveryPage";
-            DeliveryPage.Padding = new Padding(3);
-            DeliveryPage.Size = new Size(1266, 610);
-            DeliveryPage.TabIndex = 3;
-            DeliveryPage.Text = "Delivery";
-            DeliveryPage.UseVisualStyleBackColor = true;
+            InventoryPage.BackColor = Color.Transparent;
+            InventoryPage.ImageKey = "icons8-inventory-32.png";
+            InventoryPage.Location = new Point(4, 39);
+            InventoryPage.Name = "InventoryPage";
+            InventoryPage.Padding = new Padding(3);
+            InventoryPage.Size = new Size(1266, 610);
+            InventoryPage.TabIndex = 1;
+            InventoryPage.Text = "Inventory";
             // 
-            // ProfilePage
+            // MainTabBar
             // 
-            ProfilePage.ImageKey = "icons8-profile-32.png";
-            ProfilePage.Location = new Point(4, 39);
-            ProfilePage.Name = "ProfilePage";
-            ProfilePage.Padding = new Padding(3);
-            ProfilePage.Size = new Size(1266, 610);
-            ProfilePage.TabIndex = 2;
-            ProfilePage.Text = "Profile";
-            ProfilePage.UseVisualStyleBackColor = true;
-            // 
-            // TabBarImageList
-            // 
-            TabBarImageList.ColorDepth = ColorDepth.Depth32Bit;
-            TabBarImageList.ImageStream = (ImageListStreamer)resources.GetObject("TabBarImageList.ImageStream");
-            TabBarImageList.TransparentColor = Color.Transparent;
-            TabBarImageList.Images.SetKeyName(0, "icons8-profile-32.png");
-            TabBarImageList.Images.SetKeyName(1, "icons8-delivery-32.png");
-            TabBarImageList.Images.SetKeyName(2, "icons8-inventory-32.png");
-            TabBarImageList.Images.SetKeyName(3, "icons8-sales-32.png");
-            TabBarImageList.Images.SetKeyName(4, "icons8-order-32.png");
+            MainTabBar.Controls.Add(InventoryPage);
+            MainTabBar.Controls.Add(OrderPage);
+            MainTabBar.Depth = 0;
+            MainTabBar.Dock = DockStyle.Fill;
+            MainTabBar.ImageList = TabBarImageList;
+            MainTabBar.Location = new Point(3, 64);
+            MainTabBar.MouseState = MaterialSkin.MouseState.HOVER;
+            MainTabBar.Multiline = true;
+            MainTabBar.Name = "MainTabBar";
+            MainTabBar.SelectedIndex = 0;
+            MainTabBar.Size = new Size(1274, 653);
+            MainTabBar.TabIndex = 6;
+            MainTabBar.SelectedIndexChanged += MainTabBar_SelectedIndexChanged;
             // 
             // Supplier
             // 
@@ -130,12 +104,9 @@
         }
 
         #endregion
-
-        private MaterialSkin.Controls.MaterialTabControl MainTabBar;
-        private TabPage InventoryPage;
-        private TabPage ProfilePage;
         private ImageList TabBarImageList;
-        private TabPage DeliveryPage;
         private TabPage OrderPage;
+        private TabPage InventoryPage;
+        private MaterialSkin.Controls.MaterialTabControl MainTabBar;
     }
 }
