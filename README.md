@@ -32,17 +32,7 @@ Ensure you have the following installed on your system:
 ### Installation and Running the Project
 
 1. **Install Docker (if not installed)**
-    - **Windows & Mac:** Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop).
-    - **Linux:** Install via package manager:
-      ```sh
-      sudo apt-get update
-      sudo apt-get install docker-ce docker-ce-cli containerd.io
-      ```
-      Ensure your user is added to the Docker group:
-      ```sh
-      sudo usermod -aG docker $USER
-      ```
-
+    - **Windows:** Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop).
 2. **Clone the Repository**
    ```sh
    git clone https://github.com/pixelbend/nibm-dm2.git
