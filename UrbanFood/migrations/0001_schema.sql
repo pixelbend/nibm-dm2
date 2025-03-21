@@ -134,7 +134,7 @@ CREATE TABLE Deliveries
     OrderItemID  VARCHAR2(32) UNIQUE NOT NULL,
     SupplierID   VARCHAR2(32)        NOT NULL,
     CustomerID   VARCHAR2(32)        NOT NULL,
-    DeliveryDate TIMESTAMP,
+    DeliveredDate TIMESTAMP,
     Address      VARCHAR2(500)       NOT NULL,
     FOREIGN KEY (OrderItemID) REFERENCES OrderItems (OrderItemID),
     FOREIGN KEY (SupplierID) REFERENCES Suppliers (SupplierID),
