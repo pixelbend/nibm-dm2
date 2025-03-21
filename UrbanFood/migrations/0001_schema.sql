@@ -71,7 +71,7 @@ CREATE TABLE Orders
     OrderDate  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     Status     VARCHAR2(20) DEFAULT 'Pending' CHECK (Status
         IN ('Pending', 'Confirmed',
-            'Partially Fulfilled', 'Fulfilled', 'Partially Delivered', 'Delivered',
+            'Partially Fulfilled', 'Fulfilled',
             'Canceled', 'Returned')) NOT NULL,
     FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID)
 );
