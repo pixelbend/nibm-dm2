@@ -143,9 +143,9 @@ CREATE OR REPLACE FUNCTION List_Order_History_By_Customer(
     vCursor SYS_REFCURSOR;
 BEGIN
     OPEN vCursor FOR
-        SELECT o.OrderID,
-               o.OrderDate,
-               o.Status,
+        SELECT o.OrderID                                                                       AS OrderID,
+               o.OrderDate                                                                     AS OrderDate,
+               o.Status                                                                        AS Status,
                COALESCE(SUM(CASE WHEN oi.Status != 'Canceled' THEN oi.Subtotal ELSE 0 END), 0) AS TotalAmount
         FROM Orders o
                  LEFT JOIN OrderItems oi ON o.OrderID = oi.OrderID
