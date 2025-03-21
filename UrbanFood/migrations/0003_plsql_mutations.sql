@@ -532,11 +532,11 @@ CREATE OR REPLACE FUNCTION Supplier_Cancel_OrderItem(
     pOrderItemID VARCHAR2
 ) RETURN VARCHAR2 IS
     vOrderItemStatus VARCHAR2(20);
-    vOrderID     Orders.OrderID%TYPE;
-    vOrderItemID OrderItems.OrderItemID%TYPE;
-    vProductID   Products.ProductID%TYPE;
-    vQuantity    NUMBER;
-    vPaymentID   Payments.PaymentID%TYPE;
+    vOrderID         Orders.OrderID%TYPE;
+    vOrderItemID     OrderItems.OrderItemID%TYPE;
+    vProductID       Products.ProductID%TYPE;
+    vQuantity        NUMBER;
+    vPaymentID       Payments.PaymentID%TYPE;
 BEGIN
     BEGIN
         SELECT oi.OrderItemID, oi.OrderID, oi.Status, oi.ProductID, oi.Quantity, p.PaymentID
@@ -628,9 +628,7 @@ BEGIN
 
     IF vOrderItemStatus = 'Fulfilled' THEN
         RAISE_APPLICATION_ERROR(-20001, 'Order item is already Fulfilled and cannot be changed.');
-    END IF;
-
-    IF vOrderItemStatus != 'Pending' THEN
+    ELSIF vOrderItemStatus != 'Pending' THEN
         RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Pending) to be Fulfilled.');
     END IF;
 
@@ -639,26 +637,21 @@ BEGIN
     WHERE OrderItemID = vOrderItemID;
 
     DECLARE
-        vTotalItems     NUMBER;
         vFulfilledItems NUMBER;
     BEGIN
-        SELECT COUNT(*), SUM(CASE WHEN Status = 'Fulfilled' THEN 1 ELSE 0 END)
-        INTO vTotalItems, vFulfilledItems
+        SELECT SUM(CASE WHEN Status = 'Fulfilled' THEN 1 ELSE 0 END)
+        INTO vFulfilledItems
         FROM OrderItems
         WHERE OrderID = vOrderID;
 
-        IF vFulfilledItems = vTotalItems THEN
-            UPDATE Orders
-            SET Status = 'Fulfilled'
-            WHERE OrderID = vOrderID;
-        ELSIF vFulfilledItems > 0 THEN
+        IF vFulfilledItems > 0 THEN
             UPDATE Orders
             SET Status = 'Partially Fulfilled'
             WHERE OrderID = vOrderID;
         END IF;
     END;
 
-    RETURN vOrderID;
+    RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
@@ -671,14 +664,18 @@ CREATE OR REPLACE FUNCTION Supplier_Deliver_OrderItem(
     vOrderID         Orders.OrderID%TYPE;
     vOrderItemID     OrderItems.OrderItemID%TYPE;
     vProductID       Products.ProductID%TYPE;
+    vCustomerID      Customers.CustomerID%TYPE;
+    vAddress         Customers.Address%TYPE;
     vOrderItemStatus VARCHAR2(20);
+    vDeliveryID      Deliveries.DeliveryID%TYPE;
 BEGIN
     BEGIN
-        SELECT oi.OrderItemID, oi.OrderID, oi.Status, oi.ProductID
-        INTO vOrderItemID, vOrderID, vOrderItemStatus, vProductID
+        SELECT oi.OrderItemID, oi.OrderID, oi.Status, oi.ProductID, o.CustomerID, c.Address
+        INTO vOrderItemID, vOrderID, vOrderItemStatus, vProductID, vCustomerID, vAddress
         FROM OrderItems oi
                  JOIN Orders o ON oi.OrderID = o.OrderID
                  JOIN Products pr ON oi.ProductID = pr.ProductID
+                 JOIN Customers c ON o.CustomerID = c.CustomerID
         WHERE oi.OrderItemID = pOrderItemID
           AND pr.SupplierID = pSupplierID
             FOR UPDATE;
@@ -690,15 +687,18 @@ BEGIN
 
     IF vOrderItemStatus = 'Delivered' THEN
         RAISE_APPLICATION_ERROR(-20001, 'Order item is already Delivered and cannot be changed.');
-    END IF;
-
-    IF vOrderItemStatus != 'Fulfilled' THEN
+    ELSIF vOrderItemStatus != 'Fulfilled' THEN
         RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Fulfilled) to be Delivered.');
     END IF;
 
     UPDATE OrderItems
     SET Status = 'Delivered'
     WHERE OrderItemID = vOrderItemID;
+
+    INSERT INTO Deliveries (DeliveryID, OrderItemID, SupplierID, CustomerID, Address, DeliveredDate)
+    VALUES (GENERATE_UUID(), vOrderItemID, pSupplierID, vCustomerID,
+            vAddress, CURRENT_TIMESTAMP)
+    RETURNING DeliveryID INTO vDeliveryID;
 
     DECLARE
         vTotalItems     NUMBER;
@@ -720,7 +720,7 @@ BEGIN
         END IF;
     END;
 
-    RETURN vOrderID;
+    RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
         RAISE;
