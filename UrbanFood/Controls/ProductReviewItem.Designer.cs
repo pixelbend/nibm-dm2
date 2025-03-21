@@ -31,20 +31,22 @@
             ContentLabel = new Label();
             CreatedAtLabel = new Label();
             EditButton = new MaterialSkin.Controls.MaterialButton();
+            materialCard1 = new MaterialSkin.Controls.MaterialCard();
+            materialCard1.SuspendLayout();
             SuspendLayout();
             // 
             // ContentLabel
             // 
             ContentLabel.Location = new Point(17, 14);
             ContentLabel.Name = "ContentLabel";
-            ContentLabel.Size = new Size(616, 85);
+            ContentLabel.Size = new Size(712, 73);
             ContentLabel.TabIndex = 0;
             ContentLabel.Text = "Content";
             // 
             // CreatedAtLabel
             // 
             CreatedAtLabel.AutoSize = true;
-            CreatedAtLabel.Location = new Point(17, 117);
+            CreatedAtLabel.Location = new Point(17, 113);
             CreatedAtLabel.Name = "CreatedAtLabel";
             CreatedAtLabel.Size = new Size(76, 20);
             CreatedAtLabel.TabIndex = 1;
@@ -57,7 +59,7 @@
             EditButton.Depth = 0;
             EditButton.HighEmphasis = true;
             EditButton.Icon = null;
-            EditButton.Location = new Point(569, 107);
+            EditButton.Location = new Point(662, 97);
             EditButton.Margin = new Padding(4, 6, 4, 6);
             EditButton.MouseState = MaterialSkin.MouseState.HOVER;
             EditButton.Name = "EditButton";
@@ -68,18 +70,35 @@
             EditButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             EditButton.UseAccentColor = false;
             EditButton.UseVisualStyleBackColor = true;
+            EditButton.Click += EditButton_Click;
+            // 
+            // materialCard1
+            // 
+            materialCard1.BackColor = Color.FromArgb(255, 255, 255);
+            materialCard1.Controls.Add(CreatedAtLabel);
+            materialCard1.Controls.Add(EditButton);
+            materialCard1.Controls.Add(ContentLabel);
+            materialCard1.Depth = 0;
+            materialCard1.ForeColor = Color.FromArgb(222, 0, 0, 0);
+            materialCard1.Location = new Point(0, 0);
+            materialCard1.Margin = new Padding(14);
+            materialCard1.MouseState = MaterialSkin.MouseState.HOVER;
+            materialCard1.Name = "materialCard1";
+            materialCard1.Padding = new Padding(14);
+            materialCard1.Size = new Size(745, 150);
+            materialCard1.TabIndex = 3;
             // 
             // ProductReviewItem
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(EditButton);
-            Controls.Add(CreatedAtLabel);
-            Controls.Add(ContentLabel);
+            Controls.Add(materialCard1);
             Name = "ProductReviewItem";
-            Size = new Size(650, 150);
+            Size = new Size(745, 150);
+            Load += ProductReviewItem_Load;
+            materialCard1.ResumeLayout(false);
+            materialCard1.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -87,5 +106,6 @@
         private Label ContentLabel;
         private Label CreatedAtLabel;
         private MaterialSkin.Controls.MaterialButton EditButton;
+        private MaterialSkin.Controls.MaterialCard materialCard1;
     }
 }

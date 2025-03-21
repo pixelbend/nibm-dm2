@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             ReviewTextBox = new MaterialSkin.Controls.MaterialMultiLineTextBox2();
-            materialButton1 = new MaterialSkin.Controls.MaterialButton();
+            SaveButton = new MaterialSkin.Controls.MaterialButton();
             SuspendLayout();
             // 
             // ReviewTextBox
@@ -57,32 +57,33 @@
             ReviewTextBox.TextAlign = HorizontalAlignment.Left;
             ReviewTextBox.UseSystemPasswordChar = false;
             // 
-            // materialButton1
+            // SaveButton
             // 
-            materialButton1.AutoSize = false;
-            materialButton1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            materialButton1.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            materialButton1.Depth = 0;
-            materialButton1.HighEmphasis = true;
-            materialButton1.Icon = null;
-            materialButton1.Location = new Point(550, 393);
-            materialButton1.Margin = new Padding(4, 6, 4, 6);
-            materialButton1.MouseState = MaterialSkin.MouseState.HOVER;
-            materialButton1.Name = "materialButton1";
-            materialButton1.NoAccentTextColor = Color.Empty;
-            materialButton1.Size = new Size(198, 45);
-            materialButton1.TabIndex = 1;
-            materialButton1.Text = "Save";
-            materialButton1.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            materialButton1.UseAccentColor = false;
-            materialButton1.UseVisualStyleBackColor = true;
+            SaveButton.AutoSize = false;
+            SaveButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            SaveButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            SaveButton.Depth = 0;
+            SaveButton.HighEmphasis = true;
+            SaveButton.Icon = null;
+            SaveButton.Location = new Point(550, 394);
+            SaveButton.Margin = new Padding(4, 6, 4, 6);
+            SaveButton.MouseState = MaterialSkin.MouseState.HOVER;
+            SaveButton.Name = "SaveButton";
+            SaveButton.NoAccentTextColor = Color.Empty;
+            SaveButton.Size = new Size(198, 45);
+            SaveButton.TabIndex = 2;
+            SaveButton.Text = "Save";
+            SaveButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            SaveButton.UseAccentColor = false;
+            SaveButton.UseVisualStyleBackColor = true;
+            SaveButton.Click += SaveButton_Click;
             // 
             // AddProductReview
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(770, 450);
-            Controls.Add(materialButton1);
+            Controls.Add(SaveButton);
             Controls.Add(ReviewTextBox);
             MaximizeBox = false;
             MinimizeBox = false;
@@ -96,6 +97,6 @@
         #endregion
 
         private MaterialSkin.Controls.MaterialMultiLineTextBox2 ReviewTextBox;
-        private MaterialSkin.Controls.MaterialButton materialButton1;
+        private MaterialSkin.Controls.MaterialButton SaveButton;
     }
 }

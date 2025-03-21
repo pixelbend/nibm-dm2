@@ -54,6 +54,7 @@
             ProductReviewsButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
             ProductReviewsButton.UseAccentColor = false;
             ProductReviewsButton.UseVisualStyleBackColor = true;
+            ProductReviewsButton.Click += ProductReviewsButton_Click;
             // 
             // ReviewListPanel
             // 
@@ -90,6 +91,7 @@
             SearchReviewsTextBox.TextAlign = HorizontalAlignment.Left;
             SearchReviewsTextBox.TrailingIcon = null;
             SearchReviewsTextBox.UseSystemPasswordChar = false;
+            SearchReviewsTextBox.TextChanged += SearchReviewsTextBox_TextChanged;
             // 
             // pictureBox1
             // 
@@ -117,6 +119,7 @@
             Sizable = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Reviews";
+            Load += ViewProductReviews_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
