@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             materialCard1 = new MaterialSkin.Controls.MaterialCard();
+            ViewProductReviews = new MaterialSkin.Controls.MaterialButton();
             OrderStatusLabel = new Label();
             OrderTotalLabel = new Label();
             OrderDateLabel = new Label();
@@ -41,6 +42,7 @@
             materialCard1.Controls.Add(OrderStatusLabel);
             materialCard1.Controls.Add(OrderTotalLabel);
             materialCard1.Controls.Add(OrderDateLabel);
+            materialCard1.Controls.Add(ViewProductReviews);
             materialCard1.Depth = 0;
             materialCard1.ForeColor = Color.FromArgb(222, 0, 0, 0);
             materialCard1.Location = new Point(0, 0);
@@ -50,6 +52,26 @@
             materialCard1.Padding = new Padding(14);
             materialCard1.Size = new Size(1135, 200);
             materialCard1.TabIndex = 15;
+            // 
+            // ViewProductReviews
+            // 
+            ViewProductReviews.AutoSize = false;
+            ViewProductReviews.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ViewProductReviews.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            ViewProductReviews.Depth = 0;
+            ViewProductReviews.HighEmphasis = true;
+            ViewProductReviews.Icon = null;
+            ViewProductReviews.Location = new Point(992, 20);
+            ViewProductReviews.Margin = new Padding(4, 6, 4, 6);
+            ViewProductReviews.MouseState = MaterialSkin.MouseState.HOVER;
+            ViewProductReviews.Name = "ViewProductReviews";
+            ViewProductReviews.NoAccentTextColor = Color.Empty;
+            ViewProductReviews.Size = new Size(123, 36);
+            ViewProductReviews.TabIndex = 6;
+            ViewProductReviews.Text = "Detail";
+            ViewProductReviews.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            ViewProductReviews.UseAccentColor = false;
+            ViewProductReviews.UseVisualStyleBackColor = true;
             // 
             // OrderStatusLabel
             // 
@@ -102,6 +124,7 @@
         #endregion
 
         private MaterialSkin.Controls.MaterialCard materialCard1;
+        private MaterialSkin.Controls.MaterialButton ViewProductReviews;
         private Label OrderStatusLabel;
         private Label OrderTotalLabel;
         private Label OrderDateLabel;
