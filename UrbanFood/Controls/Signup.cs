@@ -54,11 +54,11 @@ namespace UrbanFood.UserControls
                 cmd.Parameters.Add(CustomerID);
 
 
-                cmd.Parameters.Add("pName", OracleDbType.Varchar2).Value = SignupNameTextBox.Text;
-                cmd.Parameters.Add("pEmail", OracleDbType.Varchar2).Value = SignupEmailTextBox.Text;
+                cmd.Parameters.Add("pName", OracleDbType.Varchar2).Value = SignupNameTextBox.Text.Trim();
+                cmd.Parameters.Add("pEmail", OracleDbType.Varchar2).Value = SignupEmailTextBox.Text.Trim();
                 cmd.Parameters.Add("pHashedPassword", OracleDbType.Varchar2).Value = BCrypt.Net.BCrypt.HashPassword(SignupPasswordTextBox.Text);
-                cmd.Parameters.Add("pPhone", OracleDbType.Varchar2).Value = SignupPhoneTextBox.Text;
-                cmd.Parameters.Add("pAddress", OracleDbType.Varchar2).Value = SignupAddressTextBox.Text;
+                cmd.Parameters.Add("pPhone", OracleDbType.Varchar2).Value = SignupPhoneTextBox.Text.Trim();
+                cmd.Parameters.Add("pAddress", OracleDbType.Varchar2).Value = SignupAddressTextBox.Text.Trim();
 
                 cmd.ExecuteNonQuery();
 
@@ -99,11 +99,11 @@ namespace UrbanFood.UserControls
                 };
                 cmd.Parameters.Add(SupplierID);
 
-                cmd.Parameters.Add("pName", OracleDbType.Varchar2).Value = SignupNameTextBox.Text;
-                cmd.Parameters.Add("pEmail", OracleDbType.Varchar2).Value = SignupEmailTextBox.Text;
+                cmd.Parameters.Add("pName", OracleDbType.Varchar2).Value = SignupNameTextBox.Text.Trim();
+                cmd.Parameters.Add("pEmail", OracleDbType.Varchar2).Value = SignupEmailTextBox.Text.Trim();
                 cmd.Parameters.Add("pHashedPassword", OracleDbType.Varchar2).Value = BCrypt.Net.BCrypt.HashPassword(SignupPasswordTextBox.Text);
-                cmd.Parameters.Add("pPhone", OracleDbType.Varchar2).Value = SignupPhoneTextBox.Text;
-                cmd.Parameters.Add("pAddress", OracleDbType.Varchar2).Value = SignupAddressTextBox.Text;
+                cmd.Parameters.Add("pPhone", OracleDbType.Varchar2).Value = SignupPhoneTextBox.Text.Trim();
+                cmd.Parameters.Add("pAddress", OracleDbType.Varchar2).Value = SignupAddressTextBox.Text.Trim();
 
                 cmd.ExecuteNonQuery();
 
