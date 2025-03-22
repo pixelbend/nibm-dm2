@@ -733,18 +733,18 @@ CREATE OR REPLACE FUNCTION Update_Supplier_Profile(
     pPhone VARCHAR2,
     pAddress VARCHAR2
 ) RETURN VARCHAR2
-IS
+    IS
     vExistingName  Suppliers.Name%TYPE;
     vExistingEmail Suppliers.Email%TYPE;
     vExistingPhone Suppliers.Phone%TYPE;
-    vUpdatedRows   NUMBER;
+    vExistingRows  NUMBER;
 BEGIN
     BEGIN
         SELECT Name, Email, Phone
         INTO vExistingName, vExistingEmail, vExistingPhone
         FROM Suppliers
         WHERE SupplierID = pSupplierID
-        FOR UPDATE;
+            FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20001, 'Supplier does not exist.');
@@ -752,41 +752,44 @@ BEGIN
 
     BEGIN
         SELECT COUNT(*)
-        INTO vUpdatedRows
+        INTO vExistingRows
         FROM Suppliers
-        WHERE Name = pName AND SupplierID <> pSupplierID;
+        WHERE Name = pName
+          AND SupplierID <> pSupplierID;
 
-        IF vUpdatedRows > 0 THEN
+        IF vExistingRows > 0 THEN
             RAISE_APPLICATION_ERROR(-20001, 'Supplier name already exists.');
         END IF;
     END;
 
     BEGIN
         SELECT COUNT(*)
-        INTO vUpdatedRows
+        INTO vExistingRows
         FROM Suppliers
-        WHERE Email = pEmail AND SupplierID <> pSupplierID;
+        WHERE Email = pEmail
+          AND SupplierID <> pSupplierID;
 
-        IF vUpdatedRows > 0 THEN
+        IF vExistingRows > 0 THEN
             RAISE_APPLICATION_ERROR(-20001, 'Supplier email already exists.');
         END IF;
     END;
 
     BEGIN
         SELECT COUNT(*)
-        INTO vUpdatedRows
+        INTO vExistingRows
         FROM Suppliers
-        WHERE Phone = pPhone AND SupplierID <> pSupplierID;
+        WHERE Phone = pPhone
+          AND SupplierID <> pSupplierID;
 
-        IF vUpdatedRows > 0 THEN
+        IF vExistingRows > 0 THEN
             RAISE_APPLICATION_ERROR(-20001, 'Supplier phone number already exists.');
         END IF;
     END;
 
     UPDATE Suppliers
-    SET Name = pName,
-        Email = pEmail,
-        Phone = pPhone,
+    SET Name    = pName,
+        Email   = pEmail,
+        Phone   = pPhone,
         Address = pAddress
     WHERE SupplierID = pSupplierID;
 
@@ -804,17 +807,17 @@ CREATE OR REPLACE FUNCTION Update_Customer_Profile(
     pPhone VARCHAR2,
     pAddress VARCHAR2
 ) RETURN VARCHAR2
-IS
+    IS
     vExistingEmail Customers.Email%TYPE;
     vExistingPhone Customers.Phone%TYPE;
-    vUpdatedRows   NUMBER;
+    vExistingRows  NUMBER;
 BEGIN
     BEGIN
         SELECT Email, Phone
         INTO vExistingEmail, vExistingPhone
         FROM Customers
         WHERE CustomerID = pCustomerID
-        FOR UPDATE;
+            FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20001, 'Customer does not exist.');
@@ -822,30 +825,32 @@ BEGIN
 
     BEGIN
         SELECT COUNT(*)
-        INTO vUpdatedRows
+        INTO vExistingRows
         FROM Customers
-        WHERE Email = pEmail AND CustomerID <> pCustomerID;
+        WHERE Email = pEmail
+          AND CustomerID <> pCustomerID;
 
-        IF vUpdatedRows > 0 THEN
+        IF vExistingRows > 0 THEN
             RAISE_APPLICATION_ERROR(-20001, 'Customer email already exists.');
         END IF;
     END;
 
     BEGIN
         SELECT COUNT(*)
-        INTO vUpdatedRows
+        INTO vExistingRows
         FROM Customers
-        WHERE Phone = pPhone AND CustomerID <> pCustomerID;
+        WHERE Phone = pPhone
+          AND CustomerID <> pCustomerID;
 
-        IF vUpdatedRows > 0 THEN
+        IF vExistingRows > 0 THEN
             RAISE_APPLICATION_ERROR(-20001, 'Customer phone number already exists.');
         END IF;
     END;
 
     UPDATE Customers
-    SET Name = pName,
-        Email = pEmail,
-        Phone = pPhone,
+    SET Name    = pName,
+        Email   = pEmail,
+        Phone   = pPhone,
         Address = pAddress
     WHERE CustomerID = pCustomerID;
 

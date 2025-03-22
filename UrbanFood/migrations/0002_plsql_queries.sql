@@ -157,7 +157,6 @@ BEGIN
     RETURN vCursor;
 END List_Order_History_By_Customer;
 
-
 CREATE OR REPLACE FUNCTION Get_Supplier_Profile(pSupplierID VARCHAR2)
 RETURN SYS_REFCURSOR
 IS
