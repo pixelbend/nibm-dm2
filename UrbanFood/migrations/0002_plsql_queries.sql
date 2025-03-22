@@ -156,3 +156,30 @@ BEGIN
 
     RETURN vCursor;
 END List_Order_History_By_Customer;
+
+
+CREATE OR REPLACE FUNCTION Get_Supplier_Profile(pSupplierID VARCHAR2)
+RETURN SYS_REFCURSOR
+IS
+    vCursor SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+    SELECT SupplierID, Name, Email, Phone, Address
+    FROM Suppliers
+    WHERE SupplierID = pSupplierID;
+
+    RETURN vCursor;
+END Get_Supplier_Profile;
+
+CREATE OR REPLACE FUNCTION Get_Customer_Profile(pCustomerID VARCHAR2)
+RETURN SYS_REFCURSOR
+IS
+    vCursor SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+    SELECT CustomerID, Name, Email, Phone, Address
+    FROM Customers
+    WHERE CustomerID = pCustomerID;
+
+    RETURN vCursor;
+END Get_Customer_Profile;
