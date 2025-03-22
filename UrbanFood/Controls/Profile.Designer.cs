@@ -36,8 +36,6 @@
             SignupNameTextBox = new MaterialSkin.Controls.MaterialTextBox();
             EmailLbl = new MaterialSkin.Controls.MaterialLabel();
             SignupEmailTextBox = new MaterialSkin.Controls.MaterialTextBox();
-            PasswordLbl = new MaterialSkin.Controls.MaterialLabel();
-            SignupPasswordTextBox = new MaterialSkin.Controls.MaterialTextBox();
             SaveChangesButton = new MaterialSkin.Controls.MaterialButton();
             SuspendLayout();
             // 
@@ -165,38 +163,6 @@
             SignupEmailTextBox.Text = "";
             SignupEmailTextBox.TrailingIcon = null;
             // 
-            // PasswordLbl
-            // 
-            PasswordLbl.AutoSize = true;
-            PasswordLbl.Depth = 0;
-            PasswordLbl.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
-            PasswordLbl.Location = new Point(44, 370);
-            PasswordLbl.MouseState = MaterialSkin.MouseState.HOVER;
-            PasswordLbl.Name = "PasswordLbl";
-            PasswordLbl.Size = new Size(71, 19);
-            PasswordLbl.TabIndex = 18;
-            PasswordLbl.Text = "Password";
-            // 
-            // SignupPasswordTextBox
-            // 
-            SignupPasswordTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            SignupPasswordTextBox.AnimateReadOnly = false;
-            SignupPasswordTextBox.BorderStyle = BorderStyle.None;
-            SignupPasswordTextBox.Depth = 0;
-            SignupPasswordTextBox.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            SignupPasswordTextBox.LeadingIcon = null;
-            SignupPasswordTextBox.LeaveOnEnterKey = true;
-            SignupPasswordTextBox.Location = new Point(40, 392);
-            SignupPasswordTextBox.MaxLength = 50;
-            SignupPasswordTextBox.MouseState = MaterialSkin.MouseState.OUT;
-            SignupPasswordTextBox.Multiline = false;
-            SignupPasswordTextBox.Name = "SignupPasswordTextBox";
-            SignupPasswordTextBox.Password = true;
-            SignupPasswordTextBox.Size = new Size(1179, 50);
-            SignupPasswordTextBox.TabIndex = 17;
-            SignupPasswordTextBox.Text = "";
-            SignupPasswordTextBox.TrailingIcon = null;
-            // 
             // SaveChangesButton
             // 
             SaveChangesButton.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -231,8 +197,6 @@
             Controls.Add(SignupNameTextBox);
             Controls.Add(EmailLbl);
             Controls.Add(SignupEmailTextBox);
-            Controls.Add(PasswordLbl);
-            Controls.Add(SignupPasswordTextBox);
             Name = "Profile";
             Size = new Size(1266, 610);
             ResumeLayout(false);
@@ -249,8 +213,6 @@
         private MaterialSkin.Controls.MaterialTextBox SignupNameTextBox;
         private MaterialSkin.Controls.MaterialLabel EmailLbl;
         private MaterialSkin.Controls.MaterialTextBox SignupEmailTextBox;
-        private MaterialSkin.Controls.MaterialLabel PasswordLbl;
-        private MaterialSkin.Controls.MaterialTextBox SignupPasswordTextBox;
         private MaterialSkin.Controls.MaterialButton SaveChangesButton;
     }
 }
