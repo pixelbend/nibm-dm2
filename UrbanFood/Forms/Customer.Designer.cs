@@ -35,6 +35,7 @@
             OrderPage = new TabPage();
             OrderHistoryPage = new TabPage();
             TabBarImageList = new ImageList(components);
+            ProfilePage = new TabPage();
             MainTabBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -43,6 +44,7 @@
             MainTabBar.Controls.Add(MarketPage);
             MainTabBar.Controls.Add(OrderPage);
             MainTabBar.Controls.Add(OrderHistoryPage);
+            MainTabBar.Controls.Add(ProfilePage);
             MainTabBar.Depth = 0;
             MainTabBar.Dock = DockStyle.Fill;
             MainTabBar.ImageList = TabBarImageList;
@@ -96,6 +98,18 @@
             TabBarImageList.Images.SetKeyName(0, "icons8-order-32.png");
             TabBarImageList.Images.SetKeyName(1, "icons8-market-32.png");
             TabBarImageList.Images.SetKeyName(2, "icons8-order-history-32.png");
+            TabBarImageList.Images.SetKeyName(3, "icons8-user-32.png");
+            // 
+            // ProfilePage
+            // 
+            ProfilePage.ImageKey = "icons8-user-32.png";
+            ProfilePage.Location = new Point(4, 39);
+            ProfilePage.Name = "ProfilePage";
+            ProfilePage.Padding = new Padding(3);
+            ProfilePage.Size = new Size(1266, 610);
+            ProfilePage.TabIndex = 3;
+            ProfilePage.Text = "Profile";
+            ProfilePage.UseVisualStyleBackColor = true;
             // 
             // Customer
             // 
@@ -120,5 +134,6 @@
         private TabPage OrderPage;
         private TabPage OrderHistoryPage;
         private ImageList TabBarImageList;
+        private TabPage ProfilePage;
     }
 }

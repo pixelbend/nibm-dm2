@@ -31,6 +31,8 @@ namespace UrbanFood.Forms
             MainTabBar.TabPages[1].Controls.Add(new CustomerOrder() { Dock = DockStyle.Fill });
             MainTabBar.TabPages[2].Controls.Clear();
             MainTabBar.TabPages[2].Controls.Add(new CustomerOrderHistory() { Dock = DockStyle.Fill });
+            MainTabBar.TabPages[3].Controls.Clear();
+            MainTabBar.TabPages[3].Controls.Add(new Profile() { Dock = DockStyle.Fill });
         }
 
         private void MainTabBar_SelectedIndexChanged(object sender, EventArgs e)
@@ -38,6 +40,7 @@ namespace UrbanFood.Forms
             MainTabBar.TabPages[0].Controls.Clear();
             MainTabBar.TabPages[1].Controls.Clear();
             MainTabBar.TabPages[2].Controls.Clear();
+            MainTabBar.TabPages[3].Controls.Clear();
 
             if (MainTabBar.SelectedIndex == 0)
             {
@@ -50,6 +53,10 @@ namespace UrbanFood.Forms
             else if (MainTabBar.SelectedIndex == 2)
             {
                 MainTabBar.TabPages[2].Controls.Add(new CustomerOrderHistory() { Dock = DockStyle.Fill });
+            }
+            else if (MainTabBar.SelectedIndex == 3)
+            {
+                MainTabBar.TabPages[3].Controls.Add(new Profile() { Dock = DockStyle.Fill });
             }
         }
     }

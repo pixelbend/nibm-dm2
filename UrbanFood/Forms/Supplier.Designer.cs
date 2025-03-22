@@ -34,6 +34,7 @@
             OrderPage = new TabPage();
             InventoryPage = new TabPage();
             MainTabBar = new MaterialSkin.Controls.MaterialTabControl();
+            ProfilePage = new TabPage();
             MainTabBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -74,6 +75,7 @@
             // 
             MainTabBar.Controls.Add(InventoryPage);
             MainTabBar.Controls.Add(OrderPage);
+            MainTabBar.Controls.Add(ProfilePage);
             MainTabBar.Depth = 0;
             MainTabBar.Dock = DockStyle.Fill;
             MainTabBar.ImageList = TabBarImageList;
@@ -85,6 +87,17 @@
             MainTabBar.Size = new Size(1274, 653);
             MainTabBar.TabIndex = 6;
             MainTabBar.SelectedIndexChanged += MainTabBar_SelectedIndexChanged;
+            // 
+            // ProfilePage
+            // 
+            ProfilePage.ImageKey = "icons8-profile-32.png";
+            ProfilePage.Location = new Point(4, 39);
+            ProfilePage.Name = "ProfilePage";
+            ProfilePage.Padding = new Padding(3);
+            ProfilePage.Size = new Size(1266, 610);
+            ProfilePage.TabIndex = 5;
+            ProfilePage.Text = "Profile";
+            ProfilePage.UseVisualStyleBackColor = true;
             // 
             // Supplier
             // 
@@ -108,5 +121,6 @@
         private TabPage OrderPage;
         private TabPage InventoryPage;
         private MaterialSkin.Controls.MaterialTabControl MainTabBar;
+        private TabPage ProfilePage;
     }
 }
