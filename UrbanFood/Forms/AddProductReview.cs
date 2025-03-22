@@ -1,4 +1,5 @@
 ﻿using MaterialSkin.Controls;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -57,6 +58,16 @@ namespace UrbanFood.Forms
             {
                 var collection = ReviewCollection.Instance.GetCollection();
                 collection.InsertOne(reviewModel);
+            } catch (MongoWriteException ex)
+            {
+                if (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+                {
+                    MaterialMessageBox.Show("You have already reviewed this product.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MaterialMessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
