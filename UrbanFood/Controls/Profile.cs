@@ -31,16 +31,23 @@ namespace UrbanFood.Controls
 
         private void SaveChangesButton_Click(object sender, EventArgs e)
         {
+            string result = null;
+
             if (ValidateSignupTextBoxes())
             {
                 switch (UserState.Instance.GetUserType())
                 {
                     case UserType.Customer:
-                        UpdateCustomerProfile();
+                        result = UpdateCustomerProfile();
                         break;
                     case UserType.Supplier:
-                        UpdateSupplierProfile();
+                        result = UpdateSupplierProfile();
                         break;
+                }
+
+                if (result != null)
+                {
+                    MaterialMessageBox.Show("Profile updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -140,8 +147,10 @@ namespace UrbanFood.Controls
             }
         }
 
-        private void UpdateSupplierProfile()
+        private string UpdateSupplierProfile()
         {
+            string updatedSupplierID = null;
+
             try
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
@@ -163,6 +172,8 @@ namespace UrbanFood.Controls
                 cmd.Parameters.Add("pAddress", OracleDbType.Varchar2).Value = AddressTextBox.Text.Trim();
 
                 cmd.ExecuteNonQuery();
+
+                updatedSupplierID = SupplierID.Value.ToString();
             }
             catch (OracleException ex)
             {
@@ -176,10 +187,14 @@ namespace UrbanFood.Controls
             {
                 OracleDBConnection.Instance.CloseConnection();
             }
+
+            return updatedSupplierID;
         }
 
-        private void UpdateCustomerProfile()
+        private string UpdateCustomerProfile()
         {
+            string updatedCustomerID = null;
+
             try
             {
                 OracleConnection conn = OracleDBConnection.Instance.GetConnection();
@@ -201,6 +216,8 @@ namespace UrbanFood.Controls
                 cmd.Parameters.Add("pAddress", OracleDbType.Varchar2).Value = AddressTextBox.Text.Trim();
 
                 cmd.ExecuteNonQuery();
+
+                updatedCustomerID = CustomerID.Value.ToString();
             }
             catch (OracleException ex)
             {
@@ -214,6 +231,8 @@ namespace UrbanFood.Controls
             {
                 OracleDBConnection.Instance.CloseConnection();
             }
+
+            return updatedCustomerID;
         }
 
         private bool ValidateSignupTextBoxes()
