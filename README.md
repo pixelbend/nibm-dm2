@@ -1,13 +1,14 @@
 # UrbanFood
 
-This a implementation of a local one to one
+This an implementation of a local one to one
 supplier to customer marketplace.
 
 The implementation
-of the system use oracle and mongodb.
+of the system use oracledb and mongodb.
 
 - Oracle is used as the primary database where all the primary data is store.
-  All the operations are written in PLSQL as one shot operation based PLSQL stored procedures to mitigate
+  All the operations are written in PLSQL as one shot operation based 
+  PLSQL stored procedures to mitigate read after write inconsistencies.
 - MongoDB is used to store product reviews.
 
 ## Database Implementation
