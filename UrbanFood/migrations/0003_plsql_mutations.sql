@@ -28,6 +28,7 @@ BEGIN
     RETURN vSupplierID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Signup_Supplier;
 
@@ -60,6 +61,7 @@ BEGIN
     RETURN vCustomerID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Signup_Customer;
 
@@ -145,6 +147,7 @@ BEGIN
     RETURN vProductID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Create_Product;
 
@@ -242,6 +245,7 @@ BEGIN
     RETURN pProductID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Update_Product;
 
@@ -285,6 +289,10 @@ BEGIN
     COMMIT;
 
     RETURN pProductID;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE;
 END Delete_Product;
 
 CREATE OR REPLACE FUNCTION Order_Product(
@@ -356,6 +364,7 @@ BEGIN
     RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Order_Product;
 
@@ -418,6 +427,7 @@ BEGIN
     RETURN vOrderID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Customer_Remove_OrderItem;
 
@@ -429,10 +439,18 @@ CREATE OR REPLACE FUNCTION Checkout_Order(
     vOrderStatus   VARCHAR2(20);
     vOrderID       Orders.OrderID%TYPE;
     vCustomerID    Customers.CustomerID%TYPE;
-    vStockQuantity NUMBER;
-    vProductPrice  NUMBER(10, 2);
-    vProductName   Products.Name%TYPE;
-    vTotalAmount   NUMBER(10, 2) := 0;
+
+    TYPE OrderItemRecord IS RECORD (
+        OrderItemID OrderItems.OrderItemID%TYPE,
+        ProductID   Products.ProductID%TYPE,
+        Quantity    OrderItems.Quantity%TYPE,
+        ProductName Products.Name%TYPE,
+        ProductPrice Products.Price%TYPE,
+        StockQuantity Products.StockQuantity%TYPE
+    );
+
+    TYPE OrderItemTable IS TABLE OF OrderItemRecord;
+    vOrderItems OrderItemTable;
 BEGIN
     BEGIN
         SELECT OrderID, Status, CustomerID
@@ -440,7 +458,7 @@ BEGIN
         FROM Orders
         WHERE OrderID = pOrderID
           AND CustomerId = pCustomerID
-            FOR UPDATE;
+        FOR UPDATE;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20001, 'Order does not exist for the specified customer');
@@ -450,43 +468,34 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20001, 'Order cannot be confirmed. Current status: ' || vOrderStatus);
     END IF;
 
-    FOR orderItem IN (
-        SELECT OrderItemID, ProductID, Quantity
-        FROM OrderItems
-        WHERE OrderID = vOrderID
-          AND Status = 'Pending'
-        )
-        LOOP
-            BEGIN
-                SELECT StockQuantity, Price, Name
-                INTO vStockQuantity, vProductPrice, vProductName
-                FROM Products
-                WHERE ProductID = orderItem.ProductID
-                    FOR UPDATE;
-            EXCEPTION
-                WHEN NO_DATA_FOUND THEN
-                    RAISE_APPLICATION_ERROR(-20001, 'Product does not exist');
-            END;
+    SELECT oi.OrderItemID, oi.ProductID, oi.Quantity, p.Name, p.Price, p.StockQuantity
+    BULK COLLECT INTO vOrderItems
+    FROM OrderItems oi
+    JOIN Products p ON oi.ProductID = p.ProductID
+    WHERE oi.OrderID = vOrderID
+      AND oi.Status = 'Pending'
+    FOR UPDATE OF p.StockQuantity;
 
-            IF vStockQuantity < orderItem.Quantity THEN
-                RAISE_APPLICATION_ERROR(-20001, 'Not enough stock available for product ' || vProductName
-                    || ' please remove the product and checkout again');
-            END IF;
+    FOR i IN 1 .. vOrderItems.COUNT LOOP
+        IF vOrderItems(i).StockQuantity < vOrderItems(i).Quantity THEN
+            RAISE_APPLICATION_ERROR(-20001, 'Not enough stock available for product ' || vOrderItems(i).ProductName
+                || '. Please remove the product and checkout again.');
+        END IF;
+    END LOOP;
 
-            vTotalAmount := orderItem.Quantity * vProductPrice;
+    FOR i IN 1 .. vOrderItems.COUNT LOOP
+        UPDATE Products
+        SET StockQuantity = StockQuantity - vOrderItems(i).Quantity
+        WHERE ProductID = vOrderItems(i).ProductID;
 
-            UPDATE Products
-            SET StockQuantity = StockQuantity - orderItem.Quantity
-            WHERE ProductID = orderItem.ProductID;
+        UPDATE OrderItems
+        SET Status = 'Confirmed',
+            Subtotal = vOrderItems(i).Quantity * vOrderItems(i).ProductPrice
+        WHERE OrderItemID = vOrderItems(i).OrderItemID;
 
-            UPDATE OrderItems
-            SET Status   = 'Confirmed',
-                Subtotal = vTotalAmount
-            WHERE OrderItemID = orderItem.OrderItemID;
-
-            INSERT INTO Payments (PaymentID, OrderItemID, CustomerID, AmountPaid, TransactionKey, Status)
-            VALUES (Generate_UUID(), orderItem.OrderItemID, vCustomerID, vTotalAmount, pTransactionKey, 'Accepted');
-        END LOOP;
+        INSERT INTO Payments (PaymentID, OrderItemID, CustomerID, AmountPaid, TransactionKey, Status)
+        VALUES (Generate_UUID(), vOrderItems(i).OrderItemID, vCustomerID, vOrderItems(i).Quantity * vOrderItems(i).ProductPrice, pTransactionKey, 'Accepted');
+    END LOOP;
 
     UPDATE Orders
     SET Status = 'Confirmed'
@@ -497,6 +506,7 @@ BEGIN
     RETURN vOrderID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Checkout_Order;
 
@@ -540,6 +550,7 @@ BEGIN
     RETURN vOrderID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Customer_Cancel_Order;
 
@@ -617,6 +628,7 @@ BEGIN
     RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Supplier_Cancel_OrderItem;
 
@@ -674,6 +686,7 @@ BEGIN
     RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Supplier_Fulfill_OrderItem;
 
@@ -745,6 +758,7 @@ BEGIN
     RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Supplier_Deliver_OrderItem;
 
@@ -820,6 +834,7 @@ BEGIN
     RETURN pSupplierID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Update_Supplier_Profile;
 
@@ -882,5 +897,6 @@ BEGIN
     RETURN pCustomerID;
 EXCEPTION
     WHEN OTHERS THEN
+        ROLLBACK;
         RAISE;
 END Update_Customer_Profile;
