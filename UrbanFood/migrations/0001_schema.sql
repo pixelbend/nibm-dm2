@@ -117,7 +117,8 @@ CREATE TABLE Payments
     Status         VARCHAR2(20) DEFAULT 'Accepted' CHECK (Status IN ('Accepted', 'Refunded')) NOT NULL,
     RefundedDate   TIMESTAMP,
     FOREIGN KEY (OrderItemID) REFERENCES OrderItems (OrderItemID),
-    FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID)
+    FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID),
+    UNIQUE (OrderItemID, CustomerID)
 );
 
 CREATE OR REPLACE TRIGGER set_payment_uuid
@@ -130,12 +131,12 @@ END;
 
 CREATE TABLE Deliveries
 (
-    DeliveryID   VARCHAR2(32) PRIMARY KEY,
-    OrderItemID  VARCHAR2(32) UNIQUE NOT NULL,
-    SupplierID   VARCHAR2(32)        NOT NULL,
-    CustomerID   VARCHAR2(32)        NOT NULL,
+    DeliveryID    VARCHAR2(32) PRIMARY KEY,
+    OrderItemID   VARCHAR2(32) UNIQUE NOT NULL,
+    SupplierID    VARCHAR2(32)        NOT NULL,
+    CustomerID    VARCHAR2(32)        NOT NULL,
     DeliveredDate TIMESTAMP,
-    Address      VARCHAR2(500)       NOT NULL,
+    Address       VARCHAR2(500)       NOT NULL,
     FOREIGN KEY (OrderItemID) REFERENCES OrderItems (OrderItemID),
     FOREIGN KEY (SupplierID) REFERENCES Suppliers (SupplierID),
     FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID)
