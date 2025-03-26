@@ -23,6 +23,8 @@ BEGIN
     VALUES (GENERATE_UUID(), pName, LOWER(pEmail), pHashedPassword, pPhone, pAddress)
     RETURNING SupplierID INTO vSupplierID;
 
+    COMMIT;
+
     RETURN vSupplierID;
 EXCEPTION
     WHEN OTHERS THEN
@@ -52,6 +54,8 @@ BEGIN
     INSERT INTO Customers (CustomerID, Name, Email, Password, Phone, Address)
     VALUES (GENERATE_UUID(), pName, LOWER(pEmail), pHashedPassword, pPhone, pAddress)
     RETURNING CustomerID INTO vCustomerID;
+
+    COMMIT;
 
     RETURN vCustomerID;
 EXCEPTION
@@ -135,6 +139,8 @@ BEGIN
     INSERT INTO Products (ProductID, SupplierID, Name, Description, Price, StockQuantity, Category)
     VALUES (Generate_UUID(), pSupplierID, pName, pDescription, pPrice, pStockQuantity, LOWER(pCategory))
     RETURNING ProductID INTO vProductID;
+
+    COMMIT;
 
     RETURN vProductID;
 EXCEPTION
@@ -230,6 +236,8 @@ BEGIN
         SET Category = LOWER(pCategory)
         WHERE ProductID = pProductID;
     END IF;
+
+    COMMIT;
 
     RETURN pProductID;
 EXCEPTION
@@ -343,6 +351,8 @@ BEGIN
         RETURNING OrderItemID INTO vOrderItemID;
     END IF;
 
+    COMMIT;
+
     RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
@@ -402,6 +412,8 @@ BEGIN
             WHERE OrderID = vOrderID;
         END IF;
     END;
+
+    COMMIT;
 
     RETURN vOrderID;
 EXCEPTION
@@ -480,6 +492,8 @@ BEGIN
     SET Status = 'Confirmed'
     WHERE OrderID = vOrderID;
 
+    COMMIT;
+
     RETURN vOrderID;
 EXCEPTION
     WHEN OTHERS THEN
@@ -520,6 +534,8 @@ BEGIN
     UPDATE Payments
     SET Status = 'Refunded'
     WHERE OrderItemID IN (SELECT OrderItemID FROM OrderItems WHERE OrderID = pOrderID);
+
+    COMMIT;
 
     RETURN vOrderID;
 EXCEPTION
@@ -596,6 +612,8 @@ BEGIN
         END IF;
     END;
 
+    COMMIT;
+
     RETURN vOrderItemID;
 EXCEPTION
     WHEN OTHERS THEN
@@ -650,6 +668,8 @@ BEGIN
             WHERE OrderID = vOrderID;
         END IF;
     END;
+
+    COMMIT;
 
     RETURN vOrderItemID;
 EXCEPTION
@@ -719,6 +739,8 @@ BEGIN
             WHERE OrderID = vOrderID;
         END IF;
     END;
+
+    COMMIT;
 
     RETURN vOrderItemID;
 EXCEPTION
@@ -793,6 +815,7 @@ BEGIN
         Address = pAddress
     WHERE SupplierID = pSupplierID;
 
+    COMMIT;
 
     RETURN pSupplierID;
 EXCEPTION
@@ -853,6 +876,8 @@ BEGIN
         Phone   = pPhone,
         Address = pAddress
     WHERE CustomerID = pCustomerID;
+
+    COMMIT;
 
     RETURN pCustomerID;
 EXCEPTION
