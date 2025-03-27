@@ -271,13 +271,11 @@ BEGIN
     SELECT COUNT(*)
     INTO vPendingOrders
     FROM OrderItems oi
-             JOIN Orders o ON oi.OrderID = o.OrderID
     WHERE oi.ProductID = pProductID
-      AND o.Status IN ('Pending', 'Confirmed', 'Partially Fulfilled')
       AND oi.Status IN ('Pending', 'Confirmed');
 
     IF vPendingOrders > 0 THEN
-        RAISE_APPLICATION_ERROR(-20002, 'Cannot delete: There are active unfulfilled orders.');
+        RAISE_APPLICATION_ERROR(-20001, 'Cannot delete: There are active unfulfilled orders.');
     END IF;
 
     UPDATE Products
