@@ -34,6 +34,7 @@
             OrderPage = new TabPage();
             InventoryPage = new TabPage();
             MainTabBar = new MaterialSkin.Controls.MaterialTabControl();
+            SalsePage = new TabPage();
             ProfilePage = new TabPage();
             MainTabBar.SuspendLayout();
             SuspendLayout();
@@ -73,6 +74,7 @@
             // 
             // MainTabBar
             // 
+            MainTabBar.Controls.Add(SalsePage);
             MainTabBar.Controls.Add(InventoryPage);
             MainTabBar.Controls.Add(OrderPage);
             MainTabBar.Controls.Add(ProfilePage);
@@ -87,6 +89,17 @@
             MainTabBar.Size = new Size(1274, 653);
             MainTabBar.TabIndex = 6;
             MainTabBar.SelectedIndexChanged += MainTabBar_SelectedIndexChanged;
+            // 
+            // SalsePage
+            // 
+            SalsePage.ImageKey = "icons8-sales-32.png";
+            SalsePage.Location = new Point(4, 39);
+            SalsePage.Name = "SalsePage";
+            SalsePage.Padding = new Padding(3);
+            SalsePage.Size = new Size(1266, 610);
+            SalsePage.TabIndex = 6;
+            SalsePage.Text = "Salse";
+            SalsePage.UseVisualStyleBackColor = true;
             // 
             // ProfilePage
             // 
@@ -122,5 +135,6 @@
         private TabPage InventoryPage;
         private MaterialSkin.Controls.MaterialTabControl MainTabBar;
         private TabPage ProfilePage;
+        private TabPage SalsePage;
     }
 }

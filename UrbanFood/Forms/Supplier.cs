@@ -32,11 +32,13 @@ namespace UrbanFood.Forms
         private void InitializeMainTabBar()
         {
             MainTabBar.TabPages[0].Controls.Clear();
-            MainTabBar.TabPages[0].Controls.Add(new SupplierInventory() { Dock = DockStyle.Fill });
+            MainTabBar.TabPages[0].Controls.Add(new SalseReport() { Dock = DockStyle.Fill });
             MainTabBar.TabPages[1].Controls.Clear();
-            MainTabBar.TabPages[1].Controls.Add(new SupplierOrder() { Dock = DockStyle.Fill });
+            MainTabBar.TabPages[1].Controls.Add(new SupplierInventory() { Dock = DockStyle.Fill });
             MainTabBar.TabPages[2].Controls.Clear();
-            MainTabBar.TabPages[2].Controls.Add(new Profile() { Dock = DockStyle.Fill });
+            MainTabBar.TabPages[2].Controls.Add(new SupplierOrder() { Dock = DockStyle.Fill });
+            MainTabBar.TabPages[3].Controls.Clear();
+            MainTabBar.TabPages[3].Controls.Add(new Profile() { Dock = DockStyle.Fill });
         }
 
         private void MainTabBar_SelectedIndexChanged(object sender, EventArgs e)
@@ -44,18 +46,23 @@ namespace UrbanFood.Forms
             MainTabBar.TabPages[0].Controls.Clear();
             MainTabBar.TabPages[1].Controls.Clear();
             MainTabBar.TabPages[2].Controls.Clear();
-            
+            MainTabBar.TabPages[3].Controls.Clear();
+
             if (MainTabBar.SelectedIndex == 0)
             {
-                MainTabBar.TabPages[0].Controls.Add(new SupplierInventory() { Dock = DockStyle.Fill });
+                MainTabBar.TabPages[0].Controls.Add(new SalseReport() { Dock = DockStyle.Fill });
             }
             else if (MainTabBar.SelectedIndex == 1)
             {
-                MainTabBar.TabPages[1].Controls.Add(new SupplierOrder() { Dock = DockStyle.Fill });
+                MainTabBar.TabPages[1].Controls.Add(new SupplierInventory() { Dock = DockStyle.Fill });
             }
-            else if (MainTabBar.SelectedIndex == 2) 
+            else if (MainTabBar.SelectedIndex == 2)
             {
-                MainTabBar.TabPages[2].Controls.Add(new Profile() { Dock = DockStyle.Fill });
+                MainTabBar.TabPages[2].Controls.Add(new SupplierOrder() { Dock = DockStyle.Fill });
+            }
+            else if (MainTabBar.SelectedIndex == 3) 
+            {
+                MainTabBar.TabPages[3].Controls.Add(new Profile() { Dock = DockStyle.Fill });
             }
         }
     }
