@@ -201,5 +201,10 @@ namespace UrbanFood.Controls
             collection.DeleteMany(filter);
         }
 
+        private void ViewProductReviews_Click(object sender, EventArgs e)
+        {
+            ViewProductReviews viewProductReviews = new(_productID);
+            viewProductReviews.ShowDialog();
+        }
     }
 }
