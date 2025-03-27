@@ -657,7 +657,7 @@ BEGIN
     IF vOrderItemStatus = 'Fulfilled' THEN
         RAISE_APPLICATION_ERROR(-20001, 'Order item is already Fulfilled and cannot be changed.');
     ELSIF vOrderItemStatus != 'Confirmed' THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Pending) to be Fulfilled.');
+        RAISE_APPLICATION_ERROR(-20001, 'Order item is not in a valid state (Confirmed) to be Fulfilled.');
     END IF;
 
     UPDATE OrderItems
