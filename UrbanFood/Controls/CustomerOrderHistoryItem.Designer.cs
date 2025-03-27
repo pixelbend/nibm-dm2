@@ -32,12 +32,14 @@
             OrderStatusLabel = new Label();
             OrderTotalLabel = new Label();
             OrderDateLabel = new Label();
+            DetailsButton = new MaterialSkin.Controls.MaterialButton();
             materialCard1.SuspendLayout();
             SuspendLayout();
             // 
             // materialCard1
             // 
             materialCard1.BackColor = Color.FromArgb(255, 255, 255);
+            materialCard1.Controls.Add(DetailsButton);
             materialCard1.Controls.Add(OrderStatusLabel);
             materialCard1.Controls.Add(OrderTotalLabel);
             materialCard1.Controls.Add(OrderDateLabel);
@@ -87,6 +89,27 @@
             OrderDateLabel.Text = "Order Date";
             OrderDateLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // DetailsButton
+            // 
+            DetailsButton.AutoSize = false;
+            DetailsButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            DetailsButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            DetailsButton.Depth = 0;
+            DetailsButton.HighEmphasis = true;
+            DetailsButton.Icon = null;
+            DetailsButton.Location = new Point(976, 18);
+            DetailsButton.Margin = new Padding(4, 6, 4, 6);
+            DetailsButton.MouseState = MaterialSkin.MouseState.HOVER;
+            DetailsButton.Name = "DetailsButton";
+            DetailsButton.NoAccentTextColor = Color.Empty;
+            DetailsButton.Size = new Size(141, 40);
+            DetailsButton.TabIndex = 26;
+            DetailsButton.Text = "Details";
+            DetailsButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            DetailsButton.UseAccentColor = false;
+            DetailsButton.UseVisualStyleBackColor = true;
+            DetailsButton.Click += DetailsButton_Click;
+            // 
             // CustomerOrderHistoryItem
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -105,5 +128,6 @@
         private Label OrderStatusLabel;
         private Label OrderTotalLabel;
         private Label OrderDateLabel;
+        private MaterialSkin.Controls.MaterialButton DetailsButton;
     }
 }

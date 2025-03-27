@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UrbanFood.Forms;
 
 namespace UrbanFood.Controls
 {
@@ -48,6 +49,12 @@ namespace UrbanFood.Controls
         {
             get { return orderStatus; }
             set { orderStatus = value; OrderStatusLabel.Text = $"Status: {orderStatus}"; }
+        }
+
+        private void DetailsButton_Click(object sender, EventArgs e)
+        {
+            CustomerOrderHistoryDetail customerOrderHistoryDetail = new(orderID);
+            customerOrderHistoryDetail.ShowDialog();
         }
     }
 }
