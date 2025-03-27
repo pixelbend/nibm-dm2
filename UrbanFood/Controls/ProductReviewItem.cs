@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MaterialSkin.Controls;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UrbanFood.Database.MongoDB;
 using UrbanFood.Forms;
 using UrbanFood.LocalState;
 
@@ -43,9 +47,10 @@ namespace UrbanFood.Controls
         public string CustomerID
         {
             get { return _customerID; }
-            set { 
+            set
+            {
                 _customerID = value;
-                SetEditButtonState(_customerID);
+                SetButtonState(_customerID);
             }
         }
 
@@ -78,21 +83,43 @@ namespace UrbanFood.Controls
 
         private void EditButton_Click(object sender, EventArgs e)
         {
-            UpdateProductReview updateProductReview = new (_reviewID);
+            UpdateProductReview updateProductReview = new(_reviewID);
             updateProductReview.ShowDialog();
         }
 
-        private void SetEditButtonState(string customerID)
+        private void DeleteButton_Click(object sender, EventArgs e)
+        {
+            var collection = ReviewCollection.Instance.GetCollection();
+
+            var filter = Builders<ReviewModel>.Filter.Eq(r => r.Id, ObjectId.Parse(_reviewID));
+
+            var result = collection.DeleteOne(filter);
+
+            if (result.DeletedCount > 0)
+            {
+                Dispose();
+            }
+            else
+            {
+                MaterialMessageBox.Show("Review not found or could not be deleted.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetButtonState(string customerID)
         {
             if (customerID == UserState.Instance.GetUserId())
             {
                 EditButton.Enabled = true;
                 EditButton.Visible = true;
+                DeleteButton.Enabled = true;
+                DeleteButton.Visible = true;
             }
             else
             {
                 EditButton.Enabled = false;
                 EditButton.Visible = false;
+                DeleteButton.Enabled = false;
+                DeleteButton.Visible = false;
             }
         }
     }

@@ -32,6 +32,7 @@
             CreatedAtLabel = new Label();
             EditButton = new MaterialSkin.Controls.MaterialButton();
             materialCard1 = new MaterialSkin.Controls.MaterialCard();
+            DeleteButton = new MaterialSkin.Controls.MaterialButton();
             materialCard1.SuspendLayout();
             SuspendLayout();
             // 
@@ -59,7 +60,7 @@
             EditButton.Depth = 0;
             EditButton.HighEmphasis = true;
             EditButton.Icon = null;
-            EditButton.Location = new Point(662, 97);
+            EditButton.Location = new Point(582, 97);
             EditButton.Margin = new Padding(4, 6, 4, 6);
             EditButton.MouseState = MaterialSkin.MouseState.HOVER;
             EditButton.Name = "EditButton";
@@ -75,6 +76,7 @@
             // materialCard1
             // 
             materialCard1.BackColor = Color.FromArgb(255, 255, 255);
+            materialCard1.Controls.Add(DeleteButton);
             materialCard1.Controls.Add(CreatedAtLabel);
             materialCard1.Controls.Add(EditButton);
             materialCard1.Controls.Add(ContentLabel);
@@ -87,6 +89,26 @@
             materialCard1.Padding = new Padding(14);
             materialCard1.Size = new Size(745, 150);
             materialCard1.TabIndex = 3;
+            // 
+            // DeleteButton
+            // 
+            DeleteButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            DeleteButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            DeleteButton.Depth = 0;
+            DeleteButton.HighEmphasis = true;
+            DeleteButton.Icon = null;
+            DeleteButton.Location = new Point(654, 97);
+            DeleteButton.Margin = new Padding(4, 6, 4, 6);
+            DeleteButton.MouseState = MaterialSkin.MouseState.HOVER;
+            DeleteButton.Name = "DeleteButton";
+            DeleteButton.NoAccentTextColor = Color.Empty;
+            DeleteButton.Size = new Size(73, 36);
+            DeleteButton.TabIndex = 3;
+            DeleteButton.Text = "Delete";
+            DeleteButton.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            DeleteButton.UseAccentColor = false;
+            DeleteButton.UseVisualStyleBackColor = true;
+            DeleteButton.Click += DeleteButton_Click;
             // 
             // ProductReviewItem
             // 
@@ -107,5 +129,6 @@
         private Label CreatedAtLabel;
         private MaterialSkin.Controls.MaterialButton EditButton;
         private MaterialSkin.Controls.MaterialCard materialCard1;
+        private MaterialSkin.Controls.MaterialButton DeleteButton;
     }
 }
