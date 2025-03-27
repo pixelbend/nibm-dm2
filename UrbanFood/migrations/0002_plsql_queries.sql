@@ -129,7 +129,7 @@ BEGIN
                  JOIN Products p ON oi.ProductID = p.ProductID
         WHERE p.SupplierID = pSupplierID
           AND (pStatus IS NULL OR oi.Status = pStatus)
-          AND (pProductName IS NULL OR p.Name = pProductName);
+          AND (pProductName IS NULL OR LOWER(p.Name) LIKE '%' || LOWER(pProductName) || '%');
 
     RETURN vCursor;
 EXCEPTION
