@@ -150,10 +150,7 @@ BEGIN
     :NEW.DeliveryID := Generate_UUID();
 END;
 
-CREATE MATERIALIZED VIEW TotalSalesPerProduct
-            BUILD IMMEDIATE
-    REFRESH COMPLETE ON DEMAND
-AS
+CREATE OR REPLACE VIEW TotalSalesPerProduct AS
 SELECT p.ProductID      AS ProductID,
        p.Name           AS ProductName,
        p.SupplierID     AS SupplierID,
@@ -165,10 +162,7 @@ FROM OrderItems oi
 WHERE oi.Status = 'Delivered'
 GROUP BY p.ProductID, p.Name, p.SupplierID;
 
-CREATE MATERIALIZED VIEW SupplierSalesSummary
-            BUILD IMMEDIATE
-    REFRESH COMPLETE ON DEMAND
-AS
+CREATE OR REPLACE VIEW SupplierSalesSummary AS
 SELECT s.SupplierID                   AS SupplierID,
        s.Name                         AS SupplierName,
        COUNT(DISTINCT oi.OrderItemID) AS TotalOrders,
@@ -181,10 +175,7 @@ FROM OrderItems oi
 WHERE oi.Status = 'Delivered'
 GROUP BY s.SupplierID, s.Name;
 
-CREATE MATERIALIZED VIEW SupplierSalesLast30Days
-            BUILD IMMEDIATE
-    REFRESH COMPLETE ON DEMAND
-AS
+CREATE OR REPLACE VIEW SupplierSalesLast30Days AS
 SELECT s.SupplierID       AS SupplierID,
        s.Name             AS SupplierName,
        TRUNC(o.OrderDate) AS SalesDate,
