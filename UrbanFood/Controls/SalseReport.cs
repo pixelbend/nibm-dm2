@@ -240,9 +240,9 @@ namespace UrbanFood.Controls
 
         public void LoadSupplierSalesSummary(SupplierSummary supplierSummary)
         {
-            TotalOrders.Text = $"Total Order: {supplierSummary.TotalOrders.ToString()}";
+            TotalOrders.Text = $"Total Orders: {supplierSummary.TotalOrders.ToString()}";
             TotalOrders.Font = new Font("Segoe UI", 14, FontStyle.Bold);
-            TotalSoldOrders.Text = $"Total Sold Orders: {supplierSummary.TotalQuantitySold.ToString()}";
+            TotalSoldOrders.Text = $"Total Units Sold: {supplierSummary.TotalQuantitySold.ToString()}";
             TotalSoldOrders.Font = new Font("Segoe UI", 14, FontStyle.Bold);
             TotalRevenue.Text = $"Total Revenue Rs: {supplierSummary.TotalRevenue.ToString()}";
             TotalRevenue.Font = new Font("Segoe UI", 14, FontStyle.Bold);
