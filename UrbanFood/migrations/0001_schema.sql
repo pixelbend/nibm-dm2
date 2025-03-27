@@ -162,7 +162,7 @@ SELECT p.ProductID      AS ProductID,
 FROM OrderItems oi
          JOIN Products p ON oi.ProductID = p.ProductID
          JOIN Orders o ON oi.OrderID = o.OrderID
-WHERE oi.Status = 'Fulfilled'
+WHERE oi.Status = 'Delivered'
 GROUP BY p.ProductID, p.Name, p.SupplierID;
 
 CREATE MATERIALIZED VIEW SupplierSalesSummary
@@ -178,7 +178,7 @@ FROM OrderItems oi
          JOIN Products p ON oi.ProductID = p.ProductID
          JOIN Suppliers s ON p.SupplierID = s.SupplierID
          JOIN Orders o ON oi.OrderID = o.OrderID
-WHERE oi.Status = 'Fulfilled'
+WHERE oi.Status = 'Delivered'
 GROUP BY s.SupplierID, s.Name;
 
 CREATE MATERIALIZED VIEW SupplierSalesLast30Days
@@ -194,6 +194,6 @@ FROM OrderItems oi
          JOIN Suppliers s ON p.SupplierID = s.SupplierID
          JOIN Orders o ON oi.OrderID = o.OrderID
 WHERE o.OrderDate >= SYSDATE - 30
-  AND oi.Status = 'Fulfilled'
+  AND oi.Status = 'Delivered'
 GROUP BY s.SupplierID, s.Name, TRUNC(o.OrderDate)
 ORDER BY s.SupplierID, SalesDate;
