@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using UrbanFood.Controls;
 using UrbanFood.Database.MongoDB;
+using UrbanFood.LocalState;
 using UrbanFood.Utils;
 
 namespace UrbanFood.Forms
@@ -33,6 +34,17 @@ namespace UrbanFood.Forms
 
         private void ViewProductReviews_Load(object sender, EventArgs e)
         {
+            if (UserState.Instance.GetUserType() == UserType.Customer)
+            {
+                ProductReviewsButton.Visible = true;
+                ProductReviewsButton.Enabled = true;
+            }
+            else
+            {
+                ProductReviewsButton.Visible = false;
+                ProductReviewsButton.Enabled = false;
+            }
+
             ListProductReviews();
         }
 
