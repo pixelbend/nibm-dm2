@@ -165,14 +165,14 @@
             // 
             // SaveChangesButton
             // 
-            SaveChangesButton.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            SaveChangesButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             SaveChangesButton.AutoSize = false;
             SaveChangesButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             SaveChangesButton.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
             SaveChangesButton.Depth = 0;
             SaveChangesButton.HighEmphasis = true;
             SaveChangesButton.Icon = null;
-            SaveChangesButton.Location = new Point(557, 493);
+            SaveChangesButton.Location = new Point(1021, 384);
             SaveChangesButton.Margin = new Padding(4, 6, 4, 6);
             SaveChangesButton.MouseState = MaterialSkin.MouseState.HOVER;
             SaveChangesButton.Name = "SaveChangesButton";

@@ -40,7 +40,7 @@
             // 
             // ProductSalseChart
             // 
-            ProductSalseChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ProductSalseChart.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ProductSalseChart.Location = new Point(21, 345);
             ProductSalseChart.MatchAxesScreenDataRatio = false;
             ProductSalseChart.Name = "ProductSalseChart";
@@ -49,6 +49,7 @@
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(21, 311);
@@ -59,7 +60,7 @@
             // 
             // DailyRevenueChart
             // 
-            DailyRevenueChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            DailyRevenueChart.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             DailyRevenueChart.Location = new Point(21, 47);
             DailyRevenueChart.MatchAxesScreenDataRatio = false;
             DailyRevenueChart.Name = "DailyRevenueChart";
