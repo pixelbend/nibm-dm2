@@ -182,3 +182,54 @@ BEGIN
 
     RETURN vCursor;
 END Get_Customer_Profile;
+
+CREATE OR REPLACE FUNCTION Get_TotalSalesPerProduct(pSupplierID VARCHAR2)
+RETURN SYS_REFCURSOR
+IS
+    vCursor SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+    SELECT ProductID,
+           ProductName,
+           SupplierID,
+           TotalQuantitySold,
+           TotalRevenue
+    FROM TotalSalesPerProduct
+    WHERE SupplierID = pSupplierID;
+
+    RETURN vCursor;
+END Get_TotalSalesPerProduct;
+
+CREATE OR REPLACE FUNCTION Get_SupplierSalesSummary(pSupplierID VARCHAR2)
+RETURN SYS_REFCURSOR
+IS
+    vCursor SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+    SELECT SupplierID,
+           SupplierName,
+           TotalOrders,
+           TotalQuantitySold,
+           TotalRevenue
+    FROM SupplierSalesSummary
+    WHERE SupplierID = pSupplierID;
+
+    RETURN vCursor;
+END Get_SupplierSalesSummary;
+
+CREATE OR REPLACE FUNCTION Get_SupplierSalesLast30Days(pSupplierID VARCHAR2)
+RETURN SYS_REFCURSOR
+IS
+    vCursor SYS_REFCURSOR;
+BEGIN
+    OPEN vCursor FOR
+    SELECT SupplierID,
+           SupplierName,
+           SalesDate,
+           DailyRevenue
+    FROM SupplierSalesLast30Days
+    WHERE SupplierID = pSupplierID
+    ORDER BY SalesDate;
+
+    RETURN vCursor;
+END Get_SupplierSalesLast30Days;
