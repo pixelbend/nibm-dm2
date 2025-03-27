@@ -34,9 +34,9 @@
             ProductNameLable = new Label();
             DeleteProductButton = new MaterialSkin.Controls.MaterialButton();
             materialCard1 = new MaterialSkin.Controls.MaterialCard();
+            ViewProductReviews = new MaterialSkin.Controls.MaterialButton();
             PriceLable = new Label();
             CategoryLable = new Label();
-            ViewProductReviews = new MaterialSkin.Controls.MaterialButton();
             materialCard1.SuspendLayout();
             SuspendLayout();
             // 
@@ -134,6 +134,27 @@
             materialCard1.Size = new Size(1135, 200);
             materialCard1.TabIndex = 13;
             // 
+            // ViewProductReviews
+            // 
+            ViewProductReviews.AutoSize = false;
+            ViewProductReviews.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ViewProductReviews.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            ViewProductReviews.Depth = 0;
+            ViewProductReviews.HighEmphasis = true;
+            ViewProductReviews.Icon = null;
+            ViewProductReviews.Location = new Point(970, 145);
+            ViewProductReviews.Margin = new Padding(4, 6, 4, 6);
+            ViewProductReviews.MouseState = MaterialSkin.MouseState.HOVER;
+            ViewProductReviews.Name = "ViewProductReviews";
+            ViewProductReviews.NoAccentTextColor = Color.Empty;
+            ViewProductReviews.Size = new Size(147, 36);
+            ViewProductReviews.TabIndex = 23;
+            ViewProductReviews.Text = "Reviews";
+            ViewProductReviews.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            ViewProductReviews.UseAccentColor = false;
+            ViewProductReviews.UseVisualStyleBackColor = true;
+            ViewProductReviews.Click += ViewProductReviews_Click;
+            // 
             // PriceLable
             // 
             PriceLable.AutoSize = true;
@@ -153,27 +174,6 @@
             CategoryLable.Size = new Size(119, 23);
             CategoryLable.TabIndex = 21;
             CategoryLable.Text = "CategoryLable";
-            // 
-            // ViewProductReviews
-            // 
-            ViewProductReviews.AutoSize = false;
-            ViewProductReviews.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            ViewProductReviews.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            ViewProductReviews.Depth = 0;
-            ViewProductReviews.HighEmphasis = true;
-            ViewProductReviews.Icon = null;
-            ViewProductReviews.Location = new Point(994, 145);
-            ViewProductReviews.Margin = new Padding(4, 6, 4, 6);
-            ViewProductReviews.MouseState = MaterialSkin.MouseState.HOVER;
-            ViewProductReviews.Name = "ViewProductReviews";
-            ViewProductReviews.NoAccentTextColor = Color.Empty;
-            ViewProductReviews.Size = new Size(123, 36);
-            ViewProductReviews.TabIndex = 23;
-            ViewProductReviews.Text = "Reviews";
-            ViewProductReviews.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            ViewProductReviews.UseAccentColor = false;
-            ViewProductReviews.UseVisualStyleBackColor = true;
-            ViewProductReviews.Click += ViewProductReviews_Click;
             // 
             // SupplierInventoryItem
             // 

@@ -40,6 +40,7 @@
             // 
             // ProductSalseChart
             // 
+            ProductSalseChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             ProductSalseChart.Location = new Point(21, 345);
             ProductSalseChart.MatchAxesScreenDataRatio = false;
             ProductSalseChart.Name = "ProductSalseChart";
@@ -58,6 +59,7 @@
             // 
             // DailyRevenueChart
             // 
+            DailyRevenueChart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DailyRevenueChart.Location = new Point(21, 47);
             DailyRevenueChart.MatchAxesScreenDataRatio = false;
             DailyRevenueChart.Name = "DailyRevenueChart";
@@ -76,6 +78,7 @@
             // 
             // Refresh
             // 
+            Refresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             Refresh.AutoSize = false;
             Refresh.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             Refresh.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
@@ -97,6 +100,7 @@
             // 
             // TotalRevenue
             // 
+            TotalRevenue.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             TotalRevenue.AutoSize = true;
             TotalRevenue.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             TotalRevenue.Location = new Point(843, 564);
@@ -107,6 +111,7 @@
             // 
             // TotalOrders
             // 
+            TotalOrders.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             TotalOrders.AutoSize = true;
             TotalOrders.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             TotalOrders.Location = new Point(843, 488);
@@ -117,6 +122,7 @@
             // 
             // TotalSoldOrders
             // 
+            TotalSoldOrders.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             TotalSoldOrders.AutoSize = true;
             TotalSoldOrders.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             TotalSoldOrders.Location = new Point(843, 526);
