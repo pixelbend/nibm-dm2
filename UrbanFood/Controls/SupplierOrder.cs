@@ -17,9 +17,15 @@ namespace UrbanFood.Controls
 {
     public partial class SupplierOrder : UserControl
     {
+        private System.Windows.Forms.Timer searchTimer;
+        private const int debounceDelay = 1000;
+
         public SupplierOrder()
         {
             InitializeComponent();
+            searchTimer = new System.Windows.Forms.Timer();
+            searchTimer.Interval = debounceDelay;
+            searchTimer.Tick += SearchTimer_Tick;
         }
 
         private void SupplierOrder_Load(object sender, EventArgs e)
@@ -29,6 +35,18 @@ namespace UrbanFood.Controls
 
         private void StatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            PopulateSupplierOrderList();
+        }
+
+        private void OrderProductNameSearchBox_TextChanged(object sender, EventArgs e)
+        {
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+
+        private void SearchTimer_Tick(object sender, EventArgs e)
+        {
+            searchTimer.Stop();
             PopulateSupplierOrderList();
         }
 
@@ -58,7 +76,14 @@ namespace UrbanFood.Controls
                     orderListCmd.Parameters.Add("pStatus", OracleDbType.Varchar2).Value = StatusComboBox.Text;
                 }
 
-                orderListCmd.Parameters.Add("pProductName", OracleDbType.Varchar2).Value = DBNull.Value;
+                if (OrderProductNameSearchBox.TextLength == 0)
+                {
+                    orderListCmd.Parameters.Add("pProductName", OracleDbType.Varchar2).Value = DBNull.Value;
+                }
+                else
+                {
+                    orderListCmd.Parameters.Add("pProductName", OracleDbType.Varchar2).Value = OrderProductNameSearchBox.Text;
+                }
 
                 using OracleDataReader reader = orderListCmd.ExecuteReader();
 
