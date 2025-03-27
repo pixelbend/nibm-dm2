@@ -41,3 +41,5 @@ Ensure you have the following installed on your system:
    docker compose up -d -- this creates a mongodb and oracledb instance
    docker compose down -- this is used to shut down mongodb and oracledb instance
    ```
+3. Take all the SQL queries in the migrations folder and run them in the
+URBAN_FOOD_DB schema
