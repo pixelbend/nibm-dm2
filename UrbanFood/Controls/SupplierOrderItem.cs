@@ -35,7 +35,7 @@ namespace UrbanFood.Controls
         public string OrderItemID
         {
             get { return _orderItemID; }
-            set { _orderItemID = value; OrderIDLabel.Text = $"Id: {_orderItemID}"; }
+            set { _orderItemID = value; OrderIDLabel.Text = $"Order Id: {_orderItemID}"; }
         }
 
         [Category("Custom Props")]

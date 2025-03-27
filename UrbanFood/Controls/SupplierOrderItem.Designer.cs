@@ -131,7 +131,7 @@
             // 
             OrderIDLabel.AutoSize = true;
             OrderIDLabel.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            OrderIDLabel.Location = new Point(17, 86);
+            OrderIDLabel.Location = new Point(17, 14);
             OrderIDLabel.Name = "OrderIDLabel";
             OrderIDLabel.Size = new Size(82, 28);
             OrderIDLabel.TabIndex = 32;
@@ -200,10 +200,10 @@
             // ProductNameLable
             // 
             ProductNameLable.AutoSize = true;
-            ProductNameLable.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ProductNameLable.Location = new Point(17, 14);
+            ProductNameLable.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ProductNameLable.Location = new Point(17, 80);
             ProductNameLable.Name = "ProductNameLable";
-            ProductNameLable.Size = new Size(219, 31);
+            ProductNameLable.Size = new Size(210, 31);
             ProductNameLable.TabIndex = 1;
             ProductNameLable.Text = "ProductNameLable";
             // 
