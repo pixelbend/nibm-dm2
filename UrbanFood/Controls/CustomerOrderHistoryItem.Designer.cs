@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             materialCard1 = new MaterialSkin.Controls.MaterialCard();
+            DetailsButton = new MaterialSkin.Controls.MaterialButton();
             OrderStatusLabel = new Label();
             OrderTotalLabel = new Label();
             OrderDateLabel = new Label();
-            DetailsButton = new MaterialSkin.Controls.MaterialButton();
             materialCard1.SuspendLayout();
             SuspendLayout();
             // 
@@ -50,44 +50,8 @@
             materialCard1.MouseState = MaterialSkin.MouseState.HOVER;
             materialCard1.Name = "materialCard1";
             materialCard1.Padding = new Padding(14);
-            materialCard1.Size = new Size(1135, 200);
+            materialCard1.Size = new Size(1170, 200);
             materialCard1.TabIndex = 15;
-            // 
-            // OrderStatusLabel
-            // 
-            OrderStatusLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            OrderStatusLabel.AutoSize = true;
-            OrderStatusLabel.Font = new Font("Segoe UI", 12F);
-            OrderStatusLabel.Location = new Point(32, 145);
-            OrderStatusLabel.Name = "OrderStatusLabel";
-            OrderStatusLabel.Size = new Size(121, 28);
-            OrderStatusLabel.TabIndex = 25;
-            OrderStatusLabel.Text = "Order Status";
-            OrderStatusLabel.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // OrderTotalLabel
-            // 
-            OrderTotalLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            OrderTotalLabel.AutoSize = true;
-            OrderTotalLabel.Font = new Font("Segoe UI", 12F);
-            OrderTotalLabel.Location = new Point(32, 84);
-            OrderTotalLabel.Name = "OrderTotalLabel";
-            OrderTotalLabel.Size = new Size(110, 28);
-            OrderTotalLabel.TabIndex = 24;
-            OrderTotalLabel.Text = "Order Total";
-            OrderTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // OrderDateLabel
-            // 
-            OrderDateLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            OrderDateLabel.AutoSize = true;
-            OrderDateLabel.Font = new Font("Segoe UI", 12F);
-            OrderDateLabel.Location = new Point(32, 21);
-            OrderDateLabel.Name = "OrderDateLabel";
-            OrderDateLabel.Size = new Size(109, 28);
-            OrderDateLabel.TabIndex = 23;
-            OrderDateLabel.Text = "Order Date";
-            OrderDateLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // DetailsButton
             // 
@@ -97,7 +61,7 @@
             DetailsButton.Depth = 0;
             DetailsButton.HighEmphasis = true;
             DetailsButton.Icon = null;
-            DetailsButton.Location = new Point(976, 18);
+            DetailsButton.Location = new Point(1005, 20);
             DetailsButton.Margin = new Padding(4, 6, 4, 6);
             DetailsButton.MouseState = MaterialSkin.MouseState.HOVER;
             DetailsButton.Name = "DetailsButton";
@@ -110,13 +74,49 @@
             DetailsButton.UseVisualStyleBackColor = true;
             DetailsButton.Click += DetailsButton_Click;
             // 
+            // OrderStatusLabel
+            // 
+            OrderStatusLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OrderStatusLabel.AutoSize = true;
+            OrderStatusLabel.Font = new Font("Segoe UI", 12F);
+            OrderStatusLabel.Location = new Point(35, 145);
+            OrderStatusLabel.Name = "OrderStatusLabel";
+            OrderStatusLabel.Size = new Size(121, 28);
+            OrderStatusLabel.TabIndex = 25;
+            OrderStatusLabel.Text = "Order Status";
+            OrderStatusLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // OrderTotalLabel
+            // 
+            OrderTotalLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OrderTotalLabel.AutoSize = true;
+            OrderTotalLabel.Font = new Font("Segoe UI", 12F);
+            OrderTotalLabel.Location = new Point(35, 84);
+            OrderTotalLabel.Name = "OrderTotalLabel";
+            OrderTotalLabel.Size = new Size(110, 28);
+            OrderTotalLabel.TabIndex = 24;
+            OrderTotalLabel.Text = "Order Total";
+            OrderTotalLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // OrderDateLabel
+            // 
+            OrderDateLabel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            OrderDateLabel.AutoSize = true;
+            OrderDateLabel.Font = new Font("Segoe UI", 12F);
+            OrderDateLabel.Location = new Point(35, 21);
+            OrderDateLabel.Name = "OrderDateLabel";
+            OrderDateLabel.Size = new Size(109, 28);
+            OrderDateLabel.TabIndex = 23;
+            OrderDateLabel.Text = "Order Date";
+            OrderDateLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
             // CustomerOrderHistoryItem
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(materialCard1);
             Name = "CustomerOrderHistoryItem";
-            Size = new Size(1135, 200);
+            Size = new Size(1170, 200);
             materialCard1.ResumeLayout(false);
             materialCard1.PerformLayout();
             ResumeLayout(false);

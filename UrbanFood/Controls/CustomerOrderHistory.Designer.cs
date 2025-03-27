@@ -33,13 +33,11 @@
             // 
             // CustomerOrderHistoyListPanel
             // 
-            CustomerOrderHistoyListPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             CustomerOrderHistoyListPanel.AutoScroll = true;
-            CustomerOrderHistoyListPanel.AutoSize = true;
-            CustomerOrderHistoyListPanel.Location = new Point(14, 15);
+            CustomerOrderHistoyListPanel.Location = new Point(22, 16);
             CustomerOrderHistoyListPanel.Name = "CustomerOrderHistoyListPanel";
-            CustomerOrderHistoyListPanel.Size = new Size(1238, 580);
-            CustomerOrderHistoyListPanel.TabIndex = 1;
+            CustomerOrderHistoyListPanel.Size = new Size(1203, 578);
+            CustomerOrderHistoyListPanel.TabIndex = 0;
             // 
             // CustomerOrderHistory
             // 
@@ -50,7 +48,6 @@
             Size = new Size(1266, 610);
             Load += CustomerOrderHistory_Load;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion

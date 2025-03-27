@@ -30,6 +30,9 @@
         {
             SupplierOrderListPanel = new FlowLayoutPanel();
             StatusComboBox = new MaterialSkin.Controls.MaterialComboBox();
+            pictureBox1 = new PictureBox();
+            OrderProductNameSearchBox = new MaterialSkin.Controls.MaterialTextBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // SupplierOrderListPanel
@@ -66,15 +69,48 @@
             StatusComboBox.TabIndex = 18;
             StatusComboBox.SelectedIndexChanged += StatusComboBox_SelectedIndexChanged;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = Color.Transparent;
+            pictureBox1.Image = Properties.Resources.icons8_search_60;
+            pictureBox1.Location = new Point(24, 17);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(50, 50);
+            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox1.TabIndex = 21;
+            pictureBox1.TabStop = false;
+            // 
+            // OrderProductNameSearchBox
+            // 
+            OrderProductNameSearchBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            OrderProductNameSearchBox.AnimateReadOnly = false;
+            OrderProductNameSearchBox.BorderStyle = BorderStyle.None;
+            OrderProductNameSearchBox.Depth = 0;
+            OrderProductNameSearchBox.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
+            OrderProductNameSearchBox.LeadingIcon = null;
+            OrderProductNameSearchBox.Location = new Point(80, 17);
+            OrderProductNameSearchBox.MaxLength = 50;
+            OrderProductNameSearchBox.MouseState = MaterialSkin.MouseState.OUT;
+            OrderProductNameSearchBox.Multiline = false;
+            OrderProductNameSearchBox.Name = "OrderProductNameSearchBox";
+            OrderProductNameSearchBox.Size = new Size(953, 50);
+            OrderProductNameSearchBox.TabIndex = 20;
+            OrderProductNameSearchBox.Text = "";
+            OrderProductNameSearchBox.TrailingIcon = null;
+            OrderProductNameSearchBox.TextChanged += OrderProductNameSearchBox_TextChanged;
+            // 
             // SupplierOrder
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(pictureBox1);
+            Controls.Add(OrderProductNameSearchBox);
             Controls.Add(StatusComboBox);
             Controls.Add(SupplierOrderListPanel);
             Name = "SupplierOrder";
             Size = new Size(1266, 610);
             Load += SupplierOrder_Load;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
 
@@ -82,5 +118,7 @@
 
         private FlowLayoutPanel SupplierOrderListPanel;
         private MaterialSkin.Controls.MaterialComboBox StatusComboBox;
+        private PictureBox pictureBox1;
+        private MaterialSkin.Controls.MaterialTextBox OrderProductNameSearchBox;
     }
 }
