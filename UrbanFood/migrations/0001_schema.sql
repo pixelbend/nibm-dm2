@@ -154,13 +154,14 @@ CREATE MATERIALIZED VIEW TotalSalesPerProduct
             BUILD IMMEDIATE
     REFRESH COMPLETE ON DEMAND
 AS
-SELECT p.ProductID,
+SELECT p.ProductID      AS ProductID,
        p.Name           AS ProductName,
-       p.SupplierID,
+       p.SupplierID     AS SupplierID,
        SUM(oi.Quantity) AS TotalQuantitySold,
        SUM(oi.Subtotal) AS TotalRevenue
 FROM OrderItems oi
          JOIN Products p ON oi.ProductID = p.ProductID
+         JOIN Orders o ON oi.OrderID = o.OrderID
 WHERE oi.Status = 'Fulfilled'
 GROUP BY p.ProductID, p.Name, p.SupplierID;
 
@@ -168,7 +169,7 @@ CREATE MATERIALIZED VIEW SupplierSalesSummary
             BUILD IMMEDIATE
     REFRESH COMPLETE ON DEMAND
 AS
-SELECT s.SupplierID,
+SELECT s.SupplierID                   AS SupplierID,
        s.Name                         AS SupplierName,
        COUNT(DISTINCT oi.OrderItemID) AS TotalOrders,
        SUM(oi.Quantity)               AS TotalQuantitySold,
@@ -176,6 +177,7 @@ SELECT s.SupplierID,
 FROM OrderItems oi
          JOIN Products p ON oi.ProductID = p.ProductID
          JOIN Suppliers s ON p.SupplierID = s.SupplierID
+         JOIN Orders o ON oi.OrderID = o.OrderID
 WHERE oi.Status = 'Fulfilled'
 GROUP BY s.SupplierID, s.Name;
 
@@ -183,11 +185,15 @@ CREATE MATERIALIZED VIEW SupplierSalesLast30Days
             BUILD IMMEDIATE
     REFRESH COMPLETE ON DEMAND
 AS
-SELECT s.SupplierID, s.Name AS SupplierName, TRUNC(oi.OrderID) AS SalesDate, SUM(oi.Subtotal) AS DailyRevenue
+SELECT s.SupplierID       AS SupplierID,
+       s.Name             AS SupplierName,
+       TRUNC(o.OrderDate) AS SalesDate,
+       SUM(oi.Subtotal)   AS DailyRevenue
 FROM OrderItems oi
          JOIN Products p ON oi.ProductID = p.ProductID
          JOIN Suppliers s ON p.SupplierID = s.SupplierID
-WHERE oi.OrderID >= SYSDATE - 30
+         JOIN Orders o ON oi.OrderID = o.OrderID
+WHERE o.OrderDate >= SYSDATE - 30
   AND oi.Status = 'Fulfilled'
-GROUP BY s.SupplierID, s.Name, TRUNC(oi.OrderID)
+GROUP BY s.SupplierID, s.Name, TRUNC(o.OrderDate)
 ORDER BY s.SupplierID, SalesDate;
