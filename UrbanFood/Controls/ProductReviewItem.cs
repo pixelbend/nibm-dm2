@@ -107,10 +107,20 @@ namespace UrbanFood.Controls
 
         private void SetButtonState(string customerID)
         {
-            if (customerID == UserState.Instance.GetUserId())
+            string currentUserId = UserState.Instance.GetUserId();
+            UserType currentUserType = UserState.Instance.GetUserType();
+
+            if (customerID == currentUserId)
             {
                 EditButton.Enabled = true;
                 EditButton.Visible = true;
+                DeleteButton.Enabled = true;
+                DeleteButton.Visible = true;
+            }
+            else if (currentUserType == UserType.Supplier)
+            {
+                EditButton.Enabled = false;
+                EditButton.Visible = false;
                 DeleteButton.Enabled = true;
                 DeleteButton.Visible = true;
             }
@@ -122,5 +132,6 @@ namespace UrbanFood.Controls
                 DeleteButton.Visible = false;
             }
         }
+
     }
 }
